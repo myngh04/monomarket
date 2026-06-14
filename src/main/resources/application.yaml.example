@@ -1,0 +1,6 @@
+# File application.yaml.example mẫu để push lên Git
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/monomarket
+    username: postgres
+    password: YOUR_PASSWORD_HERE 
