@@ -1,0 +1,80 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="#{brand.name}">MonoMarket</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 30px;
+        background: #f5f5f5;
+      }
+
+      .nav {
+        margin-bottom: 20px;
+        padding: 10px;
+        background: #fff;
+        border-radius: 5px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .price {
+        color: #e44d26;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="nav">
+      <strong th:text="#{brand.name}">MonoMarket</strong> |
+      <a th:href="@{/(lang='en')}">English</a> |
+      <a th:href="@{/(lang='ja')}">日本語</a>
+    </div>
+
+    <div style="margin-bottom: 20px">
+      <a th:href="@{/}">All</a> |
+      <a th:href="@{/(platform='Nintendo Switch')}">Nintendo Switch</a>
+    </div>
+
+    <div class="grid">
+      <div class="card" th:each="p : ${products}">
+        <h3
+          th:text="${#locale.language == 'ja'} ? ${p.attributes['title_ja']} : ${p.attributes['title_en']}"
+        >
+          Product Title
+        </h3>
+
+        <p>
+          <span th:text="#{product.platform}">Platform</span>:
+          <span th:text="${p.attributes['platform']}"></span>
+        </p>
+        <p>
+          <span th:text="#{product.rank}">Rank</span>:
+          <strong th:text="${p.conditionRank}">A</strong>
+        </p>
+
+        <p class="price">
+          <span th:text="#{product.price}">Price</span>:
+          <span
+            th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' 円'"
+            >4,800 円</span
+          >
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
