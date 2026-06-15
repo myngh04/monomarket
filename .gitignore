@@ -10,8 +10,7 @@ Desktop.ini
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
-### --- VS Code / Cursor (IDE hiện tại ông đang dùng) ---
-# Ignore folder cấu hình local của VS Code, chỉ giữ lại nếu team có config chung
+# Ignore folder cấu hình local của VS Code
 .vscode/
 .history/
 *.code-workspace

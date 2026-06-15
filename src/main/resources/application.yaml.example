@@ -1,4 +1,4 @@
-# File application.yaml.example mẫu để push lên Git
+# File application.yaml.example mẫu
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/monomarket
