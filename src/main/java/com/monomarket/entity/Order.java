@@ -36,4 +36,16 @@ public class Order {
   // Định nghĩa mối quan hệ xuôi xuống bảng order_items
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<OrderDetail> items = new ArrayList<>();
+
+  // Đồng bộ hai chiều: thêm item vào đơn và gán order ngược lại cho item.
+  public void addItem(OrderDetail item) {
+    items.add(item);
+    item.setOrder(this);
+  }
+
+  // Gỡ item khỏi đơn và xóa liên kết order trên item (orphanRemoval sẽ xóa row khi flush).
+  public void removeItem(OrderDetail item) {
+    items.remove(item);
+    item.setOrder(null);
+  }
 }

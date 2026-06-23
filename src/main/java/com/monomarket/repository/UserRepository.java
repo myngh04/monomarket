@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.monomarket.entity.Category;
+import com.monomarket.entity.User;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-  Optional<Category> findBySlug(String slug);
+  Optional<User> findByEmail(String email);
 }
