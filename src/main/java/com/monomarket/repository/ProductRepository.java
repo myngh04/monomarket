@@ -1,26 +1,24 @@
 package com.monomarket.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.monomarket.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.monomarket.entity.Product;
+import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-  Optional<Product> findByInstoreCode(String instoreCode);
+    // Tìm kiếm thông tin gốc dựa vào mã vạch quốc tế (ISBN/JAN)
+    @Query("SELECT p FROM Product p WHERE p.isbnOrJan = :isbnOrJan")
+    Optional<Product> findByIsbnOrJan(String isbnOrJan);
 
-  List<Product> findByStatusOrderByCreatedAtDesc(String status);
+    // Tìm kiếm các sản phẩm thuộc cùng một danh mục
+    List<Product> findByCategoryId(Integer categoryId);
 
-  // Query Native: Lọc sản phẩm theo hệ máy nằm sâu trong trường JSONB attributes
-  @Query(value = "SELECT * FROM products WHERE attributes->>'platform' = :platform", nativeQuery = true)
-  List<Product> findByPlatform(@Param("platform") String platform);
-
-  // Lọc sản phẩm theo tình trạng Rank đồ cũ (S, A, B, C) và xếp hàng mới lên đầu
-  List<Product> findByConditionRankOrderByCreatedAtDesc(String conditionRank);
+    // Tìm kiếm xuyên thấu vào trong trường JSONB attributes của Postgres
+    @Query(value = "SELECT * FROM products WHERE attributes ->> :key = :value", nativeQuery = true)
+    List<Product> findByAttribute(@Param("key") String key, @Param("value") String value);
 }

@@ -1,16 +1,12 @@
 package com.monomarket.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Map;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import java.time.LocalDateTime;
+import java.util.Map;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "products")
@@ -21,30 +17,39 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true, length = 50)
-  private String instoreCode;
+  @Column(name = "isbn_or_jan", nullable = false, unique = true, length = 50)
+  private String isbnOrJan;
 
-  @Column(nullable = false)
-  private BigDecimal price;
+  @Column(name = "title_ja", nullable = false, length = 255)
+  private String titleJa;
 
-  @Column(nullable = false, length = 5)
-  private String conditionRank;
+  @Column(name = "title_en", length = 255)
+  private String titleEn;
 
-  private Integer stock = 1;
-
-  @Column(length = 20)
-  private String status = "AVAILABLE";
-
+  // Nối sang bảng Categories (Đã cấu hình từ V2)
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "category_id") // chỉ định tên cột khóa ngoại
+  @JoinColumn(name = "category_id")
   private Category category;
 
+  // 🌟 Quả bùa JSONB để bới thuộc tính động (Tác giả, Nhà xuất bản, Hệ máy...)
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes;
 
-  @Column(updatable = false)
-  private LocalDateTime createdAt = LocalDateTime.now();
+  @Column(name = "created_at", updatable = false)
+  private LocalDateTime createdAt;
 
-  private LocalDateTime updatedAt = LocalDateTime.now();
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+    updatedAt = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
 }

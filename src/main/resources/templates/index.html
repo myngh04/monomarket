@@ -52,27 +52,21 @@
 
     <div class="grid">
       <div class="card" th:each="p : ${products}">
+        <h3 th:if="${#locale.language == 'ja'}" th:text="${p.titleJa}">Product Title</h3>
         <h3
-          th:text="${#locale.language == 'ja'} ? ${p.attributes['title_ja']} : ${p.attributes['title_en']}"
+          th:unless="${#locale.language == 'ja'}"
+          th:text="${p.titleEn != null ? p.titleEn : p.titleJa}"
         >
           Product Title
         </h3>
 
         <p>
-          <span th:text="#{product.platform}">Platform</span>:
-          <span th:text="${p.attributes['platform']}"></span>
+          <span th:text="#{product.code}">Code</span>:
+          <span th:text="${p.isbnOrJan}"></span>
         </p>
         <p>
-          <span th:text="#{product.rank}">Rank</span>:
-          <strong th:text="${p.conditionRank}">A</strong>
-        </p>
-
-        <p class="price">
-          <span th:text="#{product.price}">Price</span>:
-          <span
-            th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' 円'"
-            >4,800 円</span
-          >
+          <span th:text="#{product.platform}">Platform</span>:
+          <span th:text="${p.attributes['platform']}"></span>
         </p>
       </div>
     </div>
