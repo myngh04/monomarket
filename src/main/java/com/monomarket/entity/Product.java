@@ -21,16 +21,18 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true)
+  @Column(unique = true, length = 50)
   private String instoreCode;
 
   @Column(nullable = false)
   private BigDecimal price;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 5)
   private String conditionRank;
 
   private Integer stock = 1;
+
+  @Column(length = 20)
   private String status = "AVAILABLE";
 
   @ManyToOne(fetch = FetchType.LAZY)

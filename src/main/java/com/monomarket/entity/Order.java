@@ -28,6 +28,7 @@ public class Order {
   @Column(nullable = false, columnDefinition = "TEXT")
   private String shippingAddress;
 
+  @Column(length = 24)
   private String status = "PENDING";
 
   @Column(updatable = false)
