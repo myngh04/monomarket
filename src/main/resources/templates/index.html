@@ -261,6 +261,9 @@
       .theme-manga {
         background: linear-gradient(135deg, #f59e0b 0%, #78350f 100%);
       }
+      .theme-video {
+        background: linear-gradient(135deg, #a855f7 0%, #581c87 100%);
+      }
       .theme-games {
         background: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
       }
@@ -513,7 +516,8 @@
               th:classappend="${p.category?.slug == 'books-novels' ? 'theme-novels' : 
                                           (p.category?.slug == 'books-it-computers' ? 'theme-it' : 
                                            (p.category?.slug == 'books-magazines' ? 'theme-magazines' : 
-                                            (p.category?.slug.startsWith('manga') ? 'theme-manga' : 'theme-games')))}"
+                                             (p.category?.slug.startsWith('manga') ? 'theme-manga' : 
+                                              (p.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}"
             >
               <div class="book-spine-line"></div>
               <span class="book-tag" th:text="${p.category?.nameEn}"
