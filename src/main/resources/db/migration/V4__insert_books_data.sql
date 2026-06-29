@@ -1,5 +1,5 @@
 ﻿-- ==========================================
--- Flyway Migration: Seed Book Off books into MonoMarket
+-- Flyway Migration: Insert books into MonoMarket
 -- ==========================================
 
 -- Insert product catalog: 白鳥とコウモリ

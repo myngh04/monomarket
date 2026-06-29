@@ -258,6 +258,9 @@
       .theme-magazines {
         background: linear-gradient(135deg, #f43f5e 0%, #881337 100%);
       }
+      .theme-manga {
+        background: linear-gradient(135deg, #f59e0b 0%, #78350f 100%);
+      }
       .theme-games {
         background: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
       }
@@ -509,14 +512,18 @@
               class="book-mockup"
               th:classappend="${p.category?.slug == 'books-novels' ? 'theme-novels' : 
                                           (p.category?.slug == 'books-it-computers' ? 'theme-it' : 
-                                           (p.category?.slug == 'books-magazines' ? 'theme-magazines' : 'theme-games'))}"
+                                           (p.category?.slug == 'books-magazines' ? 'theme-magazines' : 
+                                            (p.category?.slug.startsWith('manga') ? 'theme-manga' : 'theme-games')))}"
             >
               <div class="book-spine-line"></div>
               <span class="book-tag" th:text="${p.category?.nameEn}"
                 >Novels</span
               >
-              <h4 class="book-title-mockup" th:text="${p.titleJa}">
-                傲慢と善良
+              <h4 class="book-title-mockup">
+                <span th:text="${p.titleJa}">傲慢と善良</span>
+                <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 4px; opacity: 0.9;" 
+                      th:if="${p.attributes['volume'] != null}" 
+                      th:text="'Vol. ' + ${p.attributes['volume']}">Vol. 1</span>
               </h4>
             </div>
 
@@ -527,6 +534,12 @@
                   <span>Author:</span>
                   <span class="meta-value" th:text="${p.attributes['author']}"
                     >辻村深月</span
+                  >
+                </div>
+                <div class="meta-row" th:if="${p.attributes['group_name'] != null}">
+                  <span>Series:</span>
+                  <span class="meta-value" th:text="${p.attributes['group_name']}"
+                    >ルリドラゴン</span
                   >
                 </div>
                 <div
