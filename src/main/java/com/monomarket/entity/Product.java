@@ -26,15 +26,18 @@ public class Product {
   @Column(name = "title_en", length = 255)
   private String titleEn;
 
-  // Nối sang bảng Categories (Đã cấu hình từ V2)
+  // Nối sang bảng Categories 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   private Category category;
 
-  // 🌟 Quả bùa JSONB để bới thuộc tính động (Tác giả, Nhà xuất bản, Hệ máy...)
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes;
+
+  // Nối ngược sang danh sách hàng hóa thực tế đang có
+  @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+  private java.util.List<InventoryItem> inventoryItems;
 
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;
