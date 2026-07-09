@@ -428,6 +428,54 @@
           display: none; /* Hide sidebar on mobile or change to top horizontal bar */
         }
       }
+
+      /* Pagination */
+      .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+        margin-bottom: 20px;
+      }
+
+      .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        gap: 8px;
+      }
+
+      .page-item .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        background-color: var(--card-bg);
+      }
+
+      .page-item .page-link:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: rgba(99, 102, 241, 0.05);
+      }
+
+      .page-item.active .page-link {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        color: #ffffff;
+      }
+
+      .page-item.disabled .page-link {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+      }
     </style>
   </head>
   <body>
@@ -627,6 +675,39 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-container" th:if="${totalPages > 1}">
+          <ul class="pagination">
+            <!-- Nút trang trước (Prev) -->
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+              <a class="page-link" 
+                 th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage - 1})}"
+                 aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+
+            <!-- Các nút số trang -->
+            <li class="page-item" 
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                th:classappend="${currentPage == i} ? 'active'">
+              <a class="page-link" 
+                 th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${i})}"
+                 th:text="${i + 1}">1</a>
+            </li>
+
+            <!-- Nút trang sau (Next) -->
+            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+              <a class="page-link" 
+                 th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage + 1})}"
+                 aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </main>
     </div>
