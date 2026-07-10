@@ -47,7 +47,6 @@ public class ProductController {
       model.addAttribute("activeCategoryId", categoryId);
     } else if (platform != null && !platform.isEmpty()) {
       productPage = productService.getProductsByPlatform(platform, pageable);
-      model.addAttribute("products", productPage.getContent());
       model.addAttribute("activePlatform", platform);
     } else {
       productPage = productService.getAllProducts(pageable);

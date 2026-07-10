@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - MonoMarket</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        --card-bg: rgba(30, 41, 59, 0.7);
+        --border: rgba(255, 255, 255, 0.1);
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --radius: 16px;
+        --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        background: var(--bg-gradient);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-x: hidden;
+      }
+
+      .login-container {
+        background: var(--card-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 40px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: var(--shadow);
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .brand {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .brand-name {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(to right, #a5b4fc, #6366f1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .brand-tagline {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-top: 6px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: var(--text-main);
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-main);
+        font-family: inherit;
+        font-size: 15px;
+        transition: all 0.2s ease;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        background: rgba(15, 23, 42, 0.8);
+      }
+
+      .error-alert {
+        background-color: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .logout-alert {
+        background-color: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #a7f3d0;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 14px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        margin-top: 10px;
+      }
+
+      .btn-submit:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-1px);
+      }
+
+      .btn-submit:active {
+        transform: translateY(0);
+      }
+
+      .links-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 24px;
+        font-size: 14px;
+      }
+
+      .links-container a {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .links-container a:hover {
+        color: var(--primary);
+      }
+
+      /* Language switcher */
+      .lang-switcher {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 30px;
+        border-top: 1px solid var(--border);
+        padding-top: 20px;
+        font-size: 13px;
+      }
+
+      .lang-switcher a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      .lang-switcher a:hover,
+      .lang-switcher a.active {
+        color: var(--primary);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="brand">
+        <a href="/" class="brand-name">MonoMarket</a>
+        <div class="brand-tagline">Recommerce Platform</div>
+      </div>
+
+      <!-- Spring Security Login Error Alert -->
+      <div class="error-alert" th:if="${param.error}">
+        Invalid email or password.
+      </div>
+
+      <!-- Spring Security Logout Success Alert -->
+      <div class="logout-alert" th:if="${param.logout}">
+        You have been signed out.
+      </div>
+
+      <!-- Login Form (Spring Security expects username/password by default) -->
+      <form th:action="@{/login}" method="post">
+        <div class="form-group">
+          <label class="form-label" for="username">Email Address</label>
+          <input
+            type="email"
+            id="username"
+            name="username"
+            class="form-input"
+            placeholder="name@example.com"
+            required
+            autofocus
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-input"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-submit">Sign In</button>
+      </form>
+
+      <div class="links-container">
+        <a href="/">Back to Home</a>
+        <a href="/register">Create Account</a>
+      </div>
+
+      <!-- i18n Language Switcher -->
+      <div class="lang-switcher">
+        <a href="?lang=vi">Tiếng Việt</a>
+        <span>|</span>
+        <a href="?lang=ja">日本語</a>
+        <span>|</span>
+        <a href="?lang=en" class="active">English</a>
+      </div>
+    </div>
+  </body>
+</html>
