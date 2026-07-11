@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
   <meta charset="UTF-8" />
@@ -122,6 +122,48 @@
       background-color: var(--card-bg);
       color: var(--primary);
       box-shadow: var(--shadow-sm);
+    }
+
+    /* User Nav Section */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .user-name {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .logout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .logout-btn:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+    .login-btn-nav {
+      background-color: var(--primary);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .login-btn-nav:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
     }
 
     /* Layout Grid */
@@ -503,6 +545,19 @@
             th:classappend="${#locale.language == 'ja' ? 'active' : ''}">JA</a>
           <a th:href="@{/(lang='vi')}" class="lang-btn"
             th:classappend="${#locale.language == 'vi' ? 'active' : ''}">VI</a>
+        </div>
+
+        <!-- Hiển thị khi CHƯA ĐĂNG NHẬP -->
+        <div sec:authorize="isAnonymous()">
+          <a href="/login" class="login-btn-nav">Login</a>
+        </div>
+
+        <!-- Hiển thị khi ĐÃ ĐĂNG NHẬP -->
+        <div sec:authorize="isAuthenticated()" class="user-info">
+          <span class="user-name" sec:authentication="name">User</span>
+          <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="logout-btn">Logout</button>
+          </form>
         </div>
       </div>
     </div>
