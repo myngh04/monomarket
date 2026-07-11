@@ -1,715 +1,650 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="#{brand.name}">MonoMarket</title>
-    <!-- Modern Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Serif+JP:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
 
-    <style>
-      :root {
-        --primary: #4f46e5;
-        --primary-light: #e0e7ff;
-        --primary-dark: #3730a3;
-        --bg: #f8fafc;
-        --card-bg: #ffffff;
-        --text-main: #0f172a;
-        --text-muted: #64748b;
-        --border: #f1f5f9;
-        --border-hover: #cbd5e1;
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md:
-          0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --shadow-lg:
-          0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        --shadow-xl:
-          0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        --radius-sm: 6px;
-        --radius-md: 12px;
-        --radius-lg: 18px;
-        --font-main: "Plus Jakarta Sans", sans-serif;
-        --font-ja: "Noto Serif JP", serif;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="#{brand.name}">MonoMarket</title>
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Serif+JP:wght@400;700&display=swap"
+    rel="stylesheet" />
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-light: #e0e7ff;
+      --primary-dark: #3730a3;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #f1f5f9;
+      --border-hover: #cbd5e1;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md:
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg:
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl:
+        0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --font-main: "Plus Jakarta Sans", sans-serif;
+      --font-ja: "Noto Serif JP", serif;
+    }
 
-      body {
-        font-family: var(--font-main);
-        background-color: var(--bg);
-        color: var(--text-main);
-        line-height: 1.5;
-        -webkit-font-smoothing: antialiased;
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      /* App Container */
-      .container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 24px;
-      }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
 
-      /* Header Navigation */
-      header {
-        background-color: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(12px);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        border-bottom: 1px solid var(--border);
-        padding: 16px 0;
-      }
+    /* App Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
 
-      .header-wrap {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+    /* Header Navigation */
+    header {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
 
-      .logo {
-        font-size: 24px;
-        font-weight: 800;
-        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
+    .header-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      .logo-dot {
-        width: 8px;
-        height: 8px;
-        background-color: #06b6d4;
-        border-radius: 50%;
-      }
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-      .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #06b6d4;
+      border-radius: 50%;
+    }
 
-      .lang-switch {
-        display: flex;
-        background-color: #f1f5f9;
-        padding: 4px;
-        border-radius: 30px;
-        gap: 4px;
-      }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-      .lang-btn {
-        text-decoration: none;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-muted);
-        transition: all 0.2s ease;
-      }
+    .lang-switch {
+      display: flex;
+      background-color: #f1f5f9;
+      padding: 4px;
+      border-radius: 30px;
+      gap: 4px;
+    }
 
-      .lang-btn.active {
-        background-color: var(--card-bg);
-        color: var(--primary);
-        box-shadow: var(--shadow-sm);
-      }
+    .lang-btn {
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
 
-      /* Layout Grid */
+    .lang-btn.active {
+      background-color: var(--card-bg);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Layout Grid */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+      margin-top: 32px;
+      padding-bottom: 64px;
+    }
+
+    /* Sidebar Filter */
+    .sidebar {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      border: 1px solid var(--border);
+      align-self: start;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .filter-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-item a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .filter-item a:hover {
+      background-color: var(--border);
+    }
+
+    .filter-item.active a {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .count-badge {
+      background-color: #f1f5f9;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .filter-item.active .count-badge {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
+    /* Content Area */
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .content-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* Product Cards Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .product-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Premium Book Spine/Cover mockup using CSS */
+    .book-mockup {
+      height: 180px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      position: relative;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Book Mockup color themes based on categories */
+    .theme-novels {
+      background: linear-gradient(135deg, #6366f1 0%, #312e81 100%);
+    }
+
+    .theme-it {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0c4a6e 100%);
+    }
+
+    .theme-magazines {
+      background: linear-gradient(135deg, #f43f5e 0%, #881337 100%);
+    }
+
+    .theme-manga {
+      background: linear-gradient(135deg, #f59e0b 0%, #78350f 100%);
+    }
+
+    .theme-video {
+      background: linear-gradient(135deg, #a855f7 0%, #581c87 100%);
+    }
+
+    .theme-games {
+      background: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
+    }
+
+    .book-spine-line {
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 1px 0 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .book-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+
+    .book-title-mockup {
+      font-family: var(--font-ja);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-top: auto;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .book-info-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .book-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .meta-value {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Inventory Items Styling (Stock) */
+    .inventory-section {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: auto;
+    }
+
+    .inventory-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .inventory-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .inventory-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .rank-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .rank-new {
+      background-color: #dcfce7;
+      color: #15803d;
+    }
+
+    .rank-a {
+      background-color: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .rank-b {
+      background-color: #fef3c7;
+      color: #b45309;
+    }
+
+    .rank-c {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .inventory-price {
+      font-weight: 700;
+      color: #e11d48;
+    }
+
+    .out-of-stock {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    /* Buyback Badge */
+    .buyback-container {
+      background-color: #f8fafc;
+      border: 1px dashed var(--border-hover);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .buyback-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .buyback-value {
+      color: #059669;
+      font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
       .main-layout {
-        display: grid;
-        grid-template-columns: 260px 1fr;
-        gap: 32px;
-        margin-top: 32px;
-        padding-bottom: 64px;
+        grid-template-columns: 1fr;
+        gap: 20px;
       }
 
-      /* Sidebar Filter */
       .sidebar {
-        background-color: var(--card-bg);
-        border-radius: var(--radius-md);
-        padding: 24px;
-        border: 1px solid var(--border);
-        align-self: start;
-        box-shadow: var(--shadow-sm);
+        display: none;
+        /* Hide sidebar on mobile or change to top horizontal bar */
       }
+    }
 
-      .filter-section-title {
-        font-size: 14px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        margin-bottom: 16px;
-      }
+    /* Pagination */
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
 
-      .filter-list {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
+    .pagination {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      gap: 8px;
+    }
 
-      .filter-item a {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        text-decoration: none;
-        padding: 10px 14px;
-        border-radius: var(--radius-sm);
-        color: var(--text-main);
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.2s ease;
-      }
+    .page-item .page-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      background-color: var(--card-bg);
+    }
 
-      .filter-item a:hover {
-        background-color: var(--border);
-      }
+    .page-item .page-link:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: rgba(99, 102, 241, 0.05);
+    }
 
-      .filter-item.active a {
-        background-color: var(--primary-light);
-        color: var(--primary);
-        font-weight: 600;
-      }
+    .page-item.active .page-link {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
 
-      .count-badge {
-        background-color: #f1f5f9;
-        color: var(--text-muted);
-        font-size: 11px;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 10px;
-      }
+    .page-item.disabled .page-link {
+      opacity: 0.5;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
 
-      .filter-item.active .count-badge {
-        background-color: var(--primary);
-        color: #fff;
-      }
+<body>
+  <header>
+    <div class="container header-wrap">
+      <a href="/" class="logo"> MonoMarket <span class="logo-dot"></span> </a>
 
-      /* Content Area */
-      .content-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-      }
-
-      .content-title {
-        font-size: 22px;
-        font-weight: 800;
-        color: var(--text-main);
-      }
-
-      /* Product Cards Grid */
-      .product-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 24px;
-      }
-
-      .product-card {
-        background-color: var(--card-bg);
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        flex-direction: column;
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s ease;
-      }
-
-      .product-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-lg);
-      }
-
-      /* Premium Book Spine/Cover mockup using CSS */
-      .book-mockup {
-        height: 180px;
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 20px;
-        position: relative;
-        color: #fff;
-        overflow: hidden;
-      }
-
-      /* Book Mockup color themes based on categories */
-      .theme-novels {
-        background: linear-gradient(135deg, #6366f1 0%, #312e81 100%);
-      }
-      .theme-it {
-        background: linear-gradient(135deg, #0ea5e9 0%, #0c4a6e 100%);
-      }
-      .theme-magazines {
-        background: linear-gradient(135deg, #f43f5e 0%, #881337 100%);
-      }
-      .theme-manga {
-        background: linear-gradient(135deg, #f59e0b 0%, #78350f 100%);
-      }
-      .theme-video {
-        background: linear-gradient(135deg, #a855f7 0%, #581c87 100%);
-      }
-      .theme-games {
-        background: linear-gradient(135deg, #10b981 0%, #064e3b 100%);
-      }
-
-      .book-spine-line {
-        position: absolute;
-        left: 10px;
-        top: 0;
-        bottom: 0;
-        width: 1px;
-        background-color: rgba(255, 255, 255, 0.15);
-        box-shadow: 1px 0 4px rgba(0, 0, 0, 0.5);
-      }
-
-      .book-tag {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        background-color: rgba(255, 255, 255, 0.2);
-        padding: 2px 8px;
-        border-radius: 4px;
-        width: fit-content;
-      }
-
-      .book-title-mockup {
-        font-family: var(--font-ja);
-        font-size: 15px;
-        font-weight: 700;
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        margin-top: auto;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      }
-
-      .book-info-body {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        flex-grow: 1;
-      }
-
-      .book-meta {
-        font-size: 12px;
-        color: var(--text-muted);
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .meta-row {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .meta-value {
-        font-weight: 600;
-        color: var(--text-main);
-      }
-
-      /* Inventory Items Styling (Stock) */
-      .inventory-section {
-        border-top: 1px solid var(--border);
-        padding-top: 12px;
-        margin-top: auto;
-      }
-
-      .inventory-title {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin-bottom: 8px;
-        letter-spacing: 0.05em;
-      }
-
-      .inventory-list {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-      }
-
-      .inventory-item-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
-      }
-
-      .rank-badge {
-        font-size: 10px;
-        font-weight: 800;
-        padding: 1px 6px;
-        border-radius: 4px;
-        text-transform: uppercase;
-      }
-
-      .rank-new {
-        background-color: #dcfce7;
-        color: #15803d;
-      }
-      .rank-a {
-        background-color: #dbeafe;
-        color: #1d4ed8;
-      }
-      .rank-b {
-        background-color: #fef3c7;
-        color: #b45309;
-      }
-      .rank-c {
-        background-color: #fee2e2;
-        color: #b91c1c;
-      }
-
-      .inventory-price {
-        font-weight: 700;
-        color: #e11d48;
-      }
-
-      .out-of-stock {
-        font-size: 12px;
-        color: var(--text-muted);
-        font-style: italic;
-        text-align: center;
-        padding: 8px 0;
-      }
-
-      /* Buyback Badge */
-      .buyback-container {
-        background-color: #f8fafc;
-        border: 1px dashed var(--border-hover);
-        border-radius: var(--radius-sm);
-        padding: 6px 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 12px;
-        margin-top: 8px;
-      }
-
-      .buyback-label {
-        color: var(--text-muted);
-        font-weight: 500;
-      }
-
-      .buyback-value {
-        color: #059669;
-        font-weight: 700;
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        .main-layout {
-          grid-template-columns: 1fr;
-          gap: 20px;
-        }
-        .sidebar {
-          display: none; /* Hide sidebar on mobile or change to top horizontal bar */
-        }
-      }
-
-      /* Pagination */
-      .pagination-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 40px;
-        margin-bottom: 20px;
-      }
-
-      .pagination {
-        display: flex;
-        list-style: none;
-        padding: 0;
-        gap: 8px;
-      }
-
-      .page-item .page-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.2s ease;
-        background-color: var(--card-bg);
-      }
-
-      .page-item .page-link:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        background-color: rgba(99, 102, 241, 0.05);
-      }
-
-      .page-item.active .page-link {
-        background-color: var(--primary);
-        border-color: var(--primary);
-        color: #ffffff;
-      }
-
-      .page-item.disabled .page-link {
-        opacity: 0.5;
-        pointer-events: none;
-        cursor: not-allowed;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="container header-wrap">
-        <a href="/" class="logo"> MonoMarket <span class="logo-dot"></span> </a>
-
-        <div class="nav-actions">
-          <div class="lang-switch">
-            <!-- Dynamic Active classes for languages -->
-            <a
-              th:href="@{/(lang='en')}"
-              class="lang-btn"
-              th:classappend="${#locale.language == 'en' ? 'active' : ''}"
-              >EN</a
-            >
-            <a
-              th:href="@{/(lang='ja')}"
-              class="lang-btn"
-              th:classappend="${#locale.language == 'ja' ? 'active' : ''}"
-              >JA</a
-            >
-            <a
-              th:href="@{/(lang='vi')}"
-              class="lang-btn"
-              th:classappend="${#locale.language == 'vi' ? 'active' : ''}"
-              >VI</a
-            >
-          </div>
+      <div class="nav-actions">
+        <div class="lang-switch">
+          <!-- Dynamic Active classes for languages -->
+          <a th:href="@{/(lang='en')}" class="lang-btn"
+            th:classappend="${#locale.language == 'en' ? 'active' : ''}">EN</a>
+          <a th:href="@{/(lang='ja')}" class="lang-btn"
+            th:classappend="${#locale.language == 'ja' ? 'active' : ''}">JA</a>
+          <a th:href="@{/(lang='vi')}" class="lang-btn"
+            th:classappend="${#locale.language == 'vi' ? 'active' : ''}">VI</a>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <div class="container main-layout">
-      <!-- Sidebar Filter by Category -->
-      <aside class="sidebar">
-        <h4 class="filter-section-title">Categories</h4>
-        <ul class="filter-list">
-          <li
-            class="filter-item"
-            th:classappend="${activeCategoryId == null && activePlatform == null ? 'active' : ''}"
-          >
-            <a th:href="@{/}">
-              <span>All Categories</span>
-            </a>
-          </li>
-          <!-- Loop over real database categories -->
-          <li
-            class="filter-item"
-            th:each="cat : ${categories}"
-            th:classappend="${activeCategoryId == cat.id ? 'active' : ''}"
-          >
-            <a th:href="@{/(category=${cat.id})}">
-              <span
-                th:text="${#locale.language == 'ja' ? cat.nameJa : (#locale.language == 'vi' ? cat.nameEn : cat.nameEn)}"
-                >Subcategory</span
-              >
-            </a>
-          </li>
-        </ul>
-      </aside>
-
-      <!-- Main Product Section -->
-      <main>
-        <div class="content-header">
-          <h2 class="content-title">
-            Catalog Items
+  <div class="container main-layout">
+    <!-- Sidebar Filter by Category -->
+    <aside class="sidebar">
+      <h4 class="filter-section-title">Categories</h4>
+      <ul class="filter-list">
+        <li class="filter-item" th:classappend="${activeCategoryId == null && activePlatform == null ? 'active' : ''}">
+          <a th:href="@{/}">
+            <span>All Categories</span>
+          </a>
+        </li>
+        <!-- Loop over real database categories -->
+        <li class="filter-item" th:each="cat : ${categories}"
+          th:classappend="${activeCategoryId == cat.id ? 'active' : ''}">
+          <a th:href="@{/(category=${cat.id})}">
             <span
-              style="
+              th:text="${#locale.language == 'ja' ? cat.nameJa : (#locale.language == 'vi' ? cat.nameEn : cat.nameEn)}">Subcategory</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Product Section -->
+    <main>
+      <div class="content-header">
+        <h2 class="content-title">
+          Catalog Items
+          <span style="
                 font-size: 14px;
                 font-weight: 500;
                 color: var(--text-muted);
-              "
-              th:text="'(' + ${#lists.size(products)} + ' products)'"
-            >
-            </span>
-          </h2>
-        </div>
+              " th:text="'(' + ${#lists.size(products)} + ' products)'">
+          </span>
+        </h2>
+      </div>
 
-        <!-- Product Grid -->
-        <div class="product-grid">
-          <div class="product-card" th:each="p : ${products}">
-            <!-- Dynamic Theme for Book Cover Mockup -->
-            <div
-              class="book-mockup"
-              th:classappend="${p.category?.slug == 'books-novels' ? 'theme-novels' : 
+      <!-- Product Grid -->
+      <div class="product-grid">
+        <div class="product-card" th:each="p : ${products}">
+          <!-- Dynamic Theme for Book Cover Mockup -->
+          <div class="book-mockup"
+            th:classappend="${p.category?.slug == 'books-novels' ? 'theme-novels' : 
                                           (p.category?.slug == 'books-it-computers' ? 'theme-it' : 
                                            (p.category?.slug == 'books-magazines' ? 'theme-magazines' : 
                                              (p.category?.slug.startsWith('manga') ? 'theme-manga' : 
-                                              (p.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}"
-            >
-              <div class="book-spine-line"></div>
-              <span class="book-tag" th:text="${p.category?.nameEn}"
-                >Novels</span
-              >
-              <h4 class="book-title-mockup">
-                <span th:text="${p.titleJa}">傲慢と善良</span>
-                <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 4px; opacity: 0.9;" 
-                      th:if="${p.attributes['volume'] != null}" 
-                      th:text="'Vol. ' + ${p.attributes['volume']}">Vol. 1</span>
-              </h4>
+                                              (p.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}">
+            <div class="book-spine-line"></div>
+            <span class="book-tag" th:text="${p.category?.nameEn}">Novels</span>
+            <h4 class="book-title-mockup">
+              <span th:text="${p.titleJa}">傲慢と善良</span>
+              <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 4px; opacity: 0.9;"
+                th:if="${p.attributes['volume'] != null}" th:text="'Vol. ' + ${p.attributes['volume']}">Vol. 1</span>
+            </h4>
+          </div>
+
+          <!-- Book info details -->
+          <div class="book-info-body">
+            <div class="book-meta">
+              <div class="meta-row" th:if="${p.attributes['author'] != null}">
+                <span>Author:</span>
+                <span class="meta-value" th:text="${p.attributes['author']}">辻村深月</span>
+              </div>
+              <div class="meta-row" th:if="${p.attributes['group_name'] != null}">
+                <span>Series:</span>
+                <span class="meta-value" th:text="${p.attributes['group_name']}">ルリドラゴン</span>
+              </div>
+              <div class="meta-row" th:if="${p.attributes['publisher'] != null}">
+                <span>Publisher:</span>
+                <span class="meta-value" th:text="${p.attributes['publisher']}">単行本</span>
+              </div>
+              <div class="meta-row">
+                <span>ISBN/JAN:</span>
+                <span class="meta-value" style="font-family: monospace" th:text="${p.isbnOrJan}">0019198801</span>
+              </div>
+              <div class="meta-row" th:if="${p.attributes['saledate'] != null}">
+                <span>Released:</span>
+                <span class="meta-value" th:text="${p.attributes['saledate']}">2019-03-05</span>
+              </div>
             </div>
 
-            <!-- Book info details -->
-            <div class="book-info-body">
-              <div class="book-meta">
-                <div class="meta-row" th:if="${p.attributes['author'] != null}">
-                  <span>Author:</span>
-                  <span class="meta-value" th:text="${p.attributes['author']}"
-                    >辻村深月</span
-                  >
-                </div>
-                <div class="meta-row" th:if="${p.attributes['group_name'] != null}">
-                  <span>Series:</span>
-                  <span class="meta-value" th:text="${p.attributes['group_name']}"
-                    >ルリドラゴン</span
-                  >
-                </div>
-                <div
-                  class="meta-row"
-                  th:if="${p.attributes['publisher'] != null}"
-                >
-                  <span>Publisher:</span>
-                  <span
-                    class="meta-value"
-                    th:text="${p.attributes['publisher']}"
-                    >単行本</span
-                  >
-                </div>
-                <div class="meta-row">
-                  <span>ISBN/JAN:</span>
-                  <span
-                    class="meta-value"
-                    style="font-family: monospace"
-                    th:text="${p.isbnOrJan}"
-                    >0019198801</span
-                  >
-                </div>
-                <div
-                  class="meta-row"
-                  th:if="${p.attributes['saledate'] != null}"
-                >
-                  <span>Released:</span>
-                  <span class="meta-value" th:text="${p.attributes['saledate']}"
-                    >2019-03-05</span
-                  >
-                </div>
-              </div>
+            <!-- Buyback Value -->
+            <div class="buyback-container" th:if="${p.attributes['buyback_price'] != null}">
+              <span class="buyback-label" th:text="#{product.buyback}">Buyback Price</span>
+              <span class="buyback-value" th:text="'¥' + ${p.attributes['buyback_price']}">¥137</span>
+            </div>
 
-              <!-- Buyback Value -->
-              <div
-                class="buyback-container"
-                th:if="${p.attributes['buyback_price'] != null}"
-              >
-                <span class="buyback-label" th:text="#{product.buyback}"
-                  >Buyback Price</span
-                >
-                <span
-                  class="buyback-value"
-                  th:text="'¥' + ${p.attributes['buyback_price']}"
-                  >¥137</span
-                >
-              </div>
-
-              <!-- Inventory / Stock levels -->
-              <div class="inventory-section">
-                <h5 class="inventory-title">Stock Available</h5>
-                <div
-                  class="inventory-list"
-                  th:if="${not #lists.isEmpty(p.inventoryItems)}"
-                >
-                  <div
-                    class="inventory-item-row"
-                    th:each="item : ${p.inventoryItems}"
-                  >
-                    <span
-                      class="rank-badge"
-                      th:classappend="${item.conditionRank == 'NEW' ? 'rank-new' : 
+            <!-- Inventory / Stock levels -->
+            <div class="inventory-section">
+              <h5 class="inventory-title">Stock Available</h5>
+              <div class="inventory-list" th:if="${not #lists.isEmpty(p.inventoryItems)}">
+                <div class="inventory-item-row" th:each="item : ${p.inventoryItems}">
+                  <span class="rank-badge" th:classappend="${item.conditionRank == 'NEW' ? 'rank-new' : 
                                                            (item.conditionRank == 'A' ? 'rank-a' : 
                                                             (item.conditionRank == 'B' ? 'rank-b' : 'rank-c'))}"
-                      th:text="${item.conditionRank}"
-                      >A</span
-                    >
-                    <span
-                      class="inventory-price"
-                      th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}"
-                      >¥750</span
-                    >
-                  </div>
+                    th:text="${item.conditionRank}">A</span>
+                  <span class="inventory-price"
+                    th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥750</span>
                 </div>
-                <div
-                  class="out-of-stock"
-                  th:if="${#lists.isEmpty(p.inventoryItems)}"
-                >
-                  Out of stock
-                </div>
+              </div>
+              <div class="out-of-stock" th:if="${#lists.isEmpty(p.inventoryItems)}">
+                Out of stock
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Pagination Controls -->
-        <div class="pagination-container" th:if="${totalPages > 1}">
-          <ul class="pagination">
-            <!-- Nút trang trước (Prev) -->
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-              <a class="page-link" 
-                 th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage - 1})}"
-                 aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
+      <!-- Pagination Controls -->
+      <div class="pagination-container" th:if="${totalPages > 1}">
+        <ul class="pagination">
+          <!-- Nút trang trước (Prev) -->
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link"
+              th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage - 1})}"
+              aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
 
-            <!-- Các nút số trang -->
-            <li class="page-item" 
-                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
-                th:classappend="${currentPage == i} ? 'active'">
-              <a class="page-link" 
-                 th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${i})}"
-                 th:text="${i + 1}">1</a>
-            </li>
+          <!-- Các nút số trang -->
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:if="${i >= currentPage - 2 and i <= currentPage + 2}" th:classappend="${currentPage == i} ? 'active'">
+            <a class="page-link" th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${i})}"
+              th:text="${i + 1}">1</a>
+          </li>
 
-            <!-- Nút trang sau (Next) -->
-            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-              <a class="page-link" 
-                 th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage + 1})}"
-                 aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </main>
-    </div>
-  </body>
+          <!-- Nút trang sau (Next) -->
+          <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+            <a class="page-link"
+              th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage + 1})}"
+              aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </main>
+  </div>
+</body>
+
 </html>

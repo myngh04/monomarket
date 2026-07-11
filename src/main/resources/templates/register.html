@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - MonoMarket</title>
+  <title>Register - MonoMarket</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,7 +41,7 @@
       overflow-x: hidden;
     }
 
-    .login-container {
+    .register-container {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -131,17 +131,6 @@
       text-align: center;
     }
 
-    .logout-alert {
-      background-color: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #a7f3d0;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
     .btn-submit {
       width: 100%;
       padding: 12px;
@@ -162,10 +151,6 @@
       transform: translateY(-1px);
     }
 
-    .btn-submit:active {
-      transform: translateY(0);
-    }
-
     .links-container {
       display: flex;
       justify-content: space-between;
@@ -182,55 +167,30 @@
     .links-container a:hover {
       color: var(--primary);
     }
-
-    /* Language switcher */
-    .lang-switcher {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 30px;
-      border-top: 1px solid var(--border);
-      padding-top: 20px;
-      font-size: 13px;
-    }
-
-    .lang-switcher a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
-
-    .lang-switcher a:hover,
-    .lang-switcher a.active {
-      color: var(--primary);
-    }
   </style>
 </head>
 
 <body>
-  <div class="login-container">
+  <div class="register-container">
     <div class="brand">
       <a href="/" class="brand-name">MonoMarket</a>
-      <div class="brand-tagline">Recommerce Platform</div>
+      <div class="brand-tagline">Create your account</div>
     </div>
 
-    <!-- Spring Security Login Error Alert -->
-    <div class="error-alert" th:if="${param.error}">
-      Invalid email or password.
+    <!-- Hiển thị thông báo lỗi nếu có (ví dụ: Trùng email, mật khẩu không khớp) -->
+    <div class="error-alert" th:if="${error}" th:text="${error}">
+      Đã xảy ra lỗi.
     </div>
 
-    <!-- Spring Security Logout Success Alert -->
-    <div class="logout-alert" th:if="${param.logout}">
-      You have been signed out.
-    </div>
-
-    <!-- Login Form (Spring Security expects username/password by default) -->
-    <form th:action="@{/login}" method="post">
+    <form th:action="@{/register}" method="post">
       <div class="form-group">
-        <label class="form-label" for="username">Email Address</label>
-        <input type="email" id="username" name="username" class="form-input" placeholder="name@example.com" required
-          autofocus />
+        <label class="form-label" for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" class="form-input" placeholder="John Doe" required autofocus />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" name="email" class="form-input" placeholder="name@example.com" required />
       </div>
 
       <div class="form-group">
@@ -238,21 +198,18 @@
         <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required />
       </div>
 
-      <button type="submit" class="btn-submit">Sign In</button>
+      <div class="form-group">
+        <label class="form-label" for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="••••••••"
+          required />
+      </div>
+
+      <button type="submit" class="btn-submit">Sign Up</button>
     </form>
 
     <div class="links-container">
       <a href="/">Back to Home</a>
-      <a href="/register">Create Account</a>
-    </div>
-
-    <!-- i18n Language Switcher -->
-    <div class="lang-switcher">
-      <a href="?lang=vi">Tiếng Việt</a>
-      <span>|</span>
-      <a href="?lang=ja">日本語</a>
-      <span>|</span>
-      <a href="?lang=en" class="active">English</a>
+      <a href="/login">Already have an account? Sign In</a>
     </div>
   </div>
 </body>
