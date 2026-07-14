@@ -1,5 +1,7 @@
 package com.monomarket.controller;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.monomarket.service.ProductService;
@@ -67,5 +70,20 @@ public class ProductController {
     model.addAttribute("totalProducts", productPage.getTotalElements());
 
     return "index";
+  }
+
+  @GetMapping("/product/{id}")
+  public String getProductById(@PathVariable Long id, Model model) {
+    Optional<Product> productOptional = productService.getProductById(id);
+
+    // Nếu tìm thấy sản phẩm, đưa dữ liệu sang trang chi tiết sản phẩm
+    if (productOptional.isPresent()) {
+      model.addAttribute("product", productOptional.get());
+      return "product-detail"; // Trả về trang chi tiết sản phẩm
+    }
+    // Nếu không tìm thấy sản phẩm, chuyển hướng về trang chủ
+    else {
+      return "redirect:/"; // Nếu không tìm thấy sản phẩm, chuyển hướng về trang chủ
+    }
   }
 }

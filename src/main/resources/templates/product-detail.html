@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${product.titleJa} + ' - MonoMarket'">Product Detail</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --font: 'Outfit', sans-serif;
+    }
+
+    /* Category Specific Themes for Book Mockup */
+    .theme-novels { --book-color: #3b82f6; --book-gradient: linear-gradient(135deg, #1e3a8a, #3b82f6); }
+    .theme-it { --book-color: #10b981; --book-gradient: linear-gradient(135deg, #064e3b, #10b981); }
+    .theme-magazines { --book-color: #f59e0b; --book-gradient: linear-gradient(135deg, #78350f, #f59e0b); }
+    .theme-manga { --book-color: #ec4899; --book-gradient: linear-gradient(135deg, #701a75, #ec4899); }
+    .theme-video { --book-color: #8b5cf6; --book-gradient: linear-gradient(135deg, #4c1d95, #8b5cf6); }
+    .theme-games { --book-color: #ef4444; --book-gradient: linear-gradient(135deg, #7f1d1d, #ef4444); }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header Nav Styling */
+    header {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin-bottom: 40px;
+    }
+
+    .header-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #06b6d4;
+      border-radius: 50%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-home-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: color 0.2s;
+    }
+
+    .back-home-btn:hover {
+      color: var(--primary);
+    }
+
+    /* Detail Grid Layout */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 48px;
+      margin-top: 20px;
+    }
+
+    /* Product Cover Section */
+    .cover-pane {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .book-mockup {
+      width: 280px;
+      height: 380px;
+      background: var(--book-gradient, linear-gradient(135deg, #1e293b, #334155));
+      border-radius: 8px var(--radius-lg) var(--radius-lg) 8px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      border-left: 5px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .book-spine-line {
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .book-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      align-self: flex-start;
+    }
+
+    .book-title-mockup {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.4;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Product Info Section */
+    .info-pane {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .category-badge {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      background-color: rgba(99, 102, 241, 0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      align-self: flex-start;
+    }
+
+    .product-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 32px;
+    }
+
+    .info-table tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-table td {
+      padding: 12px 0;
+      font-size: 15px;
+    }
+
+    .info-table td.label {
+      width: 150px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .info-table td.value {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Buyback Banner */
+    .buyback-banner {
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .buyback-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #059669;
+    }
+
+    .buyback-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .buyback-price-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #059669;
+    }
+
+    /* Inventory Selection */
+    .inventory-section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .inventory-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .inventory-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .inventory-table th {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 13px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .inventory-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+    }
+
+    .inventory-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Rank Badge Styling */
+    .rank-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .rank-new { background-color: #ef4444; color: #ffffff; }
+    .rank-a { background-color: #3b82f6; color: #ffffff; }
+    .rank-b { background-color: #10b981; color: #ffffff; }
+    .rank-c { background-color: #f59e0b; color: #ffffff; }
+
+    .price-tag {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .buy-btn {
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .buy-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .buy-btn:active {
+      transform: scale(0.97);
+    }
+
+    .out-of-stock-txt {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 16px 0;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .cover-pane {
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header>
+    <div class="container header-wrap">
+      <a href="/" class="logo"> MonoMarket <span class="logo-dot"></span> </a>
+      <div class="nav-actions">
+        <a href="/" class="back-home-btn">← Back to Store</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="detail-grid">
+      
+      <!-- Product cover image mockup -->
+      <div class="cover-pane">
+        <div class="book-mockup" th:classappend="${product.category?.slug == 'books-novels' ? 'theme-novels' : 
+                                                (product.category?.slug == 'books-it-computers' ? 'theme-it' : 
+                                                 (product.category?.slug == 'books-magazines' ? 'theme-magazines' : 
+                                                   (product.category?.slug.startsWith('manga') ? 'theme-manga' : 
+                                                    (product.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}">
+          <div class="book-spine-line"></div>
+          <span class="book-tag" th:text="${product.category?.nameEn}">Novels</span>
+          <h4 class="book-title-mockup">
+            <span th:text="${product.titleJa}">傲慢と善良</span>
+            <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 8px; opacity: 0.9;" 
+                  th:if="${product.attributes['volume'] != null}" 
+                  th:text="'Vol. ' + ${product.attributes['volume']}">Vol. 1</span>
+          </h4>
+        </div>
+      </div>
+
+      <!-- Product details & Buyback & Used Copies selection -->
+      <div class="info-pane">
+        <span class="category-badge" th:text="${product.category?.nameJa}">小説</span>
+        <h1 class="product-title" th:text="${product.titleJa}">傲慢と善良</h1>
+
+        <!-- Product specifications metadata table -->
+        <table class="info-table">
+          <tr th:if="${product.attributes['author'] != null}">
+            <td class="label">Author / Artist</td>
+            <td class="value" th:text="${product.attributes['author']}">辻村深月</td>
+          </tr>
+          <tr th:if="${product.attributes['group_name'] != null}">
+            <td class="label">Series</td>
+            <td class="value" th:text="${product.attributes['group_name']}">傲慢と善良</td>
+          </tr>
+          <tr th:if="${product.attributes['publisher'] != null}">
+            <td class="label">Publisher</td>
+            <td class="value" th:text="${product.attributes['publisher']}">朝日新聞出版</td>
+          </tr>
+          <tr>
+            <td class="label">ISBN / JAN Barcode</td>
+            <td class="value" style="font-family: monospace;" th:text="${product.isbnOrJan}">9784022515964</td>
+          </tr>
+          <tr th:if="${product.attributes['saledate'] != null}">
+            <td class="label">Release Date</td>
+            <td class="value" th:text="${product.attributes['saledate']}">2019-03-05</td>
+          </tr>
+        </table>
+
+        <!-- Buyback Incentive Banner -->
+        <div class="buyback-banner" th:if="${product.attributes['buyback_price'] != null}">
+          <div>
+            <div class="buyback-title">Sell This Item Back to Us</div>
+            <div class="buyback-desc">Bring this item to our store or submit online. Quality rank determines final valuation.</div>
+          </div>
+          <div>
+            <span class="buyback-price-val" th:text="'¥' + ${product.attributes['buyback_price']}">¥137</span>
+          </div>
+        </div>
+
+        <!-- Inventory List (Selection table of available ranks) -->
+        <div class="inventory-section">
+          <h3 class="inventory-title">
+            <span>Available in Store</span>
+            <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);" 
+                  th:text="${#lists.size(product.inventoryItems)} + ' item(s) in stock'">1 item</span>
+          </h3>
+
+          <table class="inventory-table" th:if="${not #lists.isEmpty(product.inventoryItems)}">
+            <thead>
+              <tr>
+                <th>Instore Code</th>
+                <th>Condition Rank</th>
+                <th>Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="item : ${product.inventoryItems}">
+                <td style="font-family: monospace;" th:text="${item.instoreCode}">0019198801-U01</td>
+                <td>
+                  <span class="rank-badge" 
+                        th:classappend="${item.conditionRank == 'NEW' ? 'rank-new' : 
+                                         (item.conditionRank == 'A' ? 'rank-a' : 
+                                          (item.conditionRank == 'B' ? 'rank-b' : 'rank-c'))}"
+                        th:text="${item.conditionRank}">A</span>
+                </td>
+                <td>
+                  <span class="price-tag" th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥750</span>
+                </td>
+                <td>
+                  <!-- Add to Cart placeholder for next phase -->
+                  <button class="buy-btn">Add to Cart</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="out-of-stock-txt" th:if="${#lists.isEmpty(product.inventoryItems)}">
+            This item is currently out of stock. 
+            <br>
+            You can submit a Buyback Request to sell this item to us.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 package com.monomarket.service;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +24,15 @@ public class ProductService {
     return productRepository.findByCategoryId(categoryId, pageable);
   }
 
-  // Lọc Catalog theo hệ máy (Platform) có phân trang, dựa vào trường attributes trong JSONB của Postgres
+  // Lọc Catalog theo hệ máy (Platform) có phân trang, dựa vào trường attributes
+  // trong JSONB của Postgres
   // Ví dụ: platform = "Nintendo Switch" hoặc "PS5" nằm trong attributes
   public Page<Product> getProductsByPlatform(String platform, Pageable pageable) {
     return productRepository.findByAttribute("platform", platform, pageable);
+  }
+
+  // Lấy 1 sản phẩm cụ thể theo id, nếu không có trả về null
+  public Optional<Product> getProductById(Long id) {
+    return productRepository.findById(id);
   }
 }
