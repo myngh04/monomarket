@@ -238,6 +238,83 @@
       color: #fff;
     }
 
+    /* Accordion / Dropdown Sidebar */
+    .category-details {
+      margin-bottom: 2px;
+    }
+    
+    .category-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: background-color 0.2s ease;
+      list-style: none; /* Hide default arrow */
+    }
+    
+    .category-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .category-summary:hover {
+      background-color: var(--border);
+    }
+    
+    .category-summary::after {
+      content: "▼";
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+    
+    .category-details[open] > .category-summary::after {
+      transform: rotate(180deg);
+    }
+    
+    .filter-sublist {
+      list-style: none;
+      padding-left: 12px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .filter-sublist a {
+      display: block;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+    }
+    
+    .filter-sublist a:hover {
+      color: var(--text-main);
+      background-color: var(--border);
+    }
+    
+    .filter-sublist a.active-link {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .sub-summary {
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 8px 12px;
+    }
+
     /* Content Area */
     .content-header {
       display: flex;
@@ -568,18 +645,45 @@
     <aside class="sidebar">
       <h4 class="filter-section-title">Categories</h4>
       <ul class="filter-list">
-        <li class="filter-item" th:classappend="${activeCategoryId == null && activePlatform == null ? 'active' : ''}">
-          <a th:href="@{/}">
+        <li class="filter-item">
+          <a th:href="@{/}" th:classappend="${activeCategoryId == null && activePlatform == null ? 'active-link' : ''}" style="display: block; padding: 10px 14px; font-weight: 600; color: var(--text-main); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease;">
             <span>All Categories</span>
           </a>
         </li>
-        <!-- Loop over real database categories -->
-        <li class="filter-item" th:each="cat : ${categories}"
-          th:classappend="${activeCategoryId == cat.id ? 'active' : ''}">
-          <a th:href="@{/(category=${cat.id})}">
-            <span
-              th:text="${#locale.language == 'ja' ? cat.nameJa : (#locale.language == 'vi' ? cat.nameEn : cat.nameEn)}">Subcategory</span>
-          </a>
+        <!-- Loop over top-level categories -->
+        <li class="filter-dropdown" th:each="topCat : ${categories}">
+          <details class="category-details" open>
+            <summary class="category-summary">
+              <span th:text="${#locale.language == 'ja' ? topCat.nameJa : topCat.nameEn}">Top Category</span>
+            </summary>
+            <ul class="filter-sublist">
+              <li th:each="subCat : ${topCat.children}">
+                
+                <!-- Level 2 without children -->
+                <a th:if="${#lists.isEmpty(subCat.children)}" 
+                   th:href="@{/(category=${subCat.id})}"
+                   th:classappend="${activeCategoryId == subCat.id ? 'active-link' : ''}">
+                  <span th:text="${#locale.language == 'ja' ? subCat.nameJa : subCat.nameEn}">Sub Category</span>
+                </a>
+                
+                <!-- Level 2 WITH children (e.g., Game Software -> Switch, PS5) -->
+                <details th:if="${not #lists.isEmpty(subCat.children)}" class="category-details" open>
+                  <summary class="category-summary sub-summary">
+                    <span th:text="${#locale.language == 'ja' ? subCat.nameJa : subCat.nameEn}">Mid Category</span>
+                  </summary>
+                  <ul class="filter-sublist" style="padding-left: 16px;">
+                    <li th:each="leafCat : ${subCat.children}">
+                      <a th:href="@{/(category=${leafCat.id})}"
+                         th:classappend="${activeCategoryId == leafCat.id ? 'active-link' : ''}">
+                        <span th:text="${#locale.language == 'ja' ? leafCat.nameJa : leafCat.nameEn}">Leaf Category</span>
+                      </a>
+                    </li>
+                  </ul>
+                </details>
+                
+              </li>
+            </ul>
+          </details>
         </li>
       </ul>
     </aside>
@@ -610,7 +714,7 @@
                                                (p.category?.slug.startsWith('manga') ? 'theme-manga' : 
                                                 (p.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}">
               <div class="book-spine-line"></div>
-              <span class="book-tag" th:text="${p.category?.nameEn}">Novels</span>
+              <span class="book-tag" th:text="${p.category?.slug.startsWith('games') ? 'Game' : (p.category?.slug.startsWith('video') ? 'DVD/Blu-ray' : (p.category?.slug.startsWith('manga') ? 'Manga' : 'Book'))}"></span>
               <h4 class="book-title-mockup">
                 <span th:text="${p.titleJa}">傲慢と善良</span>
                 <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 4px; opacity: 0.9;"
@@ -622,16 +726,27 @@
           <!-- Book info details -->
           <div class="book-info-body">
             <div class="book-meta">
-              <div class="meta-row" th:if="${p.attributes['author'] != null}">
-                <span>Author:</span>
+              <!-- Platform & Type (Only for Games) -->
+              <div class="meta-row" th:if="${p.category?.slug.startsWith('games') and p.attributes['platform'] != null}">
+                <span>Platform:</span>
+                <span class="meta-value" th:text="${p.attributes['platform']}">Nintendo Switch</span>
+              </div>
+              <div class="meta-row" th:if="${p.category?.slug.startsWith('games')}">
+                <span>Type:</span>
+                <span class="meta-value" th:text="${p.category?.parent?.nameEn}">Game Software</span>
+              </div>
+
+              <!-- Author / Studio (Not for Games) -->
+              <div class="meta-row" th:if="${p.attributes['author'] != null and !p.category?.slug.startsWith('games')}">
+                <span th:text="${p.category?.slug.startsWith('video') ? 'Studio:' : 'Author:'}">Author:</span>
                 <span class="meta-value" th:text="${p.attributes['author']}">辻村深月</span>
               </div>
-              <div class="meta-row" th:if="${p.attributes['group_name'] != null}">
+              <div class="meta-row" th:if="${p.attributes['group_name'] != null and !p.category?.slug.startsWith('games')}">
                 <span>Series:</span>
                 <span class="meta-value" th:text="${p.attributes['group_name']}">ルリドラゴン</span>
               </div>
-              <div class="meta-row" th:if="${p.attributes['publisher'] != null}">
-                <span>Publisher:</span>
+              <div class="meta-row" th:if="${p.attributes['publisher'] != null and !p.category?.slug.startsWith('games')}">
+                <span th:text="${p.category?.slug.startsWith('video') ? 'Type:' : 'Publisher:'}">Publisher:</span>
                 <span class="meta-value" th:text="${p.attributes['publisher']}">単行本</span>
               </div>
               <div class="meta-row">

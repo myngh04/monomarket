@@ -1,7 +1,7 @@
 package com.monomarket.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import jakarta.persistence.*;
 
@@ -31,9 +31,10 @@ public class Category {
   @JoinColumn(name = "parent_id")
   private Category parent;
 
-  // Danh sách các danh mục con (Inverse side)
+  // Danh sách các danh mục con (Inverse side) - Dùng Set để tránh MultipleBagFetchException
   @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Category> children = new ArrayList<>();
+  @OrderBy("id ASC")
+  private Set<Category> children = new LinkedHashSet<>();
 
   // Helper Method đồng bộ hai chiều cha - con khi seed dữ liệu
   public void addChild(Category child) {

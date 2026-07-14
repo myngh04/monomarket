@@ -34,10 +34,8 @@ public class ProductController {
       @RequestParam(value = "size", defaultValue = "12") int size,
       Model model) {
 
-    // Lấy toàn bộ danh mục con (có cha) để hiển thị filter
-    model.addAttribute("categories", categoryRepository.findAll().stream()
-        .filter(c -> c.getParent() != null)
-        .toList());
+    // Load toàn bộ cây danh mục 3 cấp bằng JPQL JOIN FETCH để tránh LazyInitializationException
+    model.addAttribute("categories", categoryRepository.findRootCategoriesWithFullTree());
 
     // Tạo đối tượng phân trang: Sắp xếp theo ID giảm dần (Sản phẩm mới nhập hiển
     // thị lên trước)

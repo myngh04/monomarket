@@ -372,7 +372,7 @@
                                                    (product.category?.slug.startsWith('manga') ? 'theme-manga' : 
                                                     (product.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}">
           <div class="book-spine-line"></div>
-          <span class="book-tag" th:text="${product.category?.nameEn}">Novels</span>
+          <span class="book-tag" th:text="${product.category?.slug.startsWith('games') ? 'Game' : (product.category?.slug.startsWith('video') ? 'DVD/Blu-ray' : (product.category?.slug.startsWith('manga') ? 'Manga' : 'Book'))}"></span>
           <h4 class="book-title-mockup">
             <span th:text="${product.titleJa}">傲慢と善良</span>
             <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 8px; opacity: 0.9;" 
@@ -389,18 +389,32 @@
 
         <!-- Product specifications metadata table -->
         <table class="info-table">
-          <tr th:if="${product.attributes['author'] != null}">
-            <td class="label">Author / Artist</td>
+          <!-- Platform & Type (Only for Games) -->
+          <tr th:if="${product.category?.slug.startsWith('games') and product.attributes['platform'] != null}">
+            <td class="label">Platform</td>
+            <td class="value" th:text="${product.attributes['platform']}">Nintendo Switch</td>
+          </tr>
+          <tr th:if="${product.category?.slug.startsWith('games')}">
+            <td class="label">Type</td>
+            <td class="value" th:text="${product.category?.parent?.nameEn}">Game Software</td>
+          </tr>
+          
+          <!-- Author / Studio (Not for Games) -->
+          <tr th:if="${product.attributes['author'] != null and !product.category?.slug.startsWith('games')}">
+            <td class="label" th:text="${product.category?.slug.startsWith('video') ? 'Studio' : 'Author'}">Author</td>
             <td class="value" th:text="${product.attributes['author']}">辻村深月</td>
           </tr>
-          <tr th:if="${product.attributes['group_name'] != null}">
+          
+          <tr th:if="${product.attributes['group_name'] != null and !product.category?.slug.startsWith('games')}">
             <td class="label">Series</td>
             <td class="value" th:text="${product.attributes['group_name']}">傲慢と善良</td>
           </tr>
-          <tr th:if="${product.attributes['publisher'] != null}">
-            <td class="label">Publisher</td>
+          
+          <tr th:if="${product.attributes['publisher'] != null and !product.category?.slug.startsWith('games')}">
+            <td class="label" th:text="${product.category?.slug.startsWith('video') ? 'Type' : 'Publisher'}">Publisher</td>
             <td class="value" th:text="${product.attributes['publisher']}">朝日新聞出版</td>
           </tr>
+          
           <tr>
             <td class="label">ISBN / JAN Barcode</td>
             <td class="value" style="font-family: monospace;" th:text="${product.isbnOrJan}">9784022515964</td>
