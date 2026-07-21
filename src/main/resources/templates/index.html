@@ -66,7 +66,6 @@
       top: 0;
       z-index: 100;
       border-bottom: 1px solid var(--border);
-      padding: 16px 0;
     }
 
     .header-wrap {
@@ -76,31 +75,22 @@
     }
 
     .logo {
-      font-size: 24px;
-      font-weight: 800;
-      text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
     }
 
-    .logo-text {
-      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .logo:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
 
     .logo img {
-      height: 36px;
+      height: 90px;
       width: auto;
       object-fit: contain;
-    }
-
-    .logo-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #06b6d4;
-      border-radius: 50%;
+      display: block;
     }
 
     .nav-actions {
@@ -621,9 +611,7 @@
   <header>
     <div class="container header-wrap">
       <a href="/" class="logo">
-        <img th:src="@{/images/logo.png}" alt="MonoMarket Logo" />
-        <span class="logo-text">MonoMarket</span>
-        <span class="logo-dot"></span>
+        <img th:src="@{/images/logo.png}" alt="MonoMarket" />
       </a>
 
       <div class="nav-actions">
