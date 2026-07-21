@@ -75,11 +75,22 @@
     .logo {
       font-size: 24px;
       font-weight: 800;
-      color: var(--text-main);
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
+    }
+
+    .logo-text {
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
     }
 
     .logo-dot {
@@ -354,7 +365,11 @@
   <!-- Navigation Header -->
   <header>
     <div class="container header-wrap">
-      <a href="/" class="logo"> MonoMarket <span class="logo-dot"></span> </a>
+      <a href="/" class="logo">
+        <img th:src="@{/images/logo.png}" alt="MonoMarket Logo" />
+        <span class="logo-text">MonoMarket</span>
+        <span class="logo-dot"></span>
+      </a>
       <div class="nav-actions">
         <a href="/" class="back-home-btn">← Back to Store</a>
       </div>
