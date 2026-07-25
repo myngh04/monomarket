@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItem {
+public class CartItemDto {
   private Long inventoryItemId; // ID của món hàng cụ thể trong bảng inventory_items
   private Long productId; // ID của loại sản phẩm trong bảng products
   private String titleJa; // Tên sản phẩm bằng tiếng Nhật
@@ -20,7 +20,7 @@ public class CartItem {
   private BigDecimal price; // Giá của sản phẩm
   private int quantity = 1; // Table inventory_items mặc định 1 món hàng cho 1 row
 
-  public BigDecimal getSubTotal() {
+  public BigDecimal getSubtotal() {
     if (price == null)
       // Nếu inventoryItem hoặc giá là null, trả về giá trị mặc định là 0
       return BigDecimal.ZERO;
