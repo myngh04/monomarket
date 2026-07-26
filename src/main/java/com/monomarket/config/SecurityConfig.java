@@ -17,9 +17,12 @@ public class SecurityConfig {
     http
         // 1. Cấu hình phân quyền truy cập
         .authorizeHttpRequests(auth -> auth
-            // Cho phép tất cả mọi người truy cập trang chủ, xem chi tiết sản phẩm, các file static (css, js) và trang login
-            .requestMatchers("/", "/product/**", "/css/**", "/js/**", "/images/**", "/login", "/register").permitAll()
-            // Tất cả các request khác (ví dụ thanh toán, giỏ hàng, thông tin cá nhân) bắt
+            // Cho phép tất cả mọi người truy cập trang chủ, xem chi tiết sản phẩm, các file
+            // static (css, js) và trang login...
+            .requestMatchers("/", "/product/**", "/css/**", "/js/**", "/images/**", "/login", "/register", 
+            "/cart", "/cart/add", "/cart/update", "/cart/remove", "/cart/clear")
+            .permitAll()
+            // Tất cả các request khác (ví dụ thanh toán, thông tin cá nhân) bắt
             // buộc phải đăng nhập
             .anyRequest().authenticated())
 
