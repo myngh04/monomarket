@@ -197,8 +197,9 @@ public class CartService {
 
   // 7. Cập nhật số lượng sản phẩm trong giỏ hàng
   public void updateQuantity(Long inventoryItemId, int quantity, User user, String guestToken) {
-    // Nếu số lượng <= 0, không thực hiện cập nhật
+    // Nếu số lượng <= 0, xóa sản phẩm khỏi giỏ hàng
     if (quantity <= 0) {
+      removeFromCart(inventoryItemId, user, guestToken);
       return;
     }
 
