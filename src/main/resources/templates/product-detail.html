@@ -361,6 +361,9 @@
         <img th:src="@{/images/logo.png}" alt="MonoMarket" />
       </a>
       <div class="nav-actions">
+        <a href="/cart" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #f1f5f9; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; transition: all 0.2s ease;">
+          🛒 Cart
+        </a>
         <a href="/" class="back-home-btn">← Back to Store</a>
       </div>
     </div>
@@ -472,8 +475,10 @@
                   <span class="price-tag" th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥750</span>
                 </td>
                 <td>
-                  <!-- Add to Cart placeholder for next phase -->
-                  <button class="buy-btn">Add to Cart</button>
+                  <form th:action="@{/cart/add}" method="post" style="margin: 0;">
+                    <input type="hidden" name="inventoryItemId" th:value="${item.id}">
+                    <button type="submit" class="buy-btn">Add to Cart</button>
+                  </form>
                 </td>
               </tr>
             </tbody>

@@ -625,6 +625,11 @@
             th:classappend="${#locale.language == 'vi' ? 'active' : ''}">VI</a>
         </div>
 
+        <!-- Nút Giỏ Hàng -->
+        <a href="/cart" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #f1f5f9; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; transition: all 0.2s ease;">
+          🛒 Cart
+        </a>
+
         <!-- Hiển thị khi CHƯA ĐĂNG NHẬP -->
         <div sec:authorize="isAnonymous()">
           <a href="/login" class="login-btn-nav">Login</a>

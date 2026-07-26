@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - MonoMarket</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --primary: #1e40af;       /* Bookoff deep blue */
+      --primary-accent: #2563eb;
+      --orange-accent: #f97316;  /* Bookoff orange checkout button */
+      --orange-dark: #ea580c;
+      --price-red: #dc2626;      /* Bookoff red price tag */
+      --radius-lg: 12px;
+      --radius-md: 8px;
+      --radius-sm: 4px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --font: 'Outfit', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header Nav */
+    header {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin-bottom: 30px;
+      padding: 5px 0;
+    }
+
+    .header-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+    }
+
+    .logo img {
+      height: 75px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Step Indicator Progress Bar */
+    .stepper-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0 40px;
+      position: relative;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background-color: #cbd5e1;
+      z-index: 1;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #ffffff;
+      border: 2px solid #cbd5e1;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+
+    .step-label {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .step-item.active .step-number {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.15);
+    }
+
+    .step-item.active .step-label {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Main Cart Section Title */
+    .page-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 24px;
+      border-bottom: 3px solid var(--primary);
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+
+    /* Cart Grid Layout */
+    .cart-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 868px) {
+      .cart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Item Card Container */
+    .item-list-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+    }
+
+    /* Single Cart Item Row */
+    .cart-item-row {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      gap: 20px;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #f1f5f9;
+      align-items: start;
+    }
+
+    .cart-item-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .item-thumb {
+      width: 90px;
+      height: 110px;
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tag-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .badge-used {
+      background-color: #2563eb;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .badge-rank {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-rank-A { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+    .badge-rank-B { background-color: #fef3c7; color: #b45309; border-color: #fde68a; }
+
+    .item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+
+    .item-title:hover {
+      color: var(--primary-accent);
+      text-decoration: underline;
+    }
+
+    .item-subtext {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .stock-status {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Quantity Controller */
+    .qty-control {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      margin-top: 10px;
+      background-color: #ffffff;
+      align-self: flex-start;
+      width: fit-content;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-value {
+      width: 36px;
+      height: 28px;
+      border-left: 1px solid #cbd5e1;
+      border-right: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      background: #ffffff;
+    }
+
+    /* Price and Trash Column */
+    .item-price-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 100%;
+      min-height: 100px;
+    }
+
+    .price-tag-red {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--price-red);
+    }
+
+    .btn-trash {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-sm);
+      transition: color 0.2s;
+    }
+
+    .btn-trash:hover {
+      color: var(--price-red);
+      background-color: #fef2f2;
+    }
+
+    /* Clear Cart Link under List */
+    .clear-cart-row {
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 16px;
+    }
+
+    .btn-clear-link {
+      background: none;
+      border: none;
+      color: var(--primary-accent);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .btn-clear-link:hover {
+      color: var(--primary);
+    }
+
+    /* Right Order Summary Panel (Bookoff Style) */
+    .summary-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 90px;
+    }
+
+    .summary-total-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 16px;
+    }
+
+    .summary-total-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .summary-total-price {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--price-red);
+    }
+
+    .summary-subrow {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Points Reward Banner */
+    .points-banner {
+      background-color: #f1f5f9;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    .points-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .points-value {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Large Orange Checkout Button */
+    .btn-orange-checkout {
+      display: block;
+      width: 100%;
+      background-color: var(--orange-accent);
+      color: #ffffff;
+      text-align: center;
+      padding: 14px 20px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 16px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-orange-checkout:hover {
+      background-color: var(--orange-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(249, 115, 22, 0.4);
+    }
+
+    /* Bottom Info & Disclaimer Section */
+    .disclaimer-box {
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .disclaimer-box ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .disclaimer-box li::before {
+      content: "• ";
+      color: #94a3b8;
+    }
+
+    .back-to-shop-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary-accent);
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      margin-top: 24px;
+    }
+
+    .back-to-shop-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Empty Cart Layout */
+    .empty-box {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-wrap">
+      <a href="/" class="logo">
+        <img th:src="@{/images/logo.png}" alt="MonoMarket Logo">
+      </a>
+      <div>
+        <a href="/" class="back-to-shop-link" style="margin: 0;">← Back to Shop</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Checkout Flow Stepper Indicator -->
+    <div class="stepper-wrap">
+      <div class="stepper">
+        <div class="step-item active">
+          <div class="step-number">1</div>
+          <div class="step-label">Cart</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-label">Shipping</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-label">Confirmation</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">✓</div>
+          <div class="step-label">Complete</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Cart</h1>
+
+    <!-- Empty State -->
+    <div th:if="${cartItems == null or #lists.isEmpty(cartItems)}" class="item-list-container empty-box">
+      <div class="empty-icon">🛒</div>
+      <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Your Shopping Cart is empty</h2>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Explore available books, manga, and media items to add to your cart.</p>
+      <a href="/" class="btn-orange-checkout" style="display: inline-block; width: auto; padding: 12px 32px;">Browse Catalog</a>
+    </div>
+
+    <!-- Main Content when items exist -->
+    <div th:if="${cartItems != null and not #lists.isEmpty(cartItems)}" class="cart-grid">
+      
+      <!-- Left: Item List -->
+      <div class="item-list-container">
+        
+        <div th:each="item : ${cartItems}" class="cart-item-row">
+          
+          <!-- Item Mockup Cover -->
+          <div class="item-thumb">
+            📖
+          </div>
+
+          <!-- Item Details -->
+          <div class="item-info">
+            <div class="tag-group">
+              <span class="badge-used">USED</span>
+              <span class="badge-rank" th:classappend="'badge-rank-' + ${item.conditionRank}" th:text="'Rank ' + ${item.conditionRank}">Rank A</span>
+            </div>
+
+            <a th:href="@{'/product/' + ${item.productId}}" class="item-title" th:text="${item.titleJa}">Product Title</a>
+            
+            <div class="item-subtext" th:text="'Code: ' + ${item.isbnOrJan}">Code: 9784774198801</div>
+            <div class="stock-status">In Stock</div>
+
+            <!-- Quantity Selector Control -->
+            <div class="qty-control">
+              <!-- Decrease Quantity (-) -->
+              <form th:action="@{/cart/update}" method="post" style="margin: 0;">
+                <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
+                <input type="hidden" name="quantity" th:value="${item.quantity - 1}">
+                <button type="submit" class="qty-btn" title="Decrease quantity">-</button>
+              </form>
+
+              <!-- Current Quantity Value -->
+              <div class="qty-value" th:text="${item.quantity}">1</div>
+
+              <!-- Increase Quantity (+) -->
+              <form th:action="@{/cart/update}" method="post" style="margin: 0;">
+                <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
+                <input type="hidden" name="quantity" th:value="${item.quantity + 1}">
+                <button type="submit" class="qty-btn" title="Increase quantity">+</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Price & Delete Button -->
+          <div class="item-price-column">
+            <div class="price-tag-red" th:text="'¥' + ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 0, 'POINT')}">¥880</div>
+            
+            <form th:action="@{/cart/remove}" method="post" style="margin: 0;">
+              <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
+              <button type="submit" class="btn-trash" title="Remove item">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Clear Cart Link -->
+        <div class="clear-cart-row">
+          <form th:action="@{/cart/clear}" method="post" style="margin: 0;">
+            <button type="submit" class="btn-clear-link" onclick="return confirm('Empty all items from your cart?');">
+              Clear Cart
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Right: Summary Box -->
+      <div class="summary-box">
+        
+        <div class="summary-total-header">
+          <span class="summary-total-label">Total</span>
+          <span class="summary-total-price" th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]), 1, 'COMMA', 0, 'POINT')}">¥880</span>
+        </div>
+
+        <div class="summary-subrow">
+          <span>Items Subtotal: <strong th:text="${#lists.size(cartItems)} + ' item(s)'">1 item</strong></span>
+          <span th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]), 1, 'COMMA', 0, 'POINT')}">¥880</span>
+        </div>
+
+        <!-- Reward Points Row -->
+        <div class="points-banner">
+          <div class="points-label">
+            <span>Estimated Points</span>
+            <span style="cursor: help; color: #94a3b8;" title="Points earned upon order completion">ⓘ</span>
+          </div>
+          <div class="points-value" th:text="${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]) / 100, 1, 0)} + ' pts'">8 pts</div>
+        </div>
+
+        <!-- Primary Orange Checkout Action Button -->
+        <button type="button" class="btn-orange-checkout" onclick="alert('Checkout feature coming in Phase 6!')">
+          Proceed to Checkout
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom Disclaimer Section -->
+    <div class="disclaimer-box">
+      <p style="margin-bottom: 4px;">ⓘ Stock reservation is confirmed upon checkout completion.</p>
+      <ul>
+        <li>Subtotal quantity includes items contained within volume sets.</li>
+        <li>Items added to your cart are saved for up to 30 days.</li>
+      </ul>
+
+      <a href="/" class="back-to-shop-link">‹ Continue Shopping</a>
+    </div>
+
+  </main>
+
+</body>
+</html>
