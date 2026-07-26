@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,13 @@ public class UserService implements UserDetailsService {
   // Bean mã hóa mật khẩu được cấu hình trong SecurityConfig
   private final PasswordEncoder passwordEncoder;
 
+  // Tìm kiếm người dùng theo email
+  public Optional<User> findByEmail(String email) {
+    return userRepository.findByEmail(email);
+  }
+
   @Override
+  // Method mà Spring Security gọi khi người dùng đăng nhập
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
     // Tìm kiếm người dùng theo email trong DB
@@ -38,6 +45,7 @@ public class UserService implements UserDetailsService {
         Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
   }
 
+  // Method đăng ký người dùng mới
   public void registerUser(String fullName, String email, String password) throws Exception {
     // Kiểm tra email đã tồn tại hay chưa
     if (userRepository.findByEmail(email).isPresent()) {
@@ -51,7 +59,9 @@ public class UserService implements UserDetailsService {
 
     // Mã hóa mật khẩu trước khi lưu
     user.setPassword(passwordEncoder.encode(password));
-    user.setRole("USER"); // Gán vai trò mặc định là USER
+    // Gán vai trò mặc định là USER
+    user.setRole("USER");
+
     userRepository.save(user);
   }
 

@@ -1,6 +1,5 @@
 package com.monomarket.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import com.monomarket.entity.Cart;
 import com.monomarket.entity.CartItem;
 import com.monomarket.entity.InventoryItem;
 import com.monomarket.entity.User;
-import com.monomarket.repository.CartItemRepository;
 import com.monomarket.repository.CartRepository;
 import com.monomarket.repository.InventoryItemRepository;
 
@@ -25,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class CartService {
 
   private final CartRepository cartRepository;
-  private final CartItemRepository cartItemRepository;
   private final InventoryItemRepository inventoryItemRepository;
 
   // 1. Tìm hoặc tạo mới Cart Entity cho người dùng
@@ -196,5 +193,30 @@ public class CartService {
 
     // Xóa giỏ hàng của guest sau khi merge
     cartRepository.delete(guestCart);
+  }
+
+  // 7. Cập nhật số lượng sản phẩm trong giỏ hàng
+  public void updateQuantity(Long inventoryItemId, int quantity, User user, String guestToken) {
+    // Nếu số lượng <= 0, không thực hiện cập nhật
+    if (quantity <= 0) {
+      return;
+    }
+
+    // Tìm giỏ hàng dựa trên user hoặc guestToken
+    Optional<Cart> cartOpt = (user != null)
+        ? cartRepository.findByUserIdWithItems(user.getId())
+        : (guestToken != null
+            ? cartRepository.findBySessionTokenWithItems(guestToken)
+            : Optional.empty());
+
+    // Nếu tìm thấy giỏ hàng, cập nhật số lượng sản phẩm trong giỏ hàng
+    if (cartOpt.isPresent()) {
+      Cart cart = cartOpt.get();
+      cart.getItems().stream()
+          .filter(item -> item.getInventoryItem().getId().equals(inventoryItemId))
+          .findFirst()
+          .ifPresent(item -> item.setQuantity(quantity));
+      cartRepository.save(cart);
+    }
   }
 }
