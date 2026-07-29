@@ -32,7 +32,7 @@ public class Product {
   private Category category;
 
   @JdbcTypeCode(SqlTypes.JSON)
-  @Column(columnDefinition = "jsonb")
+  @Column(name = "attributes")
   private Map<String, Object> attributes;
 
   // Nối ngược sang danh sách hàng hóa thực tế đang có
