@@ -533,6 +533,12 @@
       </div>
     </div>
 
+    <!-- Error Flash Banner -->
+    <div th:if="${errorMessage}" style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 10px;">
+      <span>⚠️</span>
+      <span th:text="${errorMessage}">Error message</span>
+    </div>
+
     <!-- Page Title -->
     <h1 class="page-title">Cart</h1>
 
@@ -640,9 +646,9 @@
         </div>
 
         <!-- Primary Orange Checkout Action Button -->
-        <button type="button" class="btn-orange-checkout" onclick="alert('Checkout feature coming in Phase 6!')">
+        <a th:href="@{/checkout}" class="btn-orange-checkout" style="display: block; text-align: center; text-decoration: none; line-height: 48px;">
           Proceed to Checkout
-        </button>
+        </a>
 
       </div>
 
