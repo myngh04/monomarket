@@ -15,6 +15,7 @@ import com.monomarket.entity.InventoryItem;
 import com.monomarket.entity.Order;
 import com.monomarket.entity.OrderItem;
 import com.monomarket.entity.User;
+import com.monomarket.exception.OutOfStockException;
 import com.monomarket.repository.CartRepository;
 import com.monomarket.repository.InventoryItemRepository;
 import com.monomarket.repository.OrderRepository;
