@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed - MonoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --bg-light: #f8fafc;
+      --border-color: #e2e8f0;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --green-success: #16a34a;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+      margin-bottom: 24px;
+    }
+
+    .confirm-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      background-color: #dcfce7;
+      color: var(--green-success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 20px auto;
+    }
+
+    .order-info-table {
+      width: 100%;
+      margin: 24px 0;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .order-info-table th, .order-info-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    .order-info-table th {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 28px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: var(--text-dark);
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="/" class="logo">
+        <img th:src="@{/images/logo.png}" alt="MonoMarket Logo" style="height: 70px; margin-left: 10px;">
+      </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="confirm-box">
+      <div class="success-icon">✓</div>
+      <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Order Placed Successfully!</h1>
+      <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px;">
+        Thank you for shopping with MonoMarket. Your secondhand items have been reserved.
+      </p>
+
+      <table class="order-info-table">
+        <tr>
+          <th>Order Number:</th>
+          <td style="font-weight: 700;" th:text="${'#' + order.orderId}">#1001</td>
+        </tr>
+        <tr>
+          <th>Order Date:</th>
+          <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-07-29</td>
+        </tr>
+        <tr>
+          <th>Status:</th>
+          <td><span style="background: #fef3c7; color: #d97706; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-size: 12px;" th:text="${order.status}">PENDING</span></td>
+        </tr>
+        <tr>
+          <th>Total Amount:</th>
+          <td style="font-weight: 700; color: #dc2626; font-size: 16px;" th:text="${'¥' + #numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')}">¥1,200</td>
+        </tr>
+        <tr>
+          <th>Shipping Address:</th>
+          <td th:text="${order.shippingAddress}">Address</td>
+        </tr>
+      </table>
+
+      <div class="btn-group">
+        <a href="/" class="btn-primary">Continue Shopping</a>
+        <a href="/orders" class="btn-secondary">View Order History</a>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
