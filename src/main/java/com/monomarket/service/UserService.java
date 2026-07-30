@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -63,6 +64,14 @@ public class UserService implements UserDetailsService {
     user.setRole("USER");
 
     userRepository.save(user);
+  }
+
+  // Cập nhật thông tin cá nhân
+  @Transactional
+  public User updateProfile(User user, String fullName, String phone) {
+    user.setFullName(fullName);
+    user.setPhone(phone);
+    return user;
   }
 
 }
