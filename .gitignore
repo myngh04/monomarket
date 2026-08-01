@@ -26,6 +26,7 @@ target/
 *.log
 .env
 .env.local
+MD/
 
 ### --- Bảo mật thông tin cấu hình (Cực kỳ quan trọng) ---
 src/main/resources/application.properties
