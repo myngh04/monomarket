@@ -1,7 +1,6 @@
 package com.monomarket.controller;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -118,20 +117,7 @@ public class CheckoutController {
     return "order-confirmation";
   }
 
-  // 4. GET /orders — Lịch sử đơn hàng của user
-  @GetMapping("/orders")
-  public String showOrderHistory(Authentication authentication, Model model) {
-    User user = getCurrentUser(authentication);
-    if (user == null) {
-      return "redirect:/login";
-    }
-
-    List<OrderDto> orders = orderService.getOrdersByUser(user);
-    model.addAttribute("orders", orders);
-    return "order-history";
-  }
-
-  // 5. GET /orders/{id} — Chi tiết 1 đơn hàng
+  // 4. GET /orders/{id} — Chi tiết 1 đơn hàng
   @GetMapping("/orders/{id}")
   public String showOrderDetail(@PathVariable("id") Long id,
       Authentication authentication,

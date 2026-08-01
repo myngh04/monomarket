@@ -69,9 +69,15 @@ public class UserService implements UserDetailsService {
   // Cập nhật thông tin cá nhân
   @Transactional
   public User updateProfile(User user, String fullName, String phone) {
-    user.setFullName(fullName);
-    user.setPhone(phone);
-    return user;
+    // Load lại entity trong transaction để việc cập nhật profile không phụ thuộc
+    // vào Open Session in View giữ entity từ Controller ở trạng thái managed.
+    User managedUser = userRepository.findById(user.getId())
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    managedUser.setFullName(fullName);
+    managedUser.setPhone(phone);
+    managedUser.setUpdatedAt(java.time.LocalDateTime.now());
+    return managedUser;
   }
 
 }
