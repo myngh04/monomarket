@@ -410,7 +410,7 @@
         </div>
 
         <div th:if="${not #lists.isEmpty(recentOrders)}" class="orders-list">
-          <div class="orders-view-more" id="orders-view-more">
+          <div class="orders-view-more" id="orders-view-more" th:if="${#lists.size(recentOrders) > 5}">
             <label for="orders-display-limit">View:</label>
             <select id="orders-display-limit" aria-label="Number of orders to display">
               <option value="5">5 orders</option>
