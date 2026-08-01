@@ -129,7 +129,34 @@ public class OrderService {
     return toOrderDto(order);
   }
 
-  // 4. Private helper: Convert Order Entity → OrderDto để truyền sang View
+  // 4. Hủy đơn hàng: chỉ cho phép khi status = PENDING, đồng thời chuyển inventory RESERVED -> AVAILABLE
+  public void cancelOrder(Long orderId, User user) {
+    Order order = orderRepository.findByIdWithDetails(orderId)
+        .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+
+    // Bảo vệ: user chỉ được hủy đơn của chính mình
+    if (!order.getUser().getId().equals(user.getId())) {
+      throw new IllegalArgumentException("Access denied");
+    }
+
+    // Chỉ cho phép hủy đơn khi trạng thái là PENDING
+    if (!"PENDING".equals(order.getStatus())) {
+      throw new IllegalStateException("Only orders in PENDING status can be cancelled");
+    }
+
+    // Chuyển trạng thái đơn hàng -> CANCELLED
+    order.setStatus("CANCELLED");
+
+    // Chuyển toàn bộ InventoryItem về trạng thái AVAILABLE cho người khác mua
+    for (OrderItem item : order.getItems()) {
+      InventoryItem inv = item.getInventoryItem();
+      if ("RESERVED".equals(inv.getStatus())) {
+        inv.setStatus("AVAILABLE");
+      }
+    }
+  }
+
+  // 5. Private helper: Convert Order Entity → OrderDto để truyền sang View
   private OrderDto toOrderDto(Order order) {
     List<OrderItemDto> itemDtos = order.getItems().stream()
         .map(item -> new OrderItemDto(

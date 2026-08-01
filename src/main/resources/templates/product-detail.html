@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="${product.titleJa} + ' - MonoMarket'">Product Detail</title>
   
-  <!-- Modern Fonts -->
+  <!-- Font hiện đại dùng cho giao diện -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
       --font: 'Outfit', sans-serif;
     }
 
-    /* Category Specific Themes for Book Mockup */
+    /* Theme bìa sách mô phỏng theo từng category */
     .theme-novels { --book-color: #3b82f6; --book-gradient: linear-gradient(135deg, #1e3a8a, #3b82f6); }
     .theme-it { --book-color: #10b981; --book-gradient: linear-gradient(135deg, #064e3b, #10b981); }
     .theme-magazines { --book-color: #f59e0b; --book-gradient: linear-gradient(135deg, #78350f, #f59e0b); }
@@ -54,7 +54,7 @@
       padding: 0 24px;
     }
 
-    /* Header Nav Styling */
+    /* Giao diện thanh điều hướng Header */
     header {
       background-color: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(12px);
@@ -86,7 +86,7 @@
     }
 
     .logo img {
-      height: 100px;
+      height: 80px;
       width: auto;
       object-fit: contain;
       display: block;
@@ -110,7 +110,7 @@
       color: var(--primary);
     }
 
-    /* Detail Grid Layout */
+    /* Bố cục Grid của trang chi tiết */
     .detail-grid {
       display: grid;
       grid-template-columns: 350px 1fr;
@@ -118,7 +118,7 @@
       margin-top: 20px;
     }
 
-    /* Product Cover Section */
+    /* Khu vực bìa Product */
     .cover-pane {
       display: flex;
       flex-direction: column;
@@ -169,7 +169,7 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* Product Info Section */
+    /* Khu vực thông tin Product */
     .info-pane {
       display: flex;
       flex-direction: column;
@@ -221,7 +221,7 @@
       font-weight: 600;
     }
 
-    /* Buyback Banner */
+    /* Banner thu mua lại sản phẩm */
     .buyback-banner {
       background-color: rgba(16, 185, 129, 0.1);
       border: 1px solid rgba(16, 185, 129, 0.2);
@@ -251,7 +251,7 @@
       color: #059669;
     }
 
-    /* Inventory Selection */
+    /* Khu vực chọn Inventory Item */
     .inventory-section {
       background-color: var(--card-bg);
       border: 1px solid var(--border);
@@ -293,7 +293,7 @@
       border-bottom: none;
     }
 
-    /* Rank Badge Styling */
+    /* Giao diện Badge xếp hạng */
     .rank-badge {
       display: inline-block;
       padding: 4px 10px;
@@ -354,7 +354,7 @@
 </head>
 <body>
 
-  <!-- Navigation Header -->
+  <!-- Header điều hướng -->
   <header>
     <div class="container header-wrap">
       <a href="/" class="logo">
@@ -372,7 +372,7 @@
   <main class="container">
     <div class="detail-grid">
       
-      <!-- Product cover image mockup -->
+      <!-- Ảnh bìa Product mô phỏng -->
       <div class="cover-pane">
         <div class="book-mockup" th:classappend="${product.category?.slug == 'books-novels' ? 'theme-novels' : 
                                                 (product.category?.slug == 'books-it-computers' ? 'theme-it' : 
@@ -390,14 +390,14 @@
         </div>
       </div>
 
-      <!-- Product details & Buyback & Used Copies selection -->
+      <!-- Chi tiết Product, thông tin Buyback và lựa chọn hàng đã qua sử dụng -->
       <div class="info-pane">
         <span class="category-badge" th:text="${product.category?.nameJa}">小説</span>
         <h1 class="product-title" th:text="${product.titleJa}">傲慢と善良</h1>
 
-        <!-- Product specifications metadata table -->
+        <!-- Bảng metadata thông số Product -->
         <table class="info-table">
-          <!-- Platform & Type (Only for Games) -->
+          <!-- Platform và type, chỉ áp dụng cho game -->
           <tr th:if="${product.category?.slug.startsWith('games') and product.attributes['platform'] != null}">
             <td class="label">Platform</td>
             <td class="value" th:text="${product.attributes['platform']}">Nintendo Switch</td>
@@ -407,7 +407,7 @@
             <td class="value" th:text="${product.category?.parent?.nameEn}">Game Software</td>
           </tr>
           
-          <!-- Author / Studio (Not for Games) -->
+          <!-- Tác giả hoặc Studio, không áp dụng cho game -->
           <tr th:if="${product.attributes['author'] != null and !product.category?.slug.startsWith('games')}">
             <td class="label" th:text="${product.category?.slug.startsWith('video') ? 'Studio' : 'Author'}">Author</td>
             <td class="value" th:text="${product.attributes['author']}">辻村深月</td>
@@ -433,7 +433,7 @@
           </tr>
         </table>
 
-        <!-- Buyback Incentive Banner -->
+        <!-- Banner khuyến khích user bán lại sản phẩm -->
         <div class="buyback-banner" th:if="${product.attributes['buyback_price'] != null}">
           <div>
             <div class="buyback-title">Sell This Item Back to Us</div>
@@ -444,7 +444,7 @@
           </div>
         </div>
 
-        <!-- Inventory List (Selection table of available ranks) -->
+        <!-- Danh sách Inventory Item với các rank hiện có để lựa chọn -->
         <div class="inventory-section">
           <h3 class="inventory-title">
             <span>Available in Store</span>
@@ -475,7 +475,9 @@
                   <span class="price-tag" th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥750</span>
                 </td>
                 <td>
-                  <form th:action="@{/cart/add}" method="post" style="margin: 0;">
+                  <!-- Guest và user đã đăng nhập đều được phép thêm Inventory Item vào cart -->
+                  <form th:action="@{/cart/add}" method="post" style="margin: 0;"
+                        sec:authorize="isAnonymous() or isAuthenticated()">
                     <input type="hidden" name="inventoryItemId" th:value="${item.id}">
                     <button type="submit" class="buy-btn">Add to Cart</button>
                   </form>

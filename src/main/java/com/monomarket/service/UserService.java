@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -63,6 +64,20 @@ public class UserService implements UserDetailsService {
     user.setRole("USER");
 
     userRepository.save(user);
+  }
+
+  // Cập nhật thông tin cá nhân
+  @Transactional
+  public User updateProfile(User user, String fullName, String phone) {
+    // Load lại entity trong transaction để việc cập nhật profile không phụ thuộc
+    // vào Open Session in View giữ entity từ Controller ở trạng thái managed.
+    User managedUser = userRepository.findById(user.getId())
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    managedUser.setFullName(fullName);
+    managedUser.setPhone(phone);
+    managedUser.setUpdatedAt(java.time.LocalDateTime.now());
+    return managedUser;
   }
 
 }

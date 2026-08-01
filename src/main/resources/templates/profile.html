@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - MonoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1e40af;
+      --bg-light: #f8fafc;
+      --border-color: #e2e8f0;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --green-success: #16a34a;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 5px;
+      margin-bottom: 28px;
+    }
+
+    .main-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-img {
+      height: 80px;
+      width: auto;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .profile-header-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .header-link:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+
+    .header-user {
+      color: var(--text-muted);
+      font-size: 13px;
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .header-logout {
+      margin: 0;
+    }
+
+    .header-logout button {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .header-logout button:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 920px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-header-actions {
+        gap: 10px 14px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 12px 0;
+        margin-bottom: 20px;
+      }
+
+      .main-container {
+        padding: 0 14px;
+      }
+
+      .header-wrap {
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .logo-img {
+        height: 80px;
+      }
+
+      .profile-header-actions {
+        gap: 6px 10px;
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .card {
+        padding: 18px;
+        border-radius: 8px;
+      }
+
+      .card-title {
+        font-size: 16px;
+      }
+
+      .orders-table th,
+      .orders-table td {
+        padding: 10px 12px;
+      }
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .form-group input[readonly] {
+      background-color: #f1f5f9;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .btn-save {
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 11px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+    }
+
+    .btn-save:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+    }
+
+    .orders-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .orders-view-more {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: 0 0 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .orders-view-more select {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text-main);
+      padding: 6px 28px 6px 9px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .orders-table th, .orders-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    .orders-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-PENDING { background: #fef3c7; color: #d97706; }
+    .status-CONFIRMED { background: #e0f2fe; color: #0284c7; }
+    .status-SHIPPING { background: #e0e7ff; color: #4338ca; }
+    .status-DELIVERED { background: #dcfce7; color: #16a34a; }
+    .status-CANCELLED { background: #fee2e2; color: #dc2626; }
+
+    .btn-action-detail {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .btn-action-detail:hover {
+      text-decoration: underline;
+    }
+
+    .btn-action-cancel {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-action-cancel:hover {
+      background: #fca5a5;
+      color: #7f1d1d;
+    }
+
+    .alert-banner {
+      padding: 12px 18px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-success {
+      background-color: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="main-container header-wrap">
+      <a href="/" class="logo">
+        <img th:src="@{/images/logo.png}" alt="MonoMarket Logo" class="logo-img">
+      </a>
+      <div class="profile-header-actions">
+        <a href="/" class="header-link">← Back to Shop</a>
+        <span class="header-user" sec:authentication="name">user@monomarket.com</span>
+        <form th:action="@{/logout}" method="post" class="header-logout">
+          <button type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Thông báo tạm thời sau khi xử lý request -->
+    <div th:if="${successMessage}" class="alert-banner alert-success">
+      <span>✅</span> <span th:text="${successMessage}">Success</span>
+    </div>
+    <div th:if="${errorMessage}" class="alert-banner alert-error">
+      <span>⚠️</span> <span th:text="${errorMessage}">Error</span>
+    </div>
+
+    <h1 style="font-size: 26px; font-weight: 700; margin-bottom: 24px;">User Profile</h1>
+
+    <div class="profile-grid">
+
+      <!-- Cột trái: Form chỉnh sửa thông tin cá nhân -->
+      <div class="card">
+        <div class="card-title">👤 Account Details</div>
+        <form th:action="@{/profile/update}" method="post">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" th:value="${profile.email}" autocomplete="email" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="fullName">Full Name <span style="color: red;">*</span></label>
+            <input type="text" id="fullName" name="fullName" th:value="${profile.fullName}" autocomplete="name" required placeholder="Enter full name">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" th:value="${profile.phone}" autocomplete="tel" placeholder="Enter phone number">
+          </div>
+
+          <button type="submit" class="btn-save">Save Changes</button>
+        </form>
+      </div>
+
+      <!-- Cột phải: Tổng quan các đơn hàng gần đây -->
+      <div class="card">
+        <div class="card-title" style="justify-content: space-between;">
+          <span>📦 Recent Orders</span>
+        </div>
+
+        <div th:if="${#lists.isEmpty(recentOrders)}" style="text-align: center; padding: 36px 12px; color: var(--text-muted);">
+          <p style="font-size: 14px; margin-bottom: 12px;">You haven't placed any orders yet.</p>
+          <a href="/" style="display: inline-block; background: var(--primary); color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600;">Browse Catalog</a>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(recentOrders)}" class="orders-list">
+          <div class="orders-view-more" id="orders-view-more" th:if="${#lists.size(recentOrders) > 5}">
+            <label for="orders-display-limit">View:</label>
+            <select id="orders-display-limit" aria-label="Number of orders to display">
+              <option value="5">5 orders</option>
+            </select>
+          </div>
+
+          <div class="orders-table-wrap">
+          <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="order, orderStat : ${recentOrders}" class="order-row" th:attr="data-order-index=${orderStat.index}">
+              <td style="font-weight: 700;" th:text="${'#' + order.orderId}">#1001</td>
+              <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd')}">2026-07-30</td>
+              <td style="font-weight: 700; color: #dc2626;" th:text="${'¥' + #numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')}">¥1,200</td>
+              <td><span th:class="${'status-badge status-' + order.status}" th:text="${order.status}">PENDING</span></td>
+              <td style="white-space: nowrap;">
+                <a th:href="@{'/orders/' + ${order.orderId}}" class="btn-action-detail" style="margin-right: 8px;">Details →</a>
+                <form th:if="${order.status == 'PENDING'}" th:action="@{'/profile/orders/' + ${order.orderId} + '/cancel'}" method="post" style="display: inline;" th:onsubmit="'return confirm(\'Are you sure you want to cancel Order #' + ${order.orderId} + '?\');'">
+                  <button type="submit" class="btn-action-cancel">Cancel</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('orders-display-limit');
+    const rows = Array.from(document.querySelectorAll('.order-row'));
+    const control = document.getElementById('orders-view-more');
+
+    if (!select || rows.length <= 5) {
+      if (control) control.hidden = true;
+      return;
+    }
+
+    for (let limit = 10; limit < rows.length; limit += 5) {
+      select.append(new Option('Show ' + limit + ' orders', String(limit)));
+    }
+    select.append(new Option('Show all (' + rows.length + ')', 'all'));
+
+    function updateVisibleRows() {
+      const limit = select.value === 'all' ? rows.length : Number(select.value);
+      rows.forEach(function (row, index) {
+        row.hidden = index >= limit;
+      });
+    }
+
+    select.addEventListener('change', updateVisibleRows);
+    updateVisibleRows();
+  });
+</script>
+</body>
+</html>

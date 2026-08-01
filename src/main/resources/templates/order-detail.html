@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/style.css}">
   <style>
     :root {
       --primary: #1e3a8a;
@@ -17,6 +16,8 @@
       --text-muted: #64748b;
     }
 
+    * { box-sizing: border-box; }
+
     body {
       background-color: var(--bg-light);
       font-family: 'Inter', sans-serif;
@@ -25,11 +26,53 @@
       padding-bottom: 60px;
     }
 
+    .container {
+      width: min(100% - 32px, 920px);
+      margin: 0 auto;
+    }
+
     header {
       background: #ffffff;
       border-bottom: 1px solid var(--border-color);
-      padding: 16px 0;
+      padding: 8px 0;
       margin-bottom: 24px;
+    }
+
+    .header-wrap {
+      min-height: 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .back-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .order-detail-page { max-width: 820px; }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 20px;
     }
 
     .card {
@@ -40,16 +83,56 @@
       margin-bottom: 20px;
     }
 
+    .order-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .order-meta-row:last-child { margin-bottom: 0; }
+
+    .order-meta-label { color: var(--text-muted); }
+
+    .order-meta-value {
+      font-weight: 600;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
     .item-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
       padding: 12px 0;
       border-bottom: 1px solid #f1f5f9;
     }
 
-    .item-row:last-child {
-      border-bottom: none;
+    .item-row:last-child { border-bottom: none; }
+
+    .item-info { min-width: 0; }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .item-code {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .item-price {
+      flex: 0 0 auto;
+      font-weight: 700;
+      color: #dc2626;
+      font-size: 14px;
+      white-space: nowrap;
     }
 
     .rank-badge {
@@ -61,56 +144,118 @@
       background: #e2e8f0;
       color: #334155;
       margin-left: 6px;
+      white-space: nowrap;
+    }
+
+    .total-row {
+      border-top: 2px solid var(--border-color);
+      margin-top: 16px;
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .cancel-action {
+      margin-top: 20px;
+      text-align: right;
+    }
+
+    .cancel-button {
+      background-color: #ef4444;
+      color: #ffffff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .container { width: min(100% - 24px, 920px); }
+
+      .header-wrap { min-height: 80px; gap: 12px; }
+
+      .back-link { font-size: 13px; }
+
+      .card { padding: 18px; }
+
+      .order-meta-row {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .order-meta-value { text-align: left; }
+
+      .item-row { align-items: flex-start; gap: 12px; }
+
+      .cancel-action { text-align: left; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="container header-wrap">
       <a href="/" class="logo">
-        <img th:src="@{/images/logo.png}" alt="MonoMarket Logo" style="height: 90px;">
+        <img th:src="@{/images/logo.png}" alt="MonoMarket Logo">
       </a>
-      <a href="/orders" style="color: var(--primary); text-decoration: none; font-weight: 600;">← Back to My Orders</a>
+      <a href="/profile" class="back-link">&#8592; Back to Profile</a>
     </div>
   </header>
 
-  <main class="container" style="max-width: 760px;">
-    <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 20px;" th:text="${'Order Details #' + order.orderId}">Order #1001</h1>
+  <main class="container order-detail-page">
+    <div th:if="${successMessage}" style="background-color: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500;">
+      <span aria-hidden="true">&#9989;</span> <span th:text="${successMessage}">Success</span>
+    </div>
+    <div th:if="${errorMessage}" style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500;">
+      <span aria-hidden="true">&#9888;</span> <span th:text="${errorMessage}">Error</span>
+    </div>
+
+    <h1 class="page-title" th:text="${'Order Details #' + order.orderId}">Order #1001</h1>
 
     <div class="card">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;">
-        <span style="color: var(--text-muted);">Order Date:</span>
-        <span style="font-weight: 600;" th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-07-29</span>
+      <div class="order-meta-row">
+        <span class="order-meta-label">Order Date:</span>
+        <span class="order-meta-value" th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-07-29</span>
       </div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;">
-        <span style="color: var(--text-muted);">Status:</span>
-        <span style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 10px; font-weight: 700; font-size: 12px;" th:text="${order.status}">PENDING</span>
+      <div class="order-meta-row">
+        <span class="order-meta-label">Status:</span>
+        <span class="order-meta-value" style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 10px; font-size: 12px;" th:text="${order.status}">PENDING</span>
       </div>
-      <div style="display: flex; justify-content: space-between; font-size: 14px;">
-        <span style="color: var(--text-muted);">Shipping Address:</span>
-        <span style="font-weight: 500;" th:text="${order.shippingAddress}">Address</span>
+      <div class="order-meta-row">
+        <span class="order-meta-label">Shipping Address:</span>
+        <span class="order-meta-value" style="font-weight: 500;" th:text="${order.shippingAddress}">Address</span>
       </div>
     </div>
 
     <div class="card">
-      <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Ordered Items</h2>
-      
-      <div th:each="item : ${order.items}" class="item-row">
-        <div>
-          <div style="font-weight: 600; font-size: 14px;">
+      <h2 style="font-size: 16px; font-weight: 700; margin: 0 0 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Ordered Items</h2>
+
+      <div th:each="item : ${order.orderItems}" class="item-row">
+        <div class="item-info">
+          <div class="item-title">
             <span th:text="${item.productTitle}">Product Title</span>
             <span class="rank-badge" th:text="${'Rank ' + item.conditionRank}">Rank A</span>
           </div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;" th:text="${'Code: ' + item.instoreCode}">Code</div>
+          <div class="item-code" th:text="${'Code: ' + item.instoreCode}">Code</div>
         </div>
-        <div style="font-weight: 700; color: #dc2626; font-size: 14px;" th:text="${'¥' + #numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥1,200</div>
+        <div class="item-price" th:text="${'¥' + #numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥1,200</div>
       </div>
 
-      <div style="border-top: 2px solid var(--border-color); margin-top: 16px; padding-top: 12px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 700;">
+      <div class="total-row">
         <span>Total Amount:</span>
         <span style="color: #dc2626;" th:text="${'¥' + #numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')}">¥1,200</span>
       </div>
+    </div>
+
+    <div th:if="${order.status == 'PENDING'}" class="cancel-action">
+      <form th:action="@{'/orders/' + ${order.orderId} + '/cancel'}" method="post" onsubmit="return confirm('Are you sure you want to cancel this order? Stock will be released back to the store.');">
+        <button type="submit" class="cancel-button">Cancel Order</button>
+      </form>
     </div>
   </main>
 

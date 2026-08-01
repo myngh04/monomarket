@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title th:text="#{brand.name}">MonoMarket</title>
-  <!-- Modern Fonts -->
+  <!-- Font hiện đại dùng cho giao diện -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -51,14 +51,14 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* App Container */
+    /* Container chính của ứng dụng */
     .container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 0 24px;
     }
 
-    /* Header Navigation */
+    /* Thanh điều hướng Header */
     header {
       background-color: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(12px);
@@ -87,7 +87,7 @@
     }
 
     .logo img {
-      height: 90px;
+      height: 80px;
       width: auto;
       object-fit: contain;
       display: block;
@@ -123,7 +123,7 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* User Nav Section */
+    /* Khu vực điều hướng của user */
     .user-info {
       display: flex;
       align-items: center;
@@ -165,7 +165,7 @@
       transform: translateY(-1px);
     }
 
-    /* Layout Grid */
+    /* Bố cục Grid chính */
     .main-layout {
       display: grid;
       grid-template-columns: 260px 1fr;
@@ -174,7 +174,7 @@
       padding-bottom: 64px;
     }
 
-    /* Sidebar Filter */
+    /* Bộ lọc ở Sidebar */
     .sidebar {
       background-color: var(--card-bg);
       border-radius: var(--radius-md);
@@ -237,7 +237,7 @@
       color: #fff;
     }
 
-    /* Accordion / Dropdown Sidebar */
+    /* Accordion và dropdown trong Sidebar */
     .category-details {
       margin-bottom: 2px;
     }
@@ -253,7 +253,7 @@
       cursor: pointer;
       border-radius: var(--radius-sm);
       transition: background-color 0.2s ease;
-      list-style: none; /* Hide default arrow */
+      list-style: none; /* Ẩn mũi tên mặc định */
     }
     
     .category-summary::-webkit-details-marker {
@@ -314,7 +314,7 @@
       padding: 8px 12px;
     }
 
-    /* Content Area */
+    /* Khu vực nội dung chính */
     .content-header {
       display: flex;
       justify-content: space-between;
@@ -328,7 +328,7 @@
       color: var(--text-main);
     }
 
-    /* Product Cards Grid */
+    /* Grid hiển thị các Product Card */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -353,7 +353,7 @@
       box-shadow: var(--shadow-lg);
     }
 
-    /* Premium Book Spine/Cover mockup using CSS */
+    /* Bìa và gáy sách mô phỏng bằng CSS */
     .book-mockup {
       height: 180px;
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
@@ -366,7 +366,7 @@
       overflow: hidden;
     }
 
-    /* Book Mockup color themes based on categories */
+    /* Màu của bìa sách mô phỏng theo từng category */
     .theme-novels {
       background: linear-gradient(135deg, #6366f1 0%, #312e81 100%);
     }
@@ -451,7 +451,7 @@
       color: var(--text-main);
     }
 
-    /* Inventory Items Styling (Stock) */
+    /* Giao diện danh sách Inventory Item trong kho */
     .inventory-section {
       border-top: 1px solid var(--border);
       padding-top: 12px;
@@ -521,7 +521,7 @@
       padding: 8px 0;
     }
 
-    /* Buyback Badge */
+    /* Badge thu mua lại sản phẩm */
     .buyback-container {
       background-color: #f8fafc;
       border: 1px dashed var(--border-hover);
@@ -544,7 +544,7 @@
       font-weight: 700;
     }
 
-    /* Responsive */
+    /* Điều chỉnh giao diện Responsive */
     @media (max-width: 768px) {
       .main-layout {
         grid-template-columns: 1fr;
@@ -553,11 +553,11 @@
 
       .sidebar {
         display: none;
-        /* Hide sidebar on mobile or change to top horizontal bar */
+        /* Ẩn Sidebar trên mobile hoặc chuyển thành thanh ngang phía trên */
       }
     }
 
-    /* Pagination */
+    /* Phân trang */
     .pagination-container {
       display: flex;
       justify-content: center;
@@ -616,7 +616,7 @@
 
       <div class="nav-actions">
         <div class="lang-switch">
-          <!-- Dynamic Active classes for languages -->
+          <!-- Class active được xác định động theo ngôn ngữ -->
           <a th:href="@{/(lang='en')}" class="lang-btn"
             th:classappend="${#locale.language == 'en' ? 'active' : ''}">EN</a>
           <a th:href="@{/(lang='ja')}" class="lang-btn"
@@ -636,8 +636,10 @@
         </div>
 
         <!-- Hiển thị khi ĐÃ ĐĂNG NHẬP -->
-        <div sec:authorize="isAuthenticated()" class="user-info">
-          <span class="user-name" sec:authentication="name">User</span>
+        <div sec:authorize="isAuthenticated()" class="user-info" style="display: flex; align-items: center; gap: 12px;">
+          <a th:href="@{/profile}" class="user-name" style="text-decoration: none; color: var(--primary); font-weight: 600;" title="View Profile">
+            👤 <span sec:authentication="name">User</span>
+          </a>
           <form th:action="@{/logout}" method="post" style="display: inline;">
             <button type="submit" class="logout-btn">Logout</button>
           </form>
@@ -647,7 +649,7 @@
   </header>
 
   <div class="container main-layout">
-    <!-- Sidebar Filter by Category -->
+    <!-- Sidebar lọc theo category -->
     <aside class="sidebar">
       <h4 class="filter-section-title">Categories</h4>
       <ul class="filter-list">
@@ -656,7 +658,7 @@
             <span>All Categories</span>
           </a>
         </li>
-        <!-- Loop over top-level categories -->
+        <!-- Duyệt các category cấp cao nhất -->
         <li class="filter-dropdown" th:each="topCat : ${categories}">
           <details class="category-details" open>
             <summary class="category-summary">
@@ -665,14 +667,14 @@
             <ul class="filter-sublist">
               <li th:each="subCat : ${topCat.children}">
                 
-                <!-- Level 2 without children -->
+                <!-- Category cấp 2 không có category con -->
                 <a th:if="${#lists.isEmpty(subCat.children)}" 
                    th:href="@{/(category=${subCat.id})}"
                    th:classappend="${activeCategoryId == subCat.id ? 'active-link' : ''}">
                   <span th:text="${#locale.language == 'ja' ? subCat.nameJa : subCat.nameEn}">Sub Category</span>
                 </a>
                 
-                <!-- Level 2 WITH children (e.g., Game Software -> Switch, PS5) -->
+                <!-- Category cấp 2 có category con, ví dụ Game Software → Switch, PS5 -->
                 <details th:if="${not #lists.isEmpty(subCat.children)}" class="category-details" open>
                   <summary class="category-summary sub-summary">
                     <span th:text="${#locale.language == 'ja' ? subCat.nameJa : subCat.nameEn}">Mid Category</span>
@@ -694,7 +696,7 @@
       </ul>
     </aside>
 
-    <!-- Main Product Section -->
+    <!-- Khu vực Product chính -->
     <main>
       <div class="content-header">
         <h2 class="content-title">
@@ -708,10 +710,10 @@
         </h2>
       </div>
 
-      <!-- Product Grid -->
+      <!-- Grid hiển thị Product -->
       <div class="product-grid">
         <div class="product-card" th:each="p : ${products}">
-          <!-- Dynamic Theme for Book Cover Mockup -->
+          <!-- Theme động cho bìa sách mô phỏng -->
           <a th:href="@{/product/{id}(id=${p.id})}" style="text-decoration: none; display: block;">
             <div class="book-mockup"
               th:classappend="${p.category?.slug == 'books-novels' ? 'theme-novels' : 
@@ -729,10 +731,10 @@
             </div>
           </a>
 
-          <!-- Book info details -->
+          <!-- Thông tin chi tiết của sách -->
           <div class="book-info-body">
             <div class="book-meta">
-              <!-- Platform & Type (Only for Games) -->
+              <!-- Platform và type, chỉ áp dụng cho game -->
               <div class="meta-row" th:if="${p.category?.slug.startsWith('games') and p.attributes['platform'] != null}">
                 <span>Platform:</span>
                 <span class="meta-value" th:text="${p.attributes['platform']}">Nintendo Switch</span>
@@ -742,7 +744,7 @@
                 <span class="meta-value" th:text="${p.category?.parent?.nameEn}">Game Software</span>
               </div>
 
-              <!-- Author / Studio (Not for Games) -->
+              <!-- Tác giả hoặc Studio, không áp dụng cho game -->
               <div class="meta-row" th:if="${p.attributes['author'] != null and !p.category?.slug.startsWith('games')}">
                 <span th:text="${p.category?.slug.startsWith('video') ? 'Studio:' : 'Author:'}">Author:</span>
                 <span class="meta-value" th:text="${p.attributes['author']}">辻村深月</span>
@@ -765,13 +767,13 @@
               </div>
             </div>
 
-            <!-- Buyback Value -->
+            <!-- Giá trị thu mua lại -->
             <div class="buyback-container" th:if="${p.attributes['buyback_price'] != null}">
               <span class="buyback-label" th:text="#{product.buyback}">Buyback Price</span>
               <span class="buyback-value" th:text="'¥' + ${p.attributes['buyback_price']}">¥137</span>
             </div>
 
-            <!-- Inventory / Stock levels -->
+            <!-- Mức Inventory và Stock hiện có -->
             <div class="inventory-section">
               <h5 class="inventory-title">Stock Available</h5>
               <div class="inventory-list" th:if="${not #lists.isEmpty(p.inventoryItems)}">
@@ -792,7 +794,7 @@
         </div>
       </div>
 
-      <!-- Pagination Controls -->
+      <!-- Bộ điều khiển phân trang -->
       <div class="pagination-container" th:if="${totalPages > 1}">
         <ul class="pagination">
           <!-- Nút trang trước (Prev) -->

@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - MonoMarket</title>
-  <!-- Google Fonts -->
+  <!-- Font được tải từ Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
@@ -69,6 +69,14 @@
     .brand {
       text-align: center;
       margin-bottom: 30px;
+    }
+
+    .logo-img {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
     }
 
     .brand-name {
@@ -183,7 +191,7 @@
       color: var(--primary);
     }
 
-    /* Language switcher */
+    /* Bộ chuyển đổi ngôn ngữ */
     .lang-switcher {
       display: flex;
       justify-content: center;
@@ -212,22 +220,22 @@
   <div class="login-container">
     <div class="brand">
       <a href="/" class="brand-name" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-        <img th:src="@{/images/logo.png}" alt="MonoMarket" style="height: 90px; width: auto; object-fit: contain;" />
+        <img th:src="@{/images/logo.png}" alt="MonoMarket" class="logo-img" />
       </a>
       <div class="brand-tagline">Recommerce Platform</div>
     </div>
 
-    <!-- Spring Security Login Error Alert -->
+    <!-- Thông báo lỗi đăng nhập từ Spring Security -->
     <div class="error-alert" th:if="${param.error}">
       Invalid email or password.
     </div>
 
-    <!-- Spring Security Logout Success Alert -->
+    <!-- Thông báo đăng xuất thành công từ Spring Security -->
     <div class="logout-alert" th:if="${param.logout}">
       You have been signed out.
     </div>
 
-    <!-- Login Form (Spring Security expects username/password by default) -->
+    <!-- Form đăng nhập; Spring Security mặc định nhận username và password -->
     <form th:action="@{/login}" method="post">
       <div class="form-group">
         <label class="form-label" for="username">Email Address</label>
@@ -248,7 +256,7 @@
       <a href="/register">Create Account</a>
     </div>
 
-    <!-- i18n Language Switcher -->
+    <!-- Bộ chuyển đổi ngôn ngữ i18n -->
     <div class="lang-switcher">
       <a href="?lang=vi">Tiếng Việt</a>
       <span>|</span>

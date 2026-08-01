@@ -125,4 +125,5 @@ class CheckoutControllerTest {
         .andExpect(view().name("order-confirmation"))
         .andExpect(model().attributeExists("order"));
   }
+
 }
