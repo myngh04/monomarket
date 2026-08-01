@@ -13,7 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http,
+      GuestCartAuthenticationSuccessHandler guestCartSuccessHandler) throws Exception {
     http
         // 1. Cấu hình phân quyền truy cập
         .authorizeHttpRequests(auth -> auth
@@ -30,7 +31,7 @@ public class SecurityConfig {
         .formLogin(form -> form
             .loginPage("/login") // Khai báo đường dẫn trang login
             .loginProcessingUrl("/login") // Nơi xử lý hành động submit form POST
-            .defaultSuccessUrl("/", true) // Đăng nhập thành công thì chuyển về trang chủ
+            .successHandler(guestCartSuccessHandler) // Merge guest cart trước khi chuyển về trang chủ
             .permitAll())
 
         // 3. Cấu hình Đăng xuất
