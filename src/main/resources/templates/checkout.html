@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/style.css}">
   <style>
     :root {
       --primary: #1e3a8a;
@@ -30,11 +29,16 @@
       padding-bottom: 60px;
     }
 
+    .container {
+      width: calc(100% - 32px);
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
     header {
       background: #ffffff;
       border-bottom: 1px solid var(--border-color);
-      padding: 16px 0;
-      margin-bottom: 24px;
+      margin-bottom: 12px;
     }
 
     .header-wrap {
@@ -44,7 +48,9 @@
     }
 
     .logo img {
-      height: 60px;
+      height: 80px;
+      width: auto;
+      object-fit: contain;
     }
 
     .stepper-wrap {
@@ -124,6 +130,22 @@
     @media (max-width: 900px) {
       .checkout-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: calc(100% - 24px);
+      }
+
+      .stepper-wrap,
+      .card {
+        padding: 16px;
+      }
+
+      .step-label {
+        font-size: 11px;
+        text-align: center;
       }
     }
 
@@ -269,7 +291,7 @@
 
   <main class="container">
 
-    <!-- Stepper -->
+    <!-- Các bước trong luồng checkout -->
     <div class="stepper-wrap">
       <div class="stepper">
         <div class="step-item">
@@ -291,7 +313,7 @@
       </div>
     </div>
 
-    <!-- Error Banner -->
+    <!-- Banner hiển thị lỗi -->
     <div th:if="${errorMessage}" class="error-banner">
       ⚠️ <span th:text="${errorMessage}">Error</span>
     </div>
@@ -299,7 +321,7 @@
     <form th:action="@{/checkout/confirm}" method="post">
       <div class="checkout-grid">
 
-        <!-- Left: Shipping Address & Payment Method -->
+        <!-- Bên trái: Địa chỉ giao hàng và phương thức thanh toán -->
         <div>
           <div class="card">
             <div class="card-title">📍 1. Shipping Address</div>
@@ -319,7 +341,7 @@
             </div>
           </div>
 
-          <!-- Items Preview -->
+          <!-- Danh sách sản phẩm xem trước -->
           <div class="card">
             <div class="card-title">📦 3. Order Items (<span th:text="${#lists.size(cartItems)}">0</span>)</div>
             <div th:each="item : ${cartItems}" class="checkout-item">
@@ -332,7 +354,7 @@
           </div>
         </div>
 
-        <!-- Right: Summary Card -->
+        <!-- Bên phải: Card tổng kết đơn hàng -->
         <div>
           <div class="card">
             <div class="card-title" style="border-bottom: none; margin-bottom: 8px;">Order Summary</div>

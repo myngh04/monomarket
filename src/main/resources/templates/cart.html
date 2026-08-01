@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shopping Cart - MonoMarket</title>
   
-  <!-- Modern Fonts -->
+  <!-- Font hiện đại dùng cho giao diện -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,11 +17,11 @@
       --border: #e2e8f0;
       --text-main: #1e293b;
       --text-muted: #64748b;
-      --primary: #1e40af;       /* Bookoff deep blue */
+      --primary: #1e40af;       /* Màu xanh đậm theo phong cách Bookoff */
       --primary-accent: #2563eb;
-      --orange-accent: #f97316;  /* Bookoff orange checkout button */
+      --orange-accent: #f97316;  /* Màu cam cho nút checkout theo phong cách Bookoff */
       --orange-dark: #ea580c;
-      --price-red: #dc2626;      /* Bookoff red price tag */
+      --price-red: #dc2626;      /* Màu đỏ cho nhãn giá theo phong cách Bookoff */
       --radius-lg: 12px;
       --radius-md: 8px;
       --radius-sm: 4px;
@@ -50,7 +50,7 @@
       padding: 0 20px;
     }
 
-    /* Header Nav */
+    /* Thanh điều hướng Header */
     header {
       background-color: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
@@ -70,12 +70,12 @@
     }
 
     .logo img {
-      height: 75px;
+      height: 80px;
       width: auto;
       object-fit: contain;
     }
 
-    /* Step Indicator Progress Bar */
+    /* Thanh hiển thị tiến trình checkout */
     .stepper-wrap {
       display: flex;
       justify-content: center;
@@ -146,7 +146,7 @@
       font-weight: 700;
     }
 
-    /* Main Cart Section Title */
+    /* Tiêu đề chính của trang giỏ hàng */
     .page-title {
       font-size: 32px;
       font-weight: 800;
@@ -157,7 +157,7 @@
       padding-bottom: 4px;
     }
 
-    /* Cart Grid Layout */
+    /* Bố cục Grid của giỏ hàng */
     .cart-grid {
       display: grid;
       grid-template-columns: 1fr 340px;
@@ -171,7 +171,7 @@
       }
     }
 
-    /* Left Item Card Container */
+    /* Khung danh sách sản phẩm bên trái */
     .item-list-container {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -180,7 +180,7 @@
       padding: 24px;
     }
 
-    /* Single Cart Item Row */
+    /* Một dòng sản phẩm trong giỏ hàng */
     .cart-item-row {
       display: grid;
       grid-template-columns: 90px 1fr auto;
@@ -269,7 +269,7 @@
       margin-top: 2px;
     }
 
-    /* Quantity Controller */
+    /* Bộ điều khiển số lượng */
     .qty-control {
       display: inline-flex;
       align-items: center;
@@ -309,7 +309,7 @@
       background: #ffffff;
     }
 
-    /* Price and Trash Column */
+    /* Cột giá và nút xóa */
     .item-price-column {
       display: flex;
       flex-direction: column;
@@ -340,7 +340,7 @@
       background-color: #fef2f2;
     }
 
-    /* Clear Cart Link under List */
+    /* Link xóa toàn bộ giỏ hàng bên dưới danh sách */
     .clear-cart-row {
       text-align: center;
       margin-top: 24px;
@@ -361,7 +361,7 @@
       color: var(--primary);
     }
 
-    /* Right Order Summary Panel (Bookoff Style) */
+    /* Bảng tổng kết đơn hàng bên phải theo phong cách Bookoff */
     .summary-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -401,7 +401,7 @@
       margin-bottom: 16px;
     }
 
-    /* Points Reward Banner */
+    /* Banner điểm thưởng */
     .points-banner {
       background-color: #f1f5f9;
       border-radius: var(--radius-sm);
@@ -426,7 +426,7 @@
       color: var(--text-main);
     }
 
-    /* Large Orange Checkout Button */
+    /* Nút checkout lớn màu cam */
     .btn-orange-checkout {
       display: block;
       width: 100%;
@@ -450,7 +450,7 @@
       box-shadow: 0 6px 14px rgba(249, 115, 22, 0.4);
     }
 
-    /* Bottom Info & Disclaimer Section */
+    /* Khu vực thông tin và lưu ý ở cuối trang */
     .disclaimer-box {
       margin-top: 32px;
       font-size: 12px;
@@ -483,7 +483,7 @@
       text-decoration: underline;
     }
 
-    /* Empty Cart Layout */
+    /* Bố cục khi giỏ hàng trống */
     .empty-box {
       text-align: center;
       padding: 60px 20px;
@@ -497,7 +497,7 @@
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Phần Header -->
   <header>
     <div class="container header-wrap">
       <a href="/" class="logo">
@@ -511,7 +511,7 @@
 
   <main class="container">
 
-    <!-- Checkout Flow Stepper Indicator -->
+    <!-- Các bước trong luồng checkout -->
     <div class="stepper-wrap">
       <div class="stepper">
         <div class="step-item active">
@@ -533,16 +533,16 @@
       </div>
     </div>
 
-    <!-- Error Flash Banner -->
+    <!-- Banner hiển thị lỗi tạm thời -->
     <div th:if="${errorMessage}" style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 10px;">
       <span>⚠️</span>
       <span th:text="${errorMessage}">Error message</span>
     </div>
 
-    <!-- Page Title -->
+    <!-- Tiêu đề trang -->
     <h1 class="page-title">Cart</h1>
 
-    <!-- Empty State -->
+    <!-- Trạng thái giỏ hàng trống -->
     <div th:if="${cartItems == null or #lists.isEmpty(cartItems)}" class="item-list-container empty-box">
       <div class="empty-icon">🛒</div>
       <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Your Shopping Cart is empty</h2>
@@ -550,20 +550,20 @@
       <a href="/" class="btn-orange-checkout" style="display: inline-block; width: auto; padding: 12px 32px;">Browse Catalog</a>
     </div>
 
-    <!-- Main Content when items exist -->
+    <!-- Nội dung chính khi giỏ hàng có sản phẩm -->
     <div th:if="${cartItems != null and not #lists.isEmpty(cartItems)}" class="cart-grid">
       
-      <!-- Left: Item List -->
+      <!-- Bên trái: Danh sách sản phẩm -->
       <div class="item-list-container">
         
         <div th:each="item : ${cartItems}" class="cart-item-row">
           
-          <!-- Item Mockup Cover -->
+          <!-- Ảnh bìa mô phỏng của sản phẩm -->
           <div class="item-thumb">
             📖
           </div>
 
-          <!-- Item Details -->
+          <!-- Thông tin chi tiết sản phẩm -->
           <div class="item-info">
             <div class="tag-group">
               <span class="badge-used">USED</span>
@@ -575,19 +575,19 @@
             <div class="item-subtext" th:text="'Code: ' + ${item.isbnOrJan}">Code: 9784774198801</div>
             <div class="stock-status">In Stock</div>
 
-            <!-- Quantity Selector Control -->
+            <!-- Bộ chọn số lượng -->
             <div class="qty-control">
-              <!-- Decrease Quantity (-) -->
+              <!-- Giảm số lượng (-) -->
               <form th:action="@{/cart/update}" method="post" style="margin: 0;">
                 <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
                 <input type="hidden" name="quantity" th:value="${item.quantity - 1}">
                 <button type="submit" class="qty-btn" title="Decrease quantity">-</button>
               </form>
 
-              <!-- Current Quantity Value -->
+              <!-- Số lượng hiện tại -->
               <div class="qty-value" th:text="${item.quantity}">1</div>
 
-              <!-- Increase Quantity (+) -->
+              <!-- Tăng số lượng (+) -->
               <form th:action="@{/cart/update}" method="post" style="margin: 0;">
                 <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
                 <input type="hidden" name="quantity" th:value="${item.quantity + 1}">
@@ -596,7 +596,7 @@
             </div>
           </div>
 
-          <!-- Price & Delete Button -->
+          <!-- Giá và nút xóa -->
           <div class="item-price-column">
             <div class="price-tag-red" th:text="'¥' + ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 0, 'POINT')}">¥880</div>
             
@@ -612,7 +612,7 @@
 
         </div>
 
-        <!-- Clear Cart Link -->
+        <!-- Link xóa toàn bộ giỏ hàng -->
         <div class="clear-cart-row">
           <form th:action="@{/cart/clear}" method="post" style="margin: 0;">
             <button type="submit" class="btn-clear-link" onclick="return confirm('Empty all items from your cart?');">
@@ -623,7 +623,7 @@
 
       </div>
 
-      <!-- Right: Summary Box -->
+      <!-- Bên phải: Khung tổng kết đơn hàng -->
       <div class="summary-box">
         
         <div class="summary-total-header">
@@ -636,7 +636,7 @@
           <span th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]), 1, 'COMMA', 0, 'POINT')}">¥880</span>
         </div>
 
-        <!-- Reward Points Row -->
+        <!-- Dòng thông tin điểm thưởng -->
         <div class="points-banner">
           <div class="points-label">
             <span>Estimated Points</span>
@@ -645,7 +645,7 @@
           <div class="points-value" th:text="${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]) / 100, 1, 0)} + ' pts'">8 pts</div>
         </div>
 
-        <!-- Primary Orange Checkout Action Button -->
+        <!-- Nút checkout chính màu cam -->
         <a th:href="@{/checkout}" class="btn-orange-checkout" style="display: block; text-align: center; text-decoration: none; line-height: 48px;">
           Proceed to Checkout
         </a>
@@ -654,7 +654,7 @@
 
     </div>
 
-    <!-- Bottom Disclaimer Section -->
+    <!-- Khu vực lưu ý ở cuối trang -->
     <div class="disclaimer-box">
       <p style="margin-bottom: 4px;">ⓘ Stock reservation is confirmed upon checkout completion.</p>
       <ul>

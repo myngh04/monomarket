@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register - MonoMarket</title>
-  <!-- Google Fonts -->
+  <!-- Font được tải từ Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
@@ -69,6 +69,14 @@
     .brand {
       text-align: center;
       margin-bottom: 30px;
+    }
+
+    .logo-img {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
     }
 
     .brand-name {
@@ -174,7 +182,7 @@
   <div class="register-container">
     <div class="brand">
       <a href="/" class="brand-name" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-        <img th:src="@{/images/logo.png}" alt="MonoMarket" style="height: 90px; width: auto; object-fit: contain;" />
+        <img th:src="@{/images/logo.png}" alt="MonoMarket" class="logo-img" />
       </a>
       <div class="brand-tagline">Create your account</div>
     </div>
