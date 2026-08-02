@@ -37,6 +37,8 @@ public class Product {
 
   // Nối ngược sang danh sách hàng hóa thực tế đang có
   @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+  // Ưu tiên hàng AVAILABLE, sau đó sắp xếp theo giá tăng dần.
+  @OrderBy("status ASC, price ASC")
   private java.util.List<InventoryItem> inventoryItems;
 
   @Column(name = "created_at", updatable = false)

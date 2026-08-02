@@ -16,19 +16,19 @@ public class ProductService {
 
   // Lấy toàn bộ Catalog sản phẩm gốc trong hệ thống có phân trang
   public Page<Product> getAllProducts(Pageable pageable) {
-    return productRepository.findAll(pageable);
+    return productRepository.findAllOrderByAvailability(pageable);
   }
 
   // Lấy sản phẩm gốc theo danh mục (Ví dụ: id = 5 là Novels)
   public Page<Product> getProductsByCategory(Integer categoryId, Pageable pageable) {
-    return productRepository.findByCategoryId(categoryId, pageable);
+    return productRepository.findByCategoryIdOrderByAvailability(categoryId, pageable);
   }
 
   // Lọc Catalog theo hệ máy (Platform) có phân trang, dựa vào trường attributes
   // trong JSONB của Postgres
   // Ví dụ: platform = "Nintendo Switch" hoặc "PS5" nằm trong attributes
   public Page<Product> getProductsByPlatform(String platform, Pageable pageable) {
-    return productRepository.findByAttribute("platform", platform, pageable);
+    return productRepository.findByAttributeOrderByAvailability("platform", platform, pageable);
   }
 
   // Lấy 1 sản phẩm cụ thể theo id, nếu không có trả về null

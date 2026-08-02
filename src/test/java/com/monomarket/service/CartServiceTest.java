@@ -89,8 +89,8 @@ class CartServiceTest {
   }
 
   @Test
-  @DisplayName("2. Thêm sản phẩm đã có sẵn trong giỏ -> Tăng số lượng lên (quantity + 1)")
-  void shouldIncreaseQuantity_WhenItemAlreadyInCart() {
+  @DisplayName("2. Thêm sản phẩm đã có sẵn trong giỏ -> Giữ quantity bằng 1")
+  void shouldKeepQuantityAtOne_WhenItemAlreadyInCart() {
     // GIVEN: Giỏ hàng đã có sẵn 1 món này (số lượng 1)
     CartItem existingItem = new CartItem(mockCart, mockInventoryItem, 1);
     mockCart.addCartItem(existingItem);
@@ -101,10 +101,10 @@ class CartServiceTest {
     // WHEN: Thêm tiếp món đó vào giỏ
     boolean result = cartService.addToCart(100L, mockUser, null);
 
-    // THEN: Số lượng sản phẩm phải tăng từ 1 lên 2
+    // THEN: Serialized inventory không được tăng số lượng khi add lại
     assertThat(result).isTrue();
     assertThat(mockCart.getItems()).hasSize(1);
-    assertThat(mockCart.getItems().get(0).getQuantity()).isEqualTo(2);
+    assertThat(mockCart.getItems().get(0).getQuantity()).isEqualTo(1);
   }
 
   @Test
@@ -125,7 +125,21 @@ class CartServiceTest {
   }
 
   @Test
-  @DisplayName("4. Gộp giỏ hàng của Guest vào giỏ của User -> Chuyển sản phẩm sang giỏ User & xóa giỏ Guest")
+  @DisplayName("4. Cập nhật quantity dương -> Chuẩn hóa về 1 với serialized inventory")
+  void shouldNormalizePositiveQuantityToOne() {
+    CartItem existingItem = new CartItem(mockCart, mockInventoryItem, 1);
+    mockCart.addCartItem(existingItem);
+
+    when(cartRepository.findByUserIdWithItems(1L)).thenReturn(Optional.of(mockCart));
+
+    cartService.updateQuantity(100L, 5, mockUser, null);
+
+    assertThat(existingItem.getQuantity()).isEqualTo(1);
+    verify(cartRepository).save(mockCart);
+  }
+
+  @Test
+  @DisplayName("5. Gộp giỏ hàng của Guest vào giỏ của User -> Chuyển sản phẩm với quantity = 1")
   void shouldMergeGuestCartToUserCart() {
     // GIVEN: Chuẩn bị giỏ hàng Guest đang có 3 sản phẩm
     String guestToken = "guest-token-abc";
@@ -140,9 +154,9 @@ class CartServiceTest {
     // WHEN: Người dùng đăng nhập và hệ thống gọi gộp giỏ
     cartService.mergeGuestCartToUserCart(mockUser, guestToken);
 
-    // THEN: Giỏ User nhận 3 sản phẩm, giỏ Guest rỗng và giỏ Guest bị xóa khỏi DB
+    // THEN: Giỏ User nhận một serialized item, giỏ Guest rỗng và bị xóa khỏi DB
     assertThat(mockCart.getItems()).hasSize(1);
-    assertThat(mockCart.getItems().get(0).getQuantity()).isEqualTo(3);
+    assertThat(mockCart.getItems().get(0).getQuantity()).isEqualTo(1);
     assertThat(guestCart.getItems()).isEmpty(); // Kiểm tra items giỏ guest đã clear
     verify(cartRepository).delete(guestCart);   // Xác nhận giỏ guest đã bị delete
   }
