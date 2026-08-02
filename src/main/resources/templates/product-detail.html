@@ -445,14 +445,15 @@
         </div>
 
         <!-- Danh sách Inventory Item với các rank hiện có để lựa chọn -->
-        <div class="inventory-section">
+        <div class="inventory-section"
+             th:with="availableItems=${product.inventoryItems.?[status == 'AVAILABLE']}">
           <h3 class="inventory-title">
             <span>Available in Store</span>
             <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);" 
-                  th:text="${#lists.size(product.inventoryItems)} + ' item(s) in stock'">1 item</span>
+                  th:text="${#lists.size(availableItems)} + ' item(s) in stock'">1 item</span>
           </h3>
 
-          <table class="inventory-table" th:if="${not #lists.isEmpty(product.inventoryItems)}">
+          <table class="inventory-table" th:if="${not #lists.isEmpty(availableItems)}">
             <thead>
               <tr>
                 <th>Instore Code</th>
@@ -462,7 +463,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr th:each="item : ${product.inventoryItems}">
+              <tr th:each="item : ${availableItems}">
                 <td style="font-family: monospace;" th:text="${item.instoreCode}">0019198801-U01</td>
                 <td>
                   <span class="rank-badge" 
@@ -486,7 +487,7 @@
             </tbody>
           </table>
 
-          <div class="out-of-stock-txt" th:if="${#lists.isEmpty(product.inventoryItems)}">
+          <div class="out-of-stock-txt" th:if="${#lists.isEmpty(availableItems)}">
             This item is currently out of stock. 
             <br>
             You can submit a Buyback Request to sell this item to us.

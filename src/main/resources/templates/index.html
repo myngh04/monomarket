@@ -774,10 +774,11 @@
             </div>
 
             <!-- Mức Inventory và Stock hiện có -->
-            <div class="inventory-section">
+            <div class="inventory-section"
+              th:with="availableItems=${p.inventoryItems.?[status == 'AVAILABLE']}">
               <h5 class="inventory-title">Stock Available</h5>
-              <div class="inventory-list" th:if="${not #lists.isEmpty(p.inventoryItems)}">
-                <div class="inventory-item-row" th:each="item : ${p.inventoryItems}">
+              <div class="inventory-list" th:if="${not #lists.isEmpty(availableItems)}">
+                <div class="inventory-item-row" th:each="item : ${availableItems}">
                   <span class="rank-badge" th:classappend="${item.conditionRank == 'NEW' ? 'rank-new' : 
                                                            (item.conditionRank == 'A' ? 'rank-a' : 
                                                             (item.conditionRank == 'B' ? 'rank-b' : 'rank-c'))}"
@@ -786,7 +787,7 @@
                     th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥750</span>
                 </div>
               </div>
-              <div class="out-of-stock" th:if="${#lists.isEmpty(p.inventoryItems)}">
+              <div class="out-of-stock" th:if="${#lists.isEmpty(availableItems)}">
                 Out of stock
               </div>
             </div>
