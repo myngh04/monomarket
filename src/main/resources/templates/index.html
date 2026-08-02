@@ -705,7 +705,7 @@
                 font-size: 14px;
                 font-weight: 500;
                 color: var(--text-muted);
-              " th:text="'(' + ${#lists.size(products)} + ' products)'">
+              " th:text="'(' + ${totalProducts} + ' products)'">
           </span>
         </h2>
       </div>
@@ -797,35 +797,76 @@
 
       <!-- Bộ điều khiển phân trang -->
       <div class="pagination-container" th:if="${totalPages > 1}">
-        <ul class="pagination">
-          <!-- Nút trang trước (Prev) -->
-          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-            <a class="page-link"
-              th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage - 1})}"
-              aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
+        <ul class="pagination"
+          th:with="windowStart=${currentPage <= 2 ? 0 : (currentPage >= totalPages - 3 ? totalPages - 5 : currentPage - 2)}, windowEnd=${currentPage <= 2 ? (totalPages > 5 ? 4 : totalPages - 1) : (currentPage >= totalPages - 3 ? totalPages - 1 : currentPage + 2)}">
+          <!-- Trang đầu -->
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'active'">
+            <a class="page-link" th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=0)}">1</a>
           </li>
 
-          <!-- Các nút số trang -->
-          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-            th:if="${i >= currentPage - 2 and i <= currentPage + 2}" th:classappend="${currentPage == i} ? 'active'">
+          <!-- Dấu phân cách bên trái -->
+          <li class="page-item" th:if="${windowStart > 1}">
+            <a class="page-link" href="#" aria-label="Go to page"
+              th:attr="data-total-pages=${totalPages}, data-category=${activeCategoryId}, data-platform=${activePlatform}"
+              onclick="goToPage(event, this)">...</a>
+          </li>
+
+          <!-- Năm nút số trang quanh trang hiện tại -->
+          <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 2)}"
+            th:if="${totalPages > 2 and i >= windowStart and i <= windowEnd}"
+            th:classappend="${currentPage == i} ? 'active'">
             <a class="page-link" th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${i})}"
               th:text="${i + 1}">1</a>
           </li>
 
-          <!-- Nút trang sau (Next) -->
-          <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+          <!-- Dấu phân cách bên phải -->
+          <li class="page-item" th:if="${windowEnd < totalPages - 2}">
+            <a class="page-link" href="#" aria-label="Go to page"
+              th:attr="data-total-pages=${totalPages}, data-category=${activeCategoryId}, data-platform=${activePlatform}"
+              onclick="goToPage(event, this)">...</a>
+          </li>
+
+          <!-- Trang cuối -->
+          <li class="page-item"
+            th:classappend="${currentPage == totalPages - 1} ? 'active'">
             <a class="page-link"
-              th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${currentPage + 1})}"
-              aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
+              th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${totalPages - 1})}"
+              th:text="${totalPages}">6</a>
           </li>
         </ul>
       </div>
     </main>
   </div>
+
+  <script>
+    function goToPage(event, link) {
+      event.preventDefault();
+
+      const totalPages = Number(link.dataset.totalPages);
+      const input = window.prompt(`Enter page number: (1-${totalPages}):`);
+
+      if (input === null) {
+        return;
+      }
+
+      const requestedPage = Number(input.trim());
+      if (!Number.isInteger(requestedPage) || requestedPage < 1 || requestedPage > totalPages) {
+        window.alert(`Please enter 1 to ${totalPages}`);
+        return;
+      }
+
+      const params = new URLSearchParams();
+      if (link.dataset.category) {
+        params.set('category', link.dataset.category);
+      }
+      if (link.dataset.platform) {
+        params.set('platform', link.dataset.platform);
+      }
+      params.set('page', requestedPage - 1);
+
+      window.location.href = `/?${params.toString()}`;
+    }
+  </script>
 </body>
 
 </html>
