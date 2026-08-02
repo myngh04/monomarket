@@ -575,25 +575,8 @@
             <div class="item-subtext" th:text="'Code: ' + ${item.isbnOrJan}">Code: 9784774198801</div>
             <div class="stock-status">In Stock</div>
 
-            <!-- Bộ chọn số lượng -->
-            <div class="qty-control">
-              <!-- Giảm số lượng (-) -->
-              <form th:action="@{/cart/update}" method="post" style="margin: 0;">
-                <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
-                <input type="hidden" name="quantity" th:value="${item.quantity - 1}">
-                <button type="submit" class="qty-btn" title="Decrease quantity">-</button>
-              </form>
-
-              <!-- Số lượng hiện tại -->
-              <div class="qty-value" th:text="${item.quantity}">1</div>
-
-              <!-- Tăng số lượng (+) -->
-              <form th:action="@{/cart/update}" method="post" style="margin: 0;">
-                <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
-                <input type="hidden" name="quantity" th:value="${item.quantity + 1}">
-                <button type="submit" class="qty-btn" title="Increase quantity">+</button>
-              </form>
-            </div>
+            <!-- Serialized inventory: mỗi item vật lý chỉ có quantity = 1 -->
+            <div class="item-subtext">Quantity: 1</div>
           </div>
 
           <!-- Giá và nút xóa -->

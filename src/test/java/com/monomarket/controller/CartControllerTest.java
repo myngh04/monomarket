@@ -76,15 +76,15 @@ class CartControllerTest {
   @Test
   @DisplayName("3. POST /cart/update nên thực hiện redirect về /cart và gọi đúng cartService.updateQuantity")
   void shouldRedirectAfterUpdateQuantity() throws Exception {
-    // WHEN & THEN: Gửi request POST /cart/update để đổi số lượng thành 3
+    // WHEN & THEN: Gửi request POST /cart/update với quantity hợp lệ bằng 1
     mockMvc.perform(post("/cart/update")
         .param("inventoryItemId", "100")
-        .param("quantity", "3"))
+        .param("quantity", "1"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/cart"));
 
-    // Xác nhận controller đã gọi cartService.updateQuantity(100L, 3, ...)
-    verify(cartService).updateQuantity(eq(100L), eq(3), any(), any());
+    // Xác nhận controller đã chuyển quantity = 1 xuống service
+    verify(cartService).updateQuantity(eq(100L), eq(1), any(), any());
   }
 
   @Test

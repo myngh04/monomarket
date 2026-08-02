@@ -66,7 +66,8 @@ public class CartService {
 
     if (existingItem.isPresent()) {
       CartItem item = existingItem.get();
-      item.setQuantity(item.getQuantity() + 1); // Tăng số lượng lên 1
+      // Serialized inventory chỉ đại diện cho một món vật lý duy nhất.
+      item.setQuantity(1);
     } else {
       CartItem newItem = new CartItem(cart, inventoryItem, 1);
       cart.addCartItem(newItem);
@@ -175,12 +176,12 @@ public class CartService {
           .findFirst();
 
       if (userItemOpt.isPresent()) {
-        // Nếu item đã tồn tại trong giỏ hàng của user, cộng dồn số lượng
-        userItemOpt.get().setQuantity(userItemOpt.get().getQuantity() + guestItem.getQuantity());
+        // Không cộng dồn vì mỗi serialized inventory chỉ có quantity = 1.
+        userItemOpt.get().setQuantity(1);
       } else {
         // Nếu item chưa tồn tại trong giỏ hàng của user, thêm mới item vào giỏ hàng của
         // user
-        CartItem newItem = new CartItem(userCart, guestItem.getInventoryItem(), guestItem.getQuantity());
+        CartItem newItem = new CartItem(userCart, guestItem.getInventoryItem(), 1);
         userCart.addCartItem(newItem);
       }
     }
@@ -216,7 +217,8 @@ public class CartService {
       cart.getItems().stream()
           .filter(item -> item.getInventoryItem().getId().equals(inventoryItemId))
           .findFirst()
-          .ifPresent(item -> item.setQuantity(quantity));
+          // Giữ endpoint tương thích nhưng không cho serialized inventory có quantity > 1.
+          .ifPresent(item -> item.setQuantity(1));
       cartRepository.save(cart);
     }
   }
