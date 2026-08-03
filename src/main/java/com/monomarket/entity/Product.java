@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.hibernate.type.SqlTypes;
@@ -56,5 +57,26 @@ public class Product {
   @PreUpdate
   protected void onUpdate() {
     updatedAt = LocalDateTime.now();
+  }
+
+  // Chọn title tiếng Anh nếu có, nếu không fallback sang title tiếng Nhật.
+  public String getDisplayTitle() {
+    return titleEn != null && !titleEn.isBlank() ? titleEn : titleJa;
+  }
+
+  // Đọc giá thu mua tham khảo từ attributes của product và chuẩn hóa về BigDecimal.
+  public BigDecimal getBuybackPrice() {
+    Object rawPrice = attributes == null ? null : attributes.get("buyback_price");
+    if (rawPrice == null) {
+      throw new IllegalStateException("Buyback price is not configured for product: " + isbnOrJan);
+    }
+
+    try {
+      return rawPrice instanceof BigDecimal
+          ? (BigDecimal) rawPrice
+          : new BigDecimal(rawPrice.toString());
+    } catch (NumberFormatException exception) {
+      throw new IllegalStateException("Invalid buyback price for product: " + isbnOrJan, exception);
+    }
   }
 }
