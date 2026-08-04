@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,15 @@ public class BuybackRequest {
 
     @Column(precision = 12, scale = 2)
     private BigDecimal totalEstimatedPrice = BigDecimal.ZERO;
+
+    @Column(length = 1000)
+    private String description;
+
+    @Column(length = 500)
+    private String handoverAddress;
+
+    @Column
+    private LocalDate preferredHandoverDate;
 
     // Chiều ngược nối xuống danh sách các món đồ cụ thể trong đơn thu mua này
     @OneToMany(mappedBy = "buybackRequest", cascade = CascadeType.ALL, orphanRemoval = true)

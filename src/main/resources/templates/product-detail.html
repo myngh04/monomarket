@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="${product.titleJa} + ' - MonoMarket'">Product Detail</title>
-  
+
   <!-- Font hiện đại dùng cho giao diện -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <style>
     :root {
       --bg: #f8fafc;
@@ -27,12 +29,35 @@
     }
 
     /* Theme bìa sách mô phỏng theo từng category */
-    .theme-novels { --book-color: #3b82f6; --book-gradient: linear-gradient(135deg, #1e3a8a, #3b82f6); }
-    .theme-it { --book-color: #10b981; --book-gradient: linear-gradient(135deg, #064e3b, #10b981); }
-    .theme-magazines { --book-color: #f59e0b; --book-gradient: linear-gradient(135deg, #78350f, #f59e0b); }
-    .theme-manga { --book-color: #ec4899; --book-gradient: linear-gradient(135deg, #701a75, #ec4899); }
-    .theme-video { --book-color: #8b5cf6; --book-gradient: linear-gradient(135deg, #4c1d95, #8b5cf6); }
-    .theme-games { --book-color: #ef4444; --book-gradient: linear-gradient(135deg, #7f1d1d, #ef4444); }
+    .theme-novels {
+      --book-color: #3b82f6;
+      --book-gradient: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    }
+
+    .theme-it {
+      --book-color: #10b981;
+      --book-gradient: linear-gradient(135deg, #064e3b, #10b981);
+    }
+
+    .theme-magazines {
+      --book-color: #f59e0b;
+      --book-gradient: linear-gradient(135deg, #78350f, #f59e0b);
+    }
+
+    .theme-manga {
+      --book-color: #ec4899;
+      --book-gradient: linear-gradient(135deg, #701a75, #ec4899);
+    }
+
+    .theme-video {
+      --book-color: #8b5cf6;
+      --book-gradient: linear-gradient(135deg, #4c1d95, #8b5cf6);
+    }
+
+    .theme-games {
+      --book-color: #ef4444;
+      --book-gradient: linear-gradient(135deg, #7f1d1d, #ef4444);
+    }
 
     * {
       box-sizing: border-box;
@@ -166,7 +191,7 @@
       font-weight: 700;
       color: #ffffff;
       line-height: 1.4;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     /* Khu vực thông tin Product */
@@ -251,6 +276,47 @@
       color: #059669;
     }
 
+    .buyback-action {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-shrink: 0;
+    }
+
+    .buyback-price {
+      text-align: right;
+    }
+
+    .buyback-price-label {
+      display: block;
+      margin-bottom: 2px;
+      color: #047857;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .Request-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 8px;
+      background: #059669;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background .2s, transform .2s;
+    }
+
+    .Request-button:hover {
+      background: #047857;
+      transform: translateY(-1px);
+    }
+
     /* Khu vực chọn Inventory Item */
     .inventory-section {
       background-color: var(--card-bg);
@@ -302,10 +368,26 @@
       border-radius: 4px;
       text-align: center;
     }
-    .rank-new { background-color: #ef4444; color: #ffffff; }
-    .rank-a { background-color: #3b82f6; color: #ffffff; }
-    .rank-b { background-color: #10b981; color: #ffffff; }
-    .rank-c { background-color: #f59e0b; color: #ffffff; }
+
+    .rank-new {
+      background-color: #ef4444;
+      color: #ffffff;
+    }
+
+    .rank-a {
+      background-color: #3b82f6;
+      color: #ffffff;
+    }
+
+    .rank-b {
+      background-color: #10b981;
+      color: #ffffff;
+    }
+
+    .rank-c {
+      background-color: #f59e0b;
+      color: #ffffff;
+    }
 
     .price-tag {
       font-size: 18px;
@@ -346,12 +428,25 @@
         grid-template-columns: 1fr;
         gap: 32px;
       }
+
       .cover-pane {
         margin-bottom: 16px;
+      }
+
+      .buyback-banner {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .buyback-action {
+        width: 100%;
+        justify-content: space-between;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Header điều hướng -->
@@ -361,7 +456,8 @@
         <img th:src="@{/images/logo.png}" alt="MonoMarket" />
       </a>
       <div class="nav-actions">
-        <a href="/cart" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #f1f5f9; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; transition: all 0.2s ease;">
+        <a href="/cart"
+          style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #f1f5f9; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; transition: all 0.2s ease;">
           🛒 Cart
         </a>
         <a href="/" class="back-home-btn">← Back to Store</a>
@@ -371,21 +467,23 @@
 
   <main class="container">
     <div class="detail-grid">
-      
+
       <!-- Ảnh bìa Product mô phỏng -->
       <div class="cover-pane">
-        <div class="book-mockup" th:classappend="${product.category?.slug == 'books-novels' ? 'theme-novels' : 
+        <div class="book-mockup"
+          th:classappend="${product.category?.slug == 'books-novels' ? 'theme-novels' :
                                                 (product.category?.slug == 'books-it-computers' ? 'theme-it' : 
                                                  (product.category?.slug == 'books-magazines' ? 'theme-magazines' : 
                                                    (product.category?.slug.startsWith('manga') ? 'theme-manga' : 
                                                     (product.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}">
           <div class="book-spine-line"></div>
-          <span class="book-tag" th:text="${product.category?.slug.startsWith('games') ? 'Game' : (product.category?.slug.startsWith('video') ? 'DVD/Blu-ray' : (product.category?.slug.startsWith('manga') ? 'Manga' : 'Book'))}"></span>
+          <span class="book-tag"
+            th:text="${product.category?.slug.startsWith('games') ? 'Game' : (product.category?.slug.startsWith('video') ? 'DVD/Blu-ray' : (product.category?.slug.startsWith('manga') ? 'Manga' : 'Book'))}"></span>
           <h4 class="book-title-mockup">
             <span th:text="${product.titleJa}">傲慢と善良</span>
-            <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 8px; opacity: 0.9;" 
-                  th:if="${product.attributes['volume'] != null}" 
-                  th:text="'Vol. ' + ${product.attributes['volume']}">Vol. 1</span>
+            <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 8px; opacity: 0.9;"
+              th:if="${product.attributes['volume'] != null}" th:text="'Vol. ' + ${product.attributes['volume']}">Vol.
+              1</span>
           </h4>
         </div>
       </div>
@@ -406,23 +504,24 @@
             <td class="label">Type</td>
             <td class="value" th:text="${product.category?.parent?.nameEn}">Game Software</td>
           </tr>
-          
+
           <!-- Tác giả hoặc Studio, không áp dụng cho game -->
           <tr th:if="${product.attributes['author'] != null and !product.category?.slug.startsWith('games')}">
             <td class="label" th:text="${product.category?.slug.startsWith('video') ? 'Studio' : 'Author'}">Author</td>
             <td class="value" th:text="${product.attributes['author']}">辻村深月</td>
           </tr>
-          
+
           <tr th:if="${product.attributes['group_name'] != null and !product.category?.slug.startsWith('games')}">
             <td class="label">Series</td>
             <td class="value" th:text="${product.attributes['group_name']}">傲慢と善良</td>
           </tr>
-          
+
           <tr th:if="${product.attributes['publisher'] != null and !product.category?.slug.startsWith('games')}">
-            <td class="label" th:text="${product.category?.slug.startsWith('video') ? 'Type' : 'Publisher'}">Publisher</td>
+            <td class="label" th:text="${product.category?.slug.startsWith('video') ? 'Type' : 'Publisher'}">Publisher
+            </td>
             <td class="value" th:text="${product.attributes['publisher']}">朝日新聞出版</td>
           </tr>
-          
+
           <tr>
             <td class="label">ISBN / JAN Barcode</td>
             <td class="value" style="font-family: monospace;" th:text="${product.isbnOrJan}">9784022515964</td>
@@ -436,21 +535,27 @@
         <!-- Banner khuyến khích user bán lại sản phẩm -->
         <div class="buyback-banner" th:if="${product.attributes['buyback_price'] != null}">
           <div>
-            <div class="buyback-title">Sell This Item Back to Us</div>
-            <div class="buyback-desc">Bring this item to our store or submit online. Quality rank determines final valuation.</div>
+            <div class="buyback-title">We offer buyback for this item</div>
+            <div class="buyback-desc">Bring your item to our store or submit online request.
+              <br>
+              Quality rank determines final valuation.
+            </div>
           </div>
-          <div>
-            <span class="buyback-price-val" th:text="'¥' + ${product.attributes['buyback_price']}">¥137</span>
+          <div class="buyback-action">
+            <div class="buyback-price">
+              <span class="buyback-price-label">Estimated value</span>
+              <span class="buyback-price-val" th:text="'¥' + ${product.attributes['buyback_price']}">¥137</span>
+            </div>
+            <a th:href="@{/buyback(isbnOrJan=${product.isbnOrJan})}" class="Request-button">Create a request</a>
           </div>
         </div>
 
         <!-- Danh sách Inventory Item với các rank hiện có để lựa chọn -->
-        <div class="inventory-section"
-             th:with="availableItems=${product.inventoryItems.?[status == 'AVAILABLE']}">
+        <div class="inventory-section" th:with="availableItems=${product.inventoryItems.?[status == 'AVAILABLE']}">
           <h3 class="inventory-title">
             <span>Available in Store</span>
-            <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);" 
-                  th:text="${#lists.size(availableItems)} + ' item(s) in stock'">1 item</span>
+            <span style="font-size: 13px; font-weight: 500; color: var(--text-muted);"
+              th:text="${#lists.size(availableItems)} + ' item(s) in stock'">1 item</span>
           </h3>
 
           <table class="inventory-table" th:if="${not #lists.isEmpty(availableItems)}">
@@ -466,19 +571,19 @@
               <tr th:each="item : ${availableItems}">
                 <td style="font-family: monospace;" th:text="${item.instoreCode}">0019198801-U01</td>
                 <td>
-                  <span class="rank-badge" 
-                        th:classappend="${item.conditionRank == 'NEW' ? 'rank-new' : 
+                  <span class="rank-badge" th:classappend="${item.conditionRank == 'NEW' ? 'rank-new' :
                                          (item.conditionRank == 'A' ? 'rank-a' : 
                                           (item.conditionRank == 'B' ? 'rank-b' : 'rank-c'))}"
-                        th:text="${item.conditionRank}">A</span>
+                    th:text="${item.conditionRank}">A</span>
                 </td>
                 <td>
-                  <span class="price-tag" th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥750</span>
+                  <span class="price-tag"
+                    th:text="'¥' + ${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥750</span>
                 </td>
                 <td>
                   <!-- Guest và user đã đăng nhập đều được phép thêm Inventory Item vào cart -->
                   <form th:action="@{/cart/add}" method="post" style="margin: 0;"
-                        sec:authorize="isAnonymous() or isAuthenticated()">
+                    sec:authorize="isAnonymous() or isAuthenticated()">
                     <input type="hidden" name="inventoryItemId" th:value="${item.id}">
                     <button type="submit" class="buy-btn">Add to Cart</button>
                   </form>
@@ -488,9 +593,12 @@
           </table>
 
           <div class="out-of-stock-txt" th:if="${#lists.isEmpty(availableItems)}">
-            This item is currently out of stock. 
+            This item is currently out of stock.
             <br>
             You can submit a Buyback Request to sell this item to us.
+            <br>
+            <a th:href="@{/buyback(isbnOrJan=${product.isbnOrJan})}" class="Request-button"
+              style="margin-top: 12px;">Create a request</a>
           </div>
         </div>
 
@@ -499,4 +607,5 @@
   </main>
 
 </body>
+
 </html>

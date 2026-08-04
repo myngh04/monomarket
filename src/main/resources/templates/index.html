@@ -131,10 +131,12 @@
       font-size: 14px;
       color: var(--text-muted);
     }
+
     .user-name {
       font-weight: 600;
       color: var(--text-main);
     }
+
     .logout-btn {
       background: transparent;
       border: 1px solid var(--border);
@@ -146,11 +148,13 @@
       font-weight: 500;
       transition: all 0.2s ease;
     }
+
     .logout-btn:hover {
       border-color: #ef4444;
       color: #ef4444;
       background-color: rgba(239, 68, 68, 0.05);
     }
+
     .login-btn-nav {
       background-color: var(--primary);
       color: #ffffff;
@@ -160,6 +164,7 @@
       font-weight: 600;
       transition: all 0.2s ease;
     }
+
     .login-btn-nav:hover {
       background-color: var(--primary-dark);
       transform: translateY(-1px);
@@ -241,7 +246,7 @@
     .category-details {
       margin-bottom: 2px;
     }
-    
+
     .category-summary {
       display: flex;
       align-items: center;
@@ -253,9 +258,10 @@
       cursor: pointer;
       border-radius: var(--radius-sm);
       transition: background-color 0.2s ease;
-      list-style: none; /* Ẩn mũi tên mặc định */
+      list-style: none;
+      /* Ẩn mũi tên mặc định */
     }
-    
+
     .category-summary::-webkit-details-marker {
       display: none;
     }
@@ -263,18 +269,18 @@
     .category-summary:hover {
       background-color: var(--border);
     }
-    
+
     .category-summary::after {
       content: "▼";
       font-size: 10px;
       color: var(--text-muted);
       transition: transform 0.2s ease;
     }
-    
-    .category-details[open] > .category-summary::after {
+
+    .category-details[open]>.category-summary::after {
       transform: rotate(180deg);
     }
-    
+
     .filter-sublist {
       list-style: none;
       padding-left: 12px;
@@ -284,7 +290,7 @@
       flex-direction: column;
       gap: 4px;
     }
-    
+
     .filter-sublist a {
       display: block;
       padding: 8px 12px;
@@ -295,12 +301,12 @@
       border-radius: var(--radius-sm);
       transition: all 0.2s ease;
     }
-    
+
     .filter-sublist a:hover {
       color: var(--text-main);
       background-color: var(--border);
     }
-    
+
     .filter-sublist a.active-link {
       background-color: var(--primary-light);
       color: var(--primary);
@@ -626,7 +632,8 @@
         </div>
 
         <!-- Nút Giỏ Hàng -->
-        <a href="/cart" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #f1f5f9; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; transition: all 0.2s ease;">
+        <a href="/cart"
+          style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #f1f5f9; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; transition: all 0.2s ease;">
           🛒 Cart
         </a>
 
@@ -637,7 +644,8 @@
 
         <!-- Hiển thị khi ĐÃ ĐĂNG NHẬP -->
         <div sec:authorize="isAuthenticated()" class="user-info" style="display: flex; align-items: center; gap: 12px;">
-          <a th:href="@{/profile}" class="user-name" style="text-decoration: none; color: var(--primary); font-weight: 600;" title="View Profile">
+          <a th:href="@{/profile}" class="user-name"
+            style="text-decoration: none; color: var(--primary); font-weight: 600;" title="View Profile">
             👤 <span sec:authentication="name">User</span>
           </a>
           <form th:action="@{/logout}" method="post" style="display: inline;">
@@ -654,7 +662,8 @@
       <h4 class="filter-section-title">Categories</h4>
       <ul class="filter-list">
         <li class="filter-item">
-          <a th:href="@{/}" th:classappend="${activeCategoryId == null && activePlatform == null ? 'active-link' : ''}" style="display: block; padding: 10px 14px; font-weight: 600; color: var(--text-main); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease;">
+          <a th:href="@{/}" th:classappend="${activeCategoryId == null && activePlatform == null ? 'active-link' : ''}"
+            style="display: block; padding: 10px 14px; font-weight: 600; color: var(--text-main); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease;">
             <span>All Categories</span>
           </a>
         </li>
@@ -666,14 +675,13 @@
             </summary>
             <ul class="filter-sublist">
               <li th:each="subCat : ${topCat.children}">
-                
+
                 <!-- Category cấp 2 không có category con -->
-                <a th:if="${#lists.isEmpty(subCat.children)}" 
-                   th:href="@{/(category=${subCat.id})}"
-                   th:classappend="${activeCategoryId == subCat.id ? 'active-link' : ''}">
+                <a th:if="${#lists.isEmpty(subCat.children)}" th:href="@{/(category=${subCat.id})}"
+                  th:classappend="${activeCategoryId == subCat.id ? 'active-link' : ''}">
                   <span th:text="${#locale.language == 'ja' ? subCat.nameJa : subCat.nameEn}">Sub Category</span>
                 </a>
-                
+
                 <!-- Category cấp 2 có category con, ví dụ Game Software → Switch, PS5 -->
                 <details th:if="${not #lists.isEmpty(subCat.children)}" class="category-details" open>
                   <summary class="category-summary sub-summary">
@@ -682,13 +690,14 @@
                   <ul class="filter-sublist" style="padding-left: 16px;">
                     <li th:each="leafCat : ${subCat.children}">
                       <a th:href="@{/(category=${leafCat.id})}"
-                         th:classappend="${activeCategoryId == leafCat.id ? 'active-link' : ''}">
-                        <span th:text="${#locale.language == 'ja' ? leafCat.nameJa : leafCat.nameEn}">Leaf Category</span>
+                        th:classappend="${activeCategoryId == leafCat.id ? 'active-link' : ''}">
+                        <span th:text="${#locale.language == 'ja' ? leafCat.nameJa : leafCat.nameEn}">Leaf
+                          Category</span>
                       </a>
                     </li>
                   </ul>
                 </details>
-                
+
               </li>
             </ul>
           </details>
@@ -722,7 +731,8 @@
                                                (p.category?.slug.startsWith('manga') ? 'theme-manga' : 
                                                 (p.category?.slug.startsWith('video') ? 'theme-video' : 'theme-games'))))}">
               <div class="book-spine-line"></div>
-              <span class="book-tag" th:text="${p.category?.slug.startsWith('games') ? 'Game' : (p.category?.slug.startsWith('video') ? 'DVD/Blu-ray' : (p.category?.slug.startsWith('manga') ? 'Manga' : 'Book'))}"></span>
+              <span class="book-tag"
+                th:text="${p.category?.slug.startsWith('games') ? 'Game' : (p.category?.slug.startsWith('video') ? 'DVD/Blu-ray' : (p.category?.slug.startsWith('manga') ? 'Manga' : 'Book'))}"></span>
               <h4 class="book-title-mockup">
                 <span th:text="${p.titleJa}">傲慢と善良</span>
                 <span style="display: block; font-size: 13px; font-weight: 500; margin-top: 4px; opacity: 0.9;"
@@ -735,7 +745,8 @@
           <div class="book-info-body">
             <div class="book-meta">
               <!-- Platform và type, chỉ áp dụng cho game -->
-              <div class="meta-row" th:if="${p.category?.slug.startsWith('games') and p.attributes['platform'] != null}">
+              <div class="meta-row"
+                th:if="${p.category?.slug.startsWith('games') and p.attributes['platform'] != null}">
                 <span>Platform:</span>
                 <span class="meta-value" th:text="${p.attributes['platform']}">Nintendo Switch</span>
               </div>
@@ -749,11 +760,13 @@
                 <span th:text="${p.category?.slug.startsWith('video') ? 'Studio:' : 'Author:'}">Author:</span>
                 <span class="meta-value" th:text="${p.attributes['author']}">辻村深月</span>
               </div>
-              <div class="meta-row" th:if="${p.attributes['group_name'] != null and !p.category?.slug.startsWith('games')}">
+              <div class="meta-row"
+                th:if="${p.attributes['group_name'] != null and !p.category?.slug.startsWith('games')}">
                 <span>Series:</span>
                 <span class="meta-value" th:text="${p.attributes['group_name']}">ルリドラゴン</span>
               </div>
-              <div class="meta-row" th:if="${p.attributes['publisher'] != null and !p.category?.slug.startsWith('games')}">
+              <div class="meta-row"
+                th:if="${p.attributes['publisher'] != null and !p.category?.slug.startsWith('games')}">
                 <span th:text="${p.category?.slug.startsWith('video') ? 'Type:' : 'Publisher:'}">Publisher:</span>
                 <span class="meta-value" th:text="${p.attributes['publisher']}">単行本</span>
               </div>
@@ -774,8 +787,7 @@
             </div>
 
             <!-- Mức Inventory và Stock hiện có -->
-            <div class="inventory-section"
-              th:with="availableItems=${p.inventoryItems.?[status == 'AVAILABLE']}">
+            <div class="inventory-section" th:with="availableItems=${p.inventoryItems.?[status == 'AVAILABLE']}">
               <h5 class="inventory-title">Stock Available</h5>
               <div class="inventory-list" th:if="${not #lists.isEmpty(availableItems)}">
                 <div class="inventory-item-row" th:each="item : ${availableItems}">
@@ -827,8 +839,7 @@
           </li>
 
           <!-- Trang cuối -->
-          <li class="page-item"
-            th:classappend="${currentPage == totalPages - 1} ? 'active'">
+          <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'active'">
             <a class="page-link"
               th:href="@{/(category=${activeCategoryId}, platform=${activePlatform}, page=${totalPages - 1})}"
               th:text="${totalPages}">6</a>

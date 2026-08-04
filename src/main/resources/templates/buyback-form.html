@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyback Request - MonoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1e40af;
+      --accent: #6366f1;
+      --bg-light: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --success: #15803d;
+      --danger: #b91c1c;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding-bottom: 60px;
+      background: var(--bg-light);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 5px 0;
+      margin-bottom: 34px;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header-wrap,
+    .header-actions,
+    .title-row,
+    .form-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-wrap {
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .logo-img {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-actions {
+      justify-content: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .header-link:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+
+    .header-user {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .logout {
+      margin: 0;
+    }
+
+    .logout button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .logout button:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .page-heading {
+      max-width: 700px;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      letter-spacing: -.03em;
+    }
+
+    .lead {
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+      padding: 28px;
+    }
+
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 20px;
+    }
+
+    .card-intro {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0 0 22px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .optional {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      padding: 12px 13px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    textarea {
+      min-height: 105px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .12);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-row input {
+      min-width: 0;
+    }
+
+    .lookup-button,
+    .submit-button {
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .lookup-button {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 0 16px;
+    }
+
+    .lookup-button:hover {
+      background: #c7d2fe;
+    }
+
+    .submit-button {
+      background: var(--primary);
+      padding: 13px 22px;
+    }
+
+    .submit-button:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    .submit-button:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+
+    .hint,
+    .field-error,
+    .lookup-status {
+      display: block;
+      font-size: 12px;
+      margin-top: 7px;
+    }
+
+    .hint {
+      color: var(--muted);
+    }
+
+    .field-error {
+      color: var(--danger);
+    }
+
+    .lookup-status {
+      min-height: 17px;
+      color: var(--muted);
+    }
+
+    .lookup-status.success {
+      color: var(--success);
+    }
+
+    .lookup-status.error {
+      color: var(--danger);
+    }
+
+    .product-preview {
+      display: grid;
+      gap: 12px;
+      margin: 6px 0 20px;
+      padding: 16px;
+      border: 1px solid #c7d2fe;
+      border-radius: 10px;
+      background: #eef2ff;
+    }
+
+    .product-preview.hidden {
+      display: none;
+    }
+
+    .preview-label {
+      color: #6366f1;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .preview-title {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .preview-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #475569;
+      font-size: 12px;
+    }
+
+    .preview-price {
+      color: var(--success);
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .form-actions {
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .secondary-link {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .secondary-link:hover {
+      color: var(--primary);
+    }
+
+    .alert {
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+
+    .alert-error {
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: var(--danger);
+    }
+
+    .tips {
+      display: grid;
+      gap: 16px;
+    }
+
+    .tip {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .tip-icon {
+      display: grid;
+      place-items: center;
+      flex: 0 0 30px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #eef2ff;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .tip strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .tip span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 760px) {
+      header {
+        margin-bottom: 24px;
+      }
+
+      .header-wrap {
+        align-items: flex-start;
+      }
+
+      .header-actions {
+        gap: 8px 12px;
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      h1 {
+        font-size: 27px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 21px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .container {
+        padding: 0 14px;
+      }
+
+      .logo-img {
+        height: 70px;
+      }
+
+      .input-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .lookup-button {
+        min-height: 42px;
+      }
+
+      .form-actions {
+        align-items: stretch;
+        flex-direction: column-reverse;
+      }
+
+      .submit-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-wrap">
+      <a href="/" class="logo"><img th:src="@{/images/logo.png}" alt="MonoMarket Logo" class="logo-img"></a>
+      <div class="header-actions">
+        <a th:href="@{/profile} + '#buyback-requests'" class="header-link">My Buyback Requests</a>
+        <span class="header-user" sec:authentication="name">user@monomarket.com</span>
+        <form th:action="@{/logout}" method="post" class="logout"><button type="submit">Logout</button></form>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-heading">
+      <div class="eyebrow">C2B · Buyback</div>
+      <h1>Create a Buyback Request</h1>
+      <p class="lead">Tell us what you have. We will verify the catalog item, review its condition, and get it ready for
+        an in-store inspection.</p>
+    </section>
+
+    <div class="layout">
+      <section class="card">
+        <h2>Product information</h2>
+        <p class="card-intro">Only products already registered in MonoMarket can be submitted.</p>
+
+        <form th:action="@{/buyback}" th:object="${buybackForm}" method="post" id="buyback-form">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+          <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error">
+            <div th:each="error : ${#fields.globalErrors()}" th:text="${error}">Unable to submit request.</div>
+          </div>
+
+          <div class="field">
+            <label for="submittedIsbnOrJan">ISBN / JAN</label>
+            <div class="input-row">
+              <input type="text" id="submittedIsbnOrJan" th:field="*{submittedIsbnOrJan}"
+                placeholder="Enter the ISBN or JAN code" autocomplete="off">
+              <button type="button" class="lookup-button" id="lookup-button" data-lookup-url="/buyback/products/lookup"
+                th:attr="data-lookup-url=@{/buyback/products/lookup}">Check code</button>
+            </div>
+            <span class="hint">The code must match an existing catalog product.</span>
+            <span class="field-error" th:if="${#fields.hasErrors('submittedIsbnOrJan')}"
+              th:errors="*{submittedIsbnOrJan}"></span>
+            <span class="lookup-status" id="lookup-status" aria-live="polite"></span>
+          </div>
+
+          <div id="product-preview" class="product-preview" th:classappend="${lookupProduct == null} ? ' hidden' : ''">
+            <div class="preview-label">Catalog match</div>
+            <div class="preview-title" id="preview-title" th:text="${lookupProduct != null ? lookupProduct.title : ''}">
+              Product title</div>
+            <div class="preview-meta">
+              <span>Estimated Buyback value</span>
+              <span class="preview-price" id="preview-price"
+                th:text="${lookupProduct != null ? '¥' + #numbers.formatDecimal(lookupProduct.estimatedBuybackPrice, 0, 'COMMA', 0, 'POINT') : ''}">¥0</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="userConditionRank">Your condition assessment</label>
+            <select id="userConditionRank" th:field="*{userConditionRank}">
+              <option value="">Select a rank</option>
+              <option value="S">S — Like new</option>
+              <option value="A">A — Very good</option>
+              <option value="B">B — Good</option>
+              <option value="C">C — Visible wear</option>
+            </select>
+            <span class="field-error" th:if="${#fields.hasErrors('userConditionRank')}"
+              th:errors="*{userConditionRank}"></span>
+          </div>
+
+          <div class="field">
+            <label for="handoverAddress">Handover address</label>
+            <input type="text" id="handoverAddress" th:field="*{handoverAddress}"
+              placeholder="Where should we receive the item?" autocomplete="street-address">
+            <span class="field-error" th:if="${#fields.hasErrors('handoverAddress')}"
+              th:errors="*{handoverAddress}"></span>
+          </div>
+
+          <div class="field">
+            <label for="preferredHandoverDate">Preferred handover date</label>
+            <input type="date" id="preferredHandoverDate" th:field="*{preferredHandoverDate}">
+            <span class="field-error" th:if="${#fields.hasErrors('preferredHandoverDate')}"
+              th:errors="*{preferredHandoverDate}"></span>
+          </div>
+
+          <div class="field">
+            <label for="description">Additional note <span class="optional">(optional)</span></label>
+            <textarea id="description" th:field="*{description}" maxlength="1000"
+              placeholder="Anything we should know about this item?"></textarea>
+            <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+          </div>
+
+          <div class="form-actions">
+            <a th:href="@{/}" class="secondary-link">← Continue shopping</a>
+            <button type="submit" class="submit-button" id="submit-button" disabled>Submit Buyback Request</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="card">
+        <h2>How it works</h2>
+        <p class="card-intro">Your estimate is a reference only. Our team confirms the final offer after inspection.</p>
+        <div class="tips">
+          <div class="tip">
+            <div class="tip-icon">1</div>
+            <div><strong>Check the code</strong><span>Use the ISBN or JAN printed on the product.</span></div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">2</div>
+            <div><strong>Describe the condition</strong><span>Choose the rank that best matches the item.</span></div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">3</div>
+            <div><strong>Bring it to us</strong><span>We will review your request and inspect the item at
+                handover.</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script th:inline="javascript">
+    const codeInput = document.getElementById('submittedIsbnOrJan');
+    const lookupButton = document.getElementById('lookup-button');
+    const lookupStatus = document.getElementById('lookup-status');
+    const preview = document.getElementById('product-preview');
+    const previewTitle = document.getElementById('preview-title');
+    const previewPrice = document.getElementById('preview-price');
+    const submitButton = document.getElementById('submit-button');
+    const lookupUrl = lookupButton.dataset.lookupUrl;
+    let productReady = /*[[${lookupProduct != null}]]*/ false;
+
+    function setProductReady(isReady) {
+      productReady = isReady;
+      submitButton.disabled = !isReady;
+    }
+
+    function formatPrice(value) {
+      return '¥' + new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(value);
+    }
+
+    async function lookupProduct() {
+      const code = codeInput.value.trim();
+      setProductReady(false);
+      preview.classList.add('hidden');
+      lookupStatus.className = 'lookup-status';
+
+      if (!code) {
+        lookupStatus.textContent = 'Enter an ISBN or JAN code first.';
+        lookupStatus.classList.add('error');
+        return;
+      }
+
+      lookupButton.disabled = true;
+      lookupButton.textContent = 'Checking...';
+      lookupButton.setAttribute('aria-busy', 'true');
+      lookupStatus.textContent = 'Checking catalog...';
+      try {
+        const response = await fetch(lookupUrl + '?submittedIsbnOrJan=' + encodeURIComponent(code), {
+          headers: { 'Accept': 'application/json' }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Product was not found.');
+
+        previewTitle.textContent = data.title;
+        previewPrice.textContent = formatPrice(data.estimatedBuybackPrice);
+        preview.classList.remove('hidden');
+        lookupStatus.textContent = 'Product found. You can continue.';
+        lookupStatus.classList.add('success');
+        setProductReady(true);
+      } catch (error) {
+        lookupStatus.textContent = error.message;
+        lookupStatus.classList.add('error');
+      } finally {
+        lookupButton.disabled = false;
+        lookupButton.textContent = 'Check code';
+        lookupButton.removeAttribute('aria-busy');
+      }
+    }
+
+    codeInput.addEventListener('input', () => {
+      setProductReady(false);
+      preview.classList.add('hidden');
+      lookupStatus.textContent = '';
+      lookupStatus.className = 'lookup-status';
+    });
+    lookupButton.addEventListener('click', lookupProduct);
+    codeInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') { event.preventDefault(); lookupProduct(); }
+    });
+    document.getElementById('buyback-form').addEventListener('submit', (event) => {
+      if (!productReady) {
+        event.preventDefault();
+        lookupStatus.textContent = 'Check a valid product code before submitting.';
+        lookupStatus.className = 'lookup-status error';
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -22,14 +22,14 @@ public class BuybackRequestItem {
 
   // Nếu hệ thống nhận diện được mã vạch ISBN/JAN thì nối thẳng vào Catalog
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "product_id")
+  @JoinColumn(name = "product_id", nullable = false)
   private Product product;
 
-  @Column(nullable = false, length = 255)
-  private String userDeclaredTitle; // Khách tự gõ tên sản phẩm nếu không có mã vạch
+  @Column(name = "submitted_isbn_or_jan", nullable = false, length = 50)
+  private String submittedIsbnOrJan; // Mã ISBN/JAN user nhập để tra catalog
 
-  @Column(length = 50)
-  private String userDeclaredCondition; // Khách tự đánh giá (Ví dụ: "Hơi trầy xước nhẹ")
+  @Column(name = "user_condition_rank", length = 5)
+  private String userConditionRank; // Rank user tự đánh giá: S, A, B hoặc C
 
   @Column(length = 5)
   private String finalConditionRank; // S, A, B, C (Rank chuẩn sau khi thẩm định viên của sàn kiểm tra)
