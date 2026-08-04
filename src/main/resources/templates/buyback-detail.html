@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyback Request - MonoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1e40af;
+      --bg: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #6366f1;
+      --success: #15803d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding-bottom: 60px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 5px 0;
+      margin-bottom: 34px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header-wrap,
+    .header-actions,
+    .back-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-wrap {
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .logo-img {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-actions {
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .header-link:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+
+    .header-user {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .logout {
+      margin: 0;
+    }
+
+    .logout button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .back-row {
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .back-link {
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -.03em;
+    }
+
+    .header-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .status {
+      display: inline-flex;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .summary-item {
+      padding: 14px;
+      border-radius: 9px;
+      background: #f8fafc;
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .estimate {
+      color: var(--success);
+      font-size: 20px;
+    }
+
+    .section-title {
+      margin: 0 0 16px;
+      font-size: 18px;
+    }
+
+    .product-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .product-title {
+      margin: 0 0 6px;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .product-code,
+    .note,
+    .field-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .product-code {
+      margin-bottom: 13px;
+    }
+
+    .rank {
+      display: inline-flex;
+      padding: 5px 9px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .product-price {
+      text-align: right;
+      min-width: 130px;
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .price-value {
+      margin-top: 5px;
+      color: var(--success);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .info-value {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .note {
+      margin: 0;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .muted-box {
+      padding: 13px 15px;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 650px) {
+      .header-wrap {
+        align-items: flex-start;
+      }
+
+      .header-user {
+        display: none;
+      }
+
+      .header-line {
+        flex-direction: column;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-row {
+        flex-direction: column;
+      }
+
+      .product-price {
+        text-align: left;
+      }
+
+      .info-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .container {
+        padding: 0 14px;
+      }
+
+      .logo-img {
+        height: 70px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container header-wrap">
+      <a href="/" class="logo"><img th:src="@{/images/logo.png}" alt="MonoMarket Logo" class="logo-img"></a>
+      <div class="header-actions">
+        <a th:href="@{/profile} + '#buyback-requests'" class="header-link">My Buyback Requests</a>
+        <span class="header-user" sec:authentication="name">user@monomarket.com</span>
+        <form th:action="@{/logout}" method="post" class="logout"><button type="submit">Logout</button></form>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="back-row"><a th:href="@{/profile} + '#buyback-requests'" class="back-link">← Back to profile</a></div>
+
+    <div class="header-line">
+      <div>
+        <div class="eyebrow">Buyback request</div>
+        <h1 th:text="'Request #' + ${buybackRequest.id}">Request #1</h1>
+      </div>
+      <span class="status" th:text="${buybackRequest.status}">PENDING</span>
+    </div>
+
+    <section class="card">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="summary-label">Submitted</div>
+          <div class="summary-value" th:text="${#temporals.format(buybackRequest.createdAt, 'yyyy-MM-dd HH:mm')}">
+            2026-08-04 10:00</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Estimated value</div>
+          <div class="summary-value estimate"
+            th:text="'¥' + ${#numbers.formatDecimal(buybackRequest.totalEstimatedPrice, 0, 'COMMA', 0, 'POINT')}">¥1,250
+          </div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Final offer</div>
+          <div class="summary-value" th:if="${buybackRequest.items[0].finalBuyPrice != null}"
+            th:text="'¥' + ${#numbers.formatDecimal(buybackRequest.items[0].finalBuyPrice, 0, 'COMMA', 0, 'POINT')}">
+            ¥1,000</div>
+          <div class="summary-value muted" th:unless="${buybackRequest.items[0].finalBuyPrice != null}">Pending
+            inspection</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Submitted item</h2>
+      <div class="product-row" th:each="item : ${buybackRequest.items}">
+        <div>
+          <h3 class="product-title" th:text="${item.product.displayTitle}">Product title</h3>
+          <div class="product-code" th:text="${item.submittedIsbnOrJan}">ISBN/JAN</div>
+          <span class="rank" th:text="'Self-assessed condition: ' + ${item.userConditionRank}">Self-assessed condition:
+            A</span>
+        </div>
+        <div class="product-price">
+          <div class="price-label">Final price</div>
+          <div class="price-value" th:if="${item.finalBuyPrice != null}"
+            th:text="'¥' + ${#numbers.formatDecimal(item.finalBuyPrice, 0, 'COMMA', 0, 'POINT')}">¥1,000</div>
+          <div class="muted" th:unless="${item.finalBuyPrice != null}">Not available yet</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Handover details</h2>
+      <div class="info-list">
+        <div class="info-row">
+          <div class="field-label">Preferred date</div>
+          <div class="info-value" th:text="${buybackRequest.preferredHandoverDate}">2026-08-10</div>
+        </div>
+        <div class="info-row">
+          <div class="field-label">Address</div>
+          <div class="info-value" th:text="${buybackRequest.handoverAddress}">123 Test Street</div>
+        </div>
+        <div class="info-row" th:if="${buybackRequest.description != null and !buybackRequest.description.isBlank()}">
+          <div class="field-label">Additional note</div>
+          <p class="note" th:text="${buybackRequest.description}">Additional notes</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="muted-box">The estimated value is for reference only. The final Buyback value is determined after our
+      team inspects the item.</div>
+  </main>
+</body>
+
+</html>
