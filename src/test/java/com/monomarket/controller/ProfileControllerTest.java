@@ -30,7 +30,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.monomarket.entity.User;
+import com.monomarket.entity.BuybackRequest;
 import com.monomarket.dto.OrderDto;
+import com.monomarket.service.BuybackService;
 import com.monomarket.service.OrderService;
 import com.monomarket.service.UserService;
 
@@ -46,6 +48,9 @@ class ProfileControllerTest {
   @MockitoBean
   private OrderService orderService;
 
+  @MockitoBean
+  private BuybackService buybackService;
+
   private User mockUser;
 
   @BeforeEach
@@ -57,6 +62,7 @@ class ProfileControllerTest {
     mockUser.setPhone("0901234567");
 
     when(userService.findByEmail("user@example.com")).thenReturn(Optional.of(mockUser));
+    when(buybackService.getRequestsByUser(mockUser)).thenReturn(List.of());
   }
 
   @Test
@@ -69,7 +75,8 @@ class ProfileControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("profile"))
         .andExpect(model().attributeExists("profile"))
-        .andExpect(model().attributeExists("recentOrders"));
+        .andExpect(model().attributeExists("recentOrders"))
+        .andExpect(model().attributeExists("buybackRequests"));
   }
 
   @Test
@@ -85,6 +92,18 @@ class ProfileControllerTest {
     mockMvc.perform(get("/profile"))
         .andExpect(status().isOk())
         .andExpect(model().attribute("recentOrders", org.hamcrest.Matchers.hasSize(6)));
+  }
+
+  @Test
+  @WithMockUser(username = "user@example.com")
+  @DisplayName("GET /profile - Trả lịch sử Buyback của user để render trên Profile")
+  void shouldExposeBuybackRequestsForProfileHistory() throws Exception {
+    when(orderService.getOrdersByUser(any(User.class))).thenReturn(List.of());
+    when(buybackService.getRequestsByUser(mockUser)).thenReturn(List.of(new BuybackRequest()));
+
+    mockMvc.perform(get("/profile"))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("buybackRequests", org.hamcrest.Matchers.hasSize(1)));
   }
 
   @Test
