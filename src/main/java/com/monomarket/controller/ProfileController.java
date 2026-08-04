@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.monomarket.dto.OrderDto;
 import com.monomarket.dto.UserProfileDto;
 import com.monomarket.entity.User;
+import com.monomarket.service.BuybackService;
 import com.monomarket.service.OrderService;
 import com.monomarket.service.UserService;
 
@@ -25,6 +26,7 @@ public class ProfileController {
 
   private final UserService userService;
   private final OrderService orderService;
+  private final BuybackService buybackService;
 
   // Helper: Lấy User đang đăng nhập — nếu chưa đăng nhập trả về null
   private User getCurrentUser(Authentication authentication) {
@@ -35,7 +37,8 @@ public class ProfileController {
     return null;
   }
 
-  // 1. GET /profile — Trang cá nhân: Thông tin tài khoản + Lịch sử đơn hàng gần đây
+  // 1. GET /profile — Trang cá nhân: Thông tin tài khoản + Lịch sử đơn hàng gần
+  // đây
   @GetMapping("/profile")
   public String showProfilePage(Authentication authentication, Model model) {
     User user = getCurrentUser(authentication);
@@ -46,8 +49,7 @@ public class ProfileController {
     UserProfileDto profileDto = new UserProfileDto(
         user.getEmail(),
         user.getFullName(),
-        user.getPhone()
-    );
+        user.getPhone());
 
     // Profile là trang tổng quan đơn hàng chính. View hiển thị 5 dòng đầu tiên
     // và cho phép mở rộng dần bằng dropdown giới hạn hiển thị, nhờ đó user vẫn
@@ -56,6 +58,7 @@ public class ProfileController {
 
     model.addAttribute("profile", profileDto);
     model.addAttribute("recentOrders", recentOrders);
+    model.addAttribute("buybackRequests", buybackService.getRequestsByUser(user));
     return "profile";
   }
 
