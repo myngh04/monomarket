@@ -20,6 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import jakarta.persistence.EntityManager;
+
 import com.monomarket.dto.OrderDto;
 import com.monomarket.entity.Cart;
 import com.monomarket.entity.CartItem;
@@ -43,6 +45,9 @@ class OrderServiceTest {
 
   @Mock
   private InventoryItemRepository inventoryItemRepository;
+
+  @Mock
+  private EntityManager entityManager;
 
   @InjectMocks
   private OrderService orderService;

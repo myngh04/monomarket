@@ -37,7 +37,7 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     // Cấu hình: Nếu bị Lock, chỉ chờ tối đa 2000ms (2 giây). Quá 2s ném
     // LockTimeoutException ngay chứ không chờ nữa!
-    @QueryHints({ @QueryHint(name = "timeout", value = "2000") })
+    @QueryHints({ @QueryHint(name = "jakarta.persistence.lock.timeout", value = "2000") })
     @Query("SELECT i FROM InventoryItem i WHERE i.id IN :ids")
     List<InventoryItem> findAllByIdForUpdate(@Param("ids") List<Long> ids);
 }
