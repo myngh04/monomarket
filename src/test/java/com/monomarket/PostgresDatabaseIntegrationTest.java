@@ -10,9 +10,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -21,12 +23,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.monomarket.entity.Cart;
 import com.monomarket.entity.CartItem;
 import com.monomarket.entity.InventoryItem;
+import com.monomarket.entity.Product;
 import com.monomarket.entity.User;
 import com.monomarket.exception.OutOfStockException;
 import com.monomarket.repository.CartRepository;
 import com.monomarket.repository.InventoryItemRepository;
 import com.monomarket.repository.UserRepository;
 import com.monomarket.service.OrderService;
+import com.monomarket.service.ProductService;
 
 /**
  * Kiểm tra application context và schema trên PostgreSQL thật ở server Docker Image thay vì chỉ dùng H2.
@@ -57,6 +61,9 @@ class PostgresDatabaseIntegrationTest {
 	@Autowired
 	private OrderService orderService;
 
+	@Autowired
+	private ProductService productService;
+
 	// Test chạy trên PostgreSQL thật, kiểm tra schema và dữ liệu seed.
 	@Test
 	void shouldRunApplicationAgainstPostgresSchema() {
@@ -75,6 +82,18 @@ class PostgresDatabaseIntegrationTest {
 				Integer.class);
 
 		assertThat(quantityColumnCount).isZero();
+	}
+
+	// Test catalog đã fetch đủ dữ liệu view trước khi transaction đóng với OSIV=false.
+	@Test
+	void shouldLoadProductViewDetailsWithOsivDisabled() {
+		Product product = productService.getAllProducts(PageRequest.of(0, 1))
+				.getContent()
+				.getFirst();
+
+		assertThat(Hibernate.isInitialized(product.getCategory())).isTrue();
+		assertThat(Hibernate.isInitialized(product.getCategory().getParent())).isTrue();
+		assertThat(Hibernate.isInitialized(product.getInventoryItems())).isTrue();
 	}
 
 	// Test kiểm tra tính năng checkout Concurrency đồng thời, đảm bảo chỉ một người dùng có thể checkout thành công cho cùng một item.

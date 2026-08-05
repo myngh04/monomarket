@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -52,4 +53,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """, countQuery = "SELECT count(*) FROM products WHERE attributes ->> :key = :value", nativeQuery = true)
     Page<Product> findByAttributeOrderByAvailability(@Param("key") String key, @Param("value") String value,
             Pageable pageable);
+
+    // Lấy category và inventory của các product đang hiển thị trên trang hiện tại.
+    // Gom vào một query để tránh chạy thêm query riêng cho từng product (Tránh N+1 problem).
+    @Query("SELECT DISTINCT p FROM Product p "
+            + "LEFT JOIN FETCH p.category c "
+            + "LEFT JOIN FETCH c.parent "
+            + "LEFT JOIN FETCH p.inventoryItems "
+            + "WHERE p.id IN :ids")
+    List<Product> findAllByIdWithViewDetails(@Param("ids") List<Long> ids);
+
+    // Load product detail kèm category, parent category và inventory để view hoạt
+    // động khi Open Session in View đã tắt.
+    @Query("SELECT DISTINCT p FROM Product p "
+            + "LEFT JOIN FETCH p.category c "
+            + "LEFT JOIN FETCH c.parent "
+            + "LEFT JOIN FETCH p.inventoryItems "
+            + "WHERE p.id = :id")
+    Optional<Product> findByIdWithViewDetails(@Param("id") Long id);
 }
