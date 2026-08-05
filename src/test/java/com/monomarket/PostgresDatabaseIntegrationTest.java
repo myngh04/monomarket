@@ -66,6 +66,17 @@ class PostgresDatabaseIntegrationTest {
 				"SELECT to_regclass('public.inventory_items')", String.class)).isEqualTo("inventory_items");
 	}
 
+	// Test schema không còn column quantity dư thừa với serialized inventory.
+	@Test
+	void shouldRemoveQuantityColumnFromSerializedCartItems() {
+		Integer quantityColumnCount = jdbcTemplate.queryForObject(
+				"SELECT count(*) FROM information_schema.columns "
+						+ "WHERE table_schema = 'public' AND table_name = 'cart_items' AND column_name = 'quantity'",
+				Integer.class);
+
+		assertThat(quantityColumnCount).isZero();
+	}
+
 	// Test kiểm tra tính năng checkout Concurrency đồng thời, đảm bảo chỉ một người dùng có thể checkout thành công cho cùng một item.
 	@Test
 	void shouldAllowOnlyOneConcurrentCheckoutForTheSameInventoryItem() throws Exception {
@@ -123,7 +134,7 @@ class PostgresDatabaseIntegrationTest {
 	private void createCart(User user, InventoryItem inventoryItem) {
 		Cart cart = new Cart();
 		cart.setUser(user);
-		cart.addCartItem(new CartItem(cart, inventoryItem, 1));
+		cart.addCartItem(new CartItem(cart, inventoryItem));
 		cartRepository.saveAndFlush(cart);
 	}
 }

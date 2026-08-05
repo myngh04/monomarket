@@ -36,9 +36,6 @@ public class CartItem {
   @JoinColumn(name = "inventory_item_id", nullable = false)
   private InventoryItem inventoryItem;
 
-  @Column(nullable = false)
-  private Integer quantity = 1;
-
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;
 
@@ -47,9 +44,8 @@ public class CartItem {
     createdAt = LocalDateTime.now();
   }
 
-  public CartItem(Cart cart, InventoryItem inventoryItem, Integer quantity) {
+  public CartItem(Cart cart, InventoryItem inventoryItem) {
     this.cart = cart;
     this.inventoryItem = inventoryItem;
-    this.quantity = quantity;
   }
 }

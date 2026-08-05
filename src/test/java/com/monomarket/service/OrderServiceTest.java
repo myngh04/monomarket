@@ -79,7 +79,6 @@ class OrderServiceTest {
     CartItem cartItem = new CartItem();
     cartItem.setCart(mockCart);
     cartItem.setInventoryItem(mockInventoryItem);
-    cartItem.setQuantity(1);
 
     mockCart.getItems().add(cartItem);
   }

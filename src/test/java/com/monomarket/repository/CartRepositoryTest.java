@@ -60,7 +60,7 @@ class CartRepositoryTest {
     Cart cart = new Cart();
     cart.setSessionToken("test-session-token-123");
 
-    CartItem cartItem = new CartItem(cart, inventoryItem, 2);
+    CartItem cartItem = new CartItem(cart, inventoryItem);
     cart.addCartItem(cartItem);
 
     entityManager.persist(cart);

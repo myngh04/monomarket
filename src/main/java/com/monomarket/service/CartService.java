@@ -65,11 +65,9 @@ public class CartService {
         .findFirst();
 
     if (existingItem.isPresent()) {
-      CartItem item = existingItem.get();
-      // Serialized inventory chỉ đại diện cho một món vật lý duy nhất.
-      item.setQuantity(1);
+      // Serialized inventory đã có trong cart thì không thêm trùng.
     } else {
-      CartItem newItem = new CartItem(cart, inventoryItem, 1);
+      CartItem newItem = new CartItem(cart, inventoryItem);
       cart.addCartItem(newItem);
     }
 
@@ -127,8 +125,7 @@ public class CartService {
               titleJa,
               isbnOrJan,
               ii.getConditionRank(),
-              ii.getPrice(),
-              entity.getQuantity());
+              ii.getPrice());
         }).toList();
   }
 
@@ -176,12 +173,11 @@ public class CartService {
           .findFirst();
 
       if (userItemOpt.isPresent()) {
-        // Không cộng dồn vì mỗi serialized inventory chỉ có quantity = 1.
-        userItemOpt.get().setQuantity(1);
+        // Item đã có trong cart của user thì bỏ qua bản trùng từ guest.
       } else {
         // Nếu item chưa tồn tại trong giỏ hàng của user, thêm mới item vào giỏ hàng của
         // user
-        CartItem newItem = new CartItem(userCart, guestItem.getInventoryItem(), 1);
+        CartItem newItem = new CartItem(userCart, guestItem.getInventoryItem());
         userCart.addCartItem(newItem);
       }
     }
@@ -196,30 +192,4 @@ public class CartService {
     cartRepository.delete(guestCart);
   }
 
-  // 7. Cập nhật số lượng sản phẩm trong giỏ hàng
-  public void updateQuantity(Long inventoryItemId, int quantity, User user, String guestToken) {
-    // Nếu số lượng <= 0, xóa sản phẩm khỏi giỏ hàng
-    if (quantity <= 0) {
-      removeFromCart(inventoryItemId, user, guestToken);
-      return;
-    }
-
-    // Tìm giỏ hàng dựa trên user hoặc guestToken
-    Optional<Cart> cartOpt = (user != null)
-        ? cartRepository.findByUserIdWithItems(user.getId())
-        : (guestToken != null
-            ? cartRepository.findBySessionTokenWithItems(guestToken)
-            : Optional.empty());
-
-    // Nếu tìm thấy giỏ hàng, cập nhật số lượng sản phẩm trong giỏ hàng
-    if (cartOpt.isPresent()) {
-      Cart cart = cartOpt.get();
-      cart.getItems().stream()
-          .filter(item -> item.getInventoryItem().getId().equals(inventoryItemId))
-          .findFirst()
-          // Giữ endpoint tương thích nhưng không cho serialized inventory có quantity > 1.
-          .ifPresent(item -> item.setQuantity(1));
-      cartRepository.save(cart);
-    }
-  }
 }

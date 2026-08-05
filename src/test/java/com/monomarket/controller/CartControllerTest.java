@@ -74,21 +74,7 @@ class CartControllerTest {
   }
 
   @Test
-  @DisplayName("3. POST /cart/update nên thực hiện redirect về /cart và gọi đúng cartService.updateQuantity")
-  void shouldRedirectAfterUpdateQuantity() throws Exception {
-    // WHEN & THEN: Gửi request POST /cart/update với quantity hợp lệ bằng 1
-    mockMvc.perform(post("/cart/update")
-        .param("inventoryItemId", "100")
-        .param("quantity", "1"))
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl("/cart"));
-
-    // Xác nhận controller đã chuyển quantity = 1 xuống service
-    verify(cartService).updateQuantity(eq(100L), eq(1), any(), any());
-  }
-
-  @Test
-  @DisplayName("4. Cookie guest cũ nếu đã có sẵn thì phải được giữ nguyên qua các request")
+  @DisplayName("3. Cookie guest cũ nếu đã có sẵn thì phải được giữ nguyên qua các request")
   void shouldPreserveExistingGuestCookie() throws Exception {
     // GIVEN: Trình duyệt gửi kèm cookie guest đã có sẵn token
     Cookie existingCookie = new Cookie(CartController.GUEST_COOKIE_NAME, "existing-uuid-token");
