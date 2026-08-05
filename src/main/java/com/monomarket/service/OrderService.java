@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+
 import com.monomarket.dto.OrderDto;
 import com.monomarket.dto.OrderItemDto;
 import com.monomarket.entity.Cart;
@@ -30,6 +32,7 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final CartRepository cartRepository;
   private final InventoryItemRepository inventoryItemRepository;
+  private final EntityManager entityManager;
 
   // 1. Checkout: Chuyển Cart → Order, lock inventory, xóa cart
   public Order checkout(User user, String shippingAddress) {
@@ -53,6 +56,11 @@ public class OrderService {
     // → Ngăn race condition: request khác sẽ bị block cho đến khi transaction này
     // commit
     List<InventoryItem> lockedItems = inventoryItemRepository.findAllByIdForUpdate(inventoryIds);
+
+    // Query cart đã load InventoryItem vào persistence context trước khi lock.
+    // Refresh sau khi lock để transaction chờ lock đọc được status mới nhất từ DB,
+    // tránh tình huống hai checkout cùng nhìn thấy trạng thái AVAILABLE cũ.
+    lockedItems.forEach(entityManager::refresh);
 
     // Bước 3: Validate từng sản phẩm — phải còn AVAILABLE
     // Nếu có món nào không AVAILABLE, thu thập tên sản phẩm để thông báo cho user

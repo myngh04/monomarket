@@ -136,21 +136,4 @@ public class CartController {
     return "redirect:/cart";
   }
 
-  // 7. POST /cart/update: Cập nhật số lượng sản phẩm
-  @PostMapping("/update")
-  public String updateQuantity(@RequestParam("inventoryItemId") Long inventoryItemId,
-      @RequestParam("quantity") int quantity, Authentication authentication,
-      HttpServletRequest request, HttpServletResponse response) {
-
-        // Lấy thông tin user hiện tại (nếu đã đăng nhập)
-    User currentUser = getCurrentUser(authentication);
-    // Nếu là guest user, lấy hoặc tạo guest token
-    String guestToken = getOrCreateGuestToken(request, response);
-
-    // Gọi cartService để cập nhật số lượng sản phẩm trong giỏ hàng
-    cartService.updateQuantity(inventoryItemId, quantity, currentUser, guestToken);
-
-    // Load lại trang giỏ hàng sau khi cập nhật số lượng
-    return "redirect:/cart";
-  }
 }

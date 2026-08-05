@@ -23,11 +23,4 @@ public class CartDto {
         .map(CartItemDto::getSubtotal)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
-
-  // Tính tổng số lượng món hàng trong giỏ hàng
-  public int getTotalQuantity() {
-    return items.stream()
-        .mapToInt(CartItemDto::getQuantity)
-        .sum();
-  }
 }

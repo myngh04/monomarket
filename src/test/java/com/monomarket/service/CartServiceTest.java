@@ -71,7 +71,7 @@ class CartServiceTest {
   }
 
   @Test
-  @DisplayName("1. Thêm sản phẩm mới vào giỏ hàng trống -> Tạo CartItem mới có số lượng = 1")
+  @DisplayName("1. Thêm serialized item mới vào giỏ hàng trống")
   void shouldAddToCart_WhenItemIsNew() {
     // GIVEN: Giả lập hành vi của Repositories khi được gọi
     when(inventoryItemRepository.findById(100L)).thenReturn(Optional.of(mockInventoryItem));
@@ -84,15 +84,14 @@ class CartServiceTest {
     // THEN: Kiểm tra kết quả đúng như mong đợi
     assertThat(result).isTrue();
     assertThat(mockCart.getItems()).hasSize(1);
-    assertThat(mockCart.getItems().get(0).getQuantity()).isEqualTo(1);
     verify(cartRepository).save(mockCart); // Xắc nhận hàm save() đã được gọi 1 lần
   }
 
   @Test
-  @DisplayName("2. Thêm sản phẩm đã có sẵn trong giỏ -> Giữ quantity bằng 1")
-  void shouldKeepQuantityAtOne_WhenItemAlreadyInCart() {
-    // GIVEN: Giỏ hàng đã có sẵn 1 món này (số lượng 1)
-    CartItem existingItem = new CartItem(mockCart, mockInventoryItem, 1);
+  @DisplayName("2. Thêm serialized item đã có sẵn không tạo dòng trùng")
+  void shouldNotDuplicateItem_WhenItemAlreadyInCart() {
+    // GIVEN: Giỏ hàng đã có sẵn món vật lý này
+    CartItem existingItem = new CartItem(mockCart, mockInventoryItem);
     mockCart.addCartItem(existingItem);
 
     when(inventoryItemRepository.findById(100L)).thenReturn(Optional.of(mockInventoryItem));
@@ -101,51 +100,19 @@ class CartServiceTest {
     // WHEN: Thêm tiếp món đó vào giỏ
     boolean result = cartService.addToCart(100L, mockUser, null);
 
-    // THEN: Serialized inventory không được tăng số lượng khi add lại
+    // THEN: Serialized inventory không được tạo thêm cart item khi add lại
     assertThat(result).isTrue();
     assertThat(mockCart.getItems()).hasSize(1);
-    assertThat(mockCart.getItems().get(0).getQuantity()).isEqualTo(1);
   }
 
   @Test
-  @DisplayName("3. Cập nhật số lượng về 0 -> Tự động xóa sản phẩm đó khỏi giỏ hàng")
-  void shouldRemoveFromCart_WhenUpdateQuantityIsZero() {
-    // GIVEN: Giỏ hàng đang có 1 sản phẩm với số lượng 2
-    CartItem existingItem = new CartItem(mockCart, mockInventoryItem, 2);
-    mockCart.addCartItem(existingItem);
-
-    when(cartRepository.findByUserIdWithItems(1L)).thenReturn(Optional.of(mockCart));
-
-    // WHEN: Cập nhật số lượng món này về 0
-    cartService.updateQuantity(100L, 0, mockUser, null);
-
-    // THEN: Giỏ hàng phải sạch rỗng
-    assertThat(mockCart.getItems()).isEmpty();
-    verify(cartRepository).save(mockCart);
-  }
-
-  @Test
-  @DisplayName("4. Cập nhật quantity dương -> Chuẩn hóa về 1 với serialized inventory")
-  void shouldNormalizePositiveQuantityToOne() {
-    CartItem existingItem = new CartItem(mockCart, mockInventoryItem, 1);
-    mockCart.addCartItem(existingItem);
-
-    when(cartRepository.findByUserIdWithItems(1L)).thenReturn(Optional.of(mockCart));
-
-    cartService.updateQuantity(100L, 5, mockUser, null);
-
-    assertThat(existingItem.getQuantity()).isEqualTo(1);
-    verify(cartRepository).save(mockCart);
-  }
-
-  @Test
-  @DisplayName("5. Gộp giỏ hàng của Guest vào giỏ của User -> Chuyển sản phẩm với quantity = 1")
+  @DisplayName("3. Gộp giỏ Guest vào giỏ User theo từng serialized item")
   void shouldMergeGuestCartToUserCart() {
     // GIVEN: Chuẩn bị giỏ hàng Guest đang có 3 sản phẩm
     String guestToken = "guest-token-abc";
     Cart guestCart = new Cart();
     guestCart.setSessionToken(guestToken);
-    CartItem guestItem = new CartItem(guestCart, mockInventoryItem, 3);
+    CartItem guestItem = new CartItem(guestCart, mockInventoryItem);
     guestCart.addCartItem(guestItem);
 
     when(cartRepository.findBySessionTokenWithItems(guestToken)).thenReturn(Optional.of(guestCart));
@@ -156,7 +123,6 @@ class CartServiceTest {
 
     // THEN: Giỏ User nhận một serialized item, giỏ Guest rỗng và bị xóa khỏi DB
     assertThat(mockCart.getItems()).hasSize(1);
-    assertThat(mockCart.getItems().get(0).getQuantity()).isEqualTo(1);
     assertThat(guestCart.getItems()).isEmpty(); // Kiểm tra items giỏ guest đã clear
     verify(cartRepository).delete(guestCart);   // Xác nhận giỏ guest đã bị delete
   }

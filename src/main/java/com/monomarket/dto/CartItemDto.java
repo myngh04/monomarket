@@ -18,14 +18,13 @@ public class CartItemDto {
   private String isbnOrJan; // ISBN hoặc JAN code của sản phẩm
   private String conditionRank; // Tình trạng sản phẩm (A, B...)
   private BigDecimal price; // Giá của sản phẩm
-  private int quantity = 1; // Table inventory_items mặc định 1 món hàng cho 1 row
 
   public BigDecimal getSubtotal() {
     if (price == null)
       // Nếu inventoryItem hoặc giá là null, trả về giá trị mặc định là 0
       return BigDecimal.ZERO;
 
-    // Tính tổng tiền cho 1 loại sản phẩm trong giỏ hàng
-    return price.multiply(BigDecimal.valueOf(quantity));
+    // Mỗi DTO đại diện cho đúng một inventory item vật lý.
+    return price;
   }
 }

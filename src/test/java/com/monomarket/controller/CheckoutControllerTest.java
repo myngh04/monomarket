@@ -66,7 +66,7 @@ class CheckoutControllerTest {
   @DisplayName("GET /checkout - User đã đăng nhập và giỏ hàng có đồ -> Render checkout view")
   void shouldShowCheckoutPageWhenAuthenticated() throws Exception {
     // GIVEN: Giỏ hàng có 1 sản phẩm
-    CartItemDto itemDto = new CartItemDto(100L, 1L, "One Piece 100", "9784088707013", "A", new BigDecimal("500.00"), 1);
+    CartItemDto itemDto = new CartItemDto(100L, 1L, "One Piece 100", "9784088707013", "A", new BigDecimal("500.00"));
     when(cartService.getCartDtoList(any(User.class), eq(null))).thenReturn(List.of(itemDto));
 
     // WHEN & THEN: Gọi GET /checkout phải trả về HTTP 200 và view "checkout"
