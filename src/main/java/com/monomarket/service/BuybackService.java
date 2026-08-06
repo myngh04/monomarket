@@ -46,7 +46,7 @@ public class BuybackService {
 
     BuybackRequest request = new BuybackRequest();
     request.setUser(user);
-    request.setStatus("PENDING");
+    //request.setStatus("PENDING");
     request.setDescription(normalizeOptional(form.getDescription()));
     request.setHandoverAddress(form.getHandoverAddress().trim());
     request.setPreferredHandoverDate(form.getPreferredHandoverDate());
