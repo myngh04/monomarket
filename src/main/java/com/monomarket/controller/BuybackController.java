@@ -21,7 +21,7 @@ import com.monomarket.dto.BuybackProductLookupDto;
 import com.monomarket.dto.BuybackRequestForm;
 import com.monomarket.entity.BuybackRequest;
 import com.monomarket.entity.User;
-import com.monomarket.service.BuybackService;
+import com.monomarket.service.UserBuybackService;
 import com.monomarket.service.UserService;
 
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BuybackController {
 
-  private final BuybackService buybackService;
+  private final UserBuybackService buybackService;
   private final UserService userService;
 
   // Hiển thị form Buyback cho user đã đăng nhập.

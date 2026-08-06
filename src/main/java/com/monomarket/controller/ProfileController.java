@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.monomarket.dto.OrderDto;
 import com.monomarket.dto.UserProfileDto;
 import com.monomarket.entity.User;
-import com.monomarket.service.BuybackService;
+import com.monomarket.service.UserBuybackService;
 import com.monomarket.service.OrderService;
 import com.monomarket.service.UserService;
 
@@ -26,7 +26,7 @@ public class ProfileController {
 
   private final UserService userService;
   private final OrderService orderService;
-  private final BuybackService buybackService;
+  private final UserBuybackService buybackService;
 
   // Helper: Lấy User đang đăng nhập — nếu chưa đăng nhập trả về null
   private User getCurrentUser(Authentication authentication) {

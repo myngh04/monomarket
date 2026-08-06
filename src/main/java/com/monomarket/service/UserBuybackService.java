@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class BuybackService {
+public class UserBuybackService {
 
   private final BuybackRequestRepository buybackRequestRepository;
   private final ProductRepository productRepository;
@@ -46,7 +46,6 @@ public class BuybackService {
 
     BuybackRequest request = new BuybackRequest();
     request.setUser(user);
-    //request.setStatus("PENDING");
     request.setDescription(normalizeOptional(form.getDescription()));
     request.setHandoverAddress(form.getHandoverAddress().trim());
     request.setPreferredHandoverDate(form.getPreferredHandoverDate());

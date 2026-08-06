@@ -32,7 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.monomarket.entity.User;
 import com.monomarket.entity.BuybackRequest;
 import com.monomarket.dto.OrderDto;
-import com.monomarket.service.BuybackService;
+import com.monomarket.service.UserBuybackService;
 import com.monomarket.service.OrderService;
 import com.monomarket.service.UserService;
 
@@ -49,7 +49,7 @@ class ProfileControllerTest {
   private OrderService orderService;
 
   @MockitoBean
-  private BuybackService buybackService;
+  private UserBuybackService buybackService;
 
   private User mockUser;
 

@@ -36,7 +36,7 @@ import org.springframework.web.servlet.ViewResolver;
 import com.monomarket.dto.BuybackProductLookupDto;
 import com.monomarket.entity.BuybackRequest;
 import com.monomarket.entity.User;
-import com.monomarket.service.BuybackService;
+import com.monomarket.service.UserBuybackService;
 import com.monomarket.service.UserService;
 
 @WebMvcTest(value = BuybackController.class, properties = "spring.thymeleaf.enabled=false")
@@ -47,7 +47,7 @@ class BuybackControllerTest {
   private MockMvc mockMvc;
 
   @MockitoBean
-  private BuybackService buybackService;
+  private UserBuybackService buybackService;
 
   @MockitoBean
   private UserService userService;

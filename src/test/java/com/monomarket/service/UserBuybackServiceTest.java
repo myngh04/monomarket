@@ -21,13 +21,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.monomarket.dto.BuybackProductLookupDto;
 import com.monomarket.dto.BuybackRequestForm;
 import com.monomarket.entity.BuybackRequest;
+import com.monomarket.entity.BuybackRequestStatus;
 import com.monomarket.entity.Product;
 import com.monomarket.entity.User;
 import com.monomarket.repository.BuybackRequestRepository;
 import com.monomarket.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
-class BuybackServiceTest {
+class UserBuybackServiceTest {
 
   @Mock
   private BuybackRequestRepository buybackRequestRepository;
@@ -36,7 +37,7 @@ class BuybackServiceTest {
   private ProductRepository productRepository;
 
   @InjectMocks
-  private BuybackService buybackService;
+  private UserBuybackService buybackService;
 
   private User user;
   private Product product;
@@ -89,7 +90,7 @@ class BuybackServiceTest {
     BuybackRequest result = buybackService.createRequest(user, form);
 
     assertThat(result.getUser()).isSameAs(user);
-    assertThat(result.getStatus()).isEqualTo("PENDING");
+    assertThat(result.getStatus()).isEqualTo(BuybackRequestStatus.PENDING);
     assertThat(result.getDescription()).isEqualTo("Some additional notes");
     assertThat(result.getHandoverAddress()).isEqualTo("123 Test Street");
     assertThat(result.getPreferredHandoverDate()).isEqualTo(LocalDate.of(2026, 8, 10));
