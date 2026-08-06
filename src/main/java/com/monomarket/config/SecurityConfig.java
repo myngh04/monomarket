@@ -20,8 +20,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             // Cho phép tất cả mọi người truy cập trang chủ, xem chi tiết sản phẩm, các file
             // static (css, js) và trang login...
-            .requestMatchers("/", "/product/**", "/css/**", "/js/**", "/images/**", "/login", "/register", 
-            "/cart", "/cart/add", "/cart/update", "/cart/remove", "/cart/clear")
+            .requestMatchers("/", "/product/**", "/css/**", "/js/**", "/images/**", "/login", "/register",
+                "/cart", "/cart/add", "/cart/remove", "/cart/clear")
             .permitAll()
             // Tất cả các request khác (ví dụ thanh toán, thông tin cá nhân) bắt
             // buộc phải đăng nhập
