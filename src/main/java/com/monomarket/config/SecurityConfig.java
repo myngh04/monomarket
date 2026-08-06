@@ -16,35 +16,32 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
       GuestCartAuthenticationSuccessHandler guestCartSuccessHandler) throws Exception {
     http
-        // 1. Cấu hình phân quyền truy cập
+        // Cấu hình quyền truy cập cho storefront, authentication và khu vực admin.
         .authorizeHttpRequests(auth -> auth
-            // Cho phép tất cả mọi người truy cập trang chủ, xem chi tiết sản phẩm, các file
-            // static (css, js) và trang login...
             .requestMatchers("/", "/product/**", "/css/**", "/js/**", "/images/**", "/login", "/register",
                 "/cart", "/cart/add", "/cart/remove", "/cart/clear")
             .permitAll()
-            // Tất cả các request khác (ví dụ thanh toán, thông tin cá nhân) bắt
-            // buộc phải đăng nhập
+            // Chỉ staff/admin được truy cập khu vực vận hành Buyback.
+            .requestMatchers("/admin/**").hasAnyRole("STAFF", "ADMIN")
             .anyRequest().authenticated())
 
-        // 2. Cấu hình sử dụng Form Login
+        // Dùng form login và merge guest cart sau khi đăng nhập thành công.
         .formLogin(form -> form
-            .loginPage("/login") // Khai báo đường dẫn trang login
-            .loginProcessingUrl("/login") // Nơi xử lý hành động submit form POST
-            .successHandler(guestCartSuccessHandler) // Merge guest cart trước khi chuyển về trang chủ
+            .loginPage("/login")
+            .loginProcessingUrl("/login")
+            .successHandler(guestCartSuccessHandler)
             .permitAll())
 
-        // 3. Cấu hình Đăng xuất
+        // Đăng xuất xong quay về trang login.
         .logout(logout -> logout
             .logoutUrl("/logout")
-            .logoutSuccessUrl("/login?logout") // Đăng xuất xong chuyển về login kèm thông báo
+            .logoutSuccessUrl("/login?logout")
             .permitAll());
 
     return http.build();
   }
 
-  // 4. Khai báo Bean mã hóa mật khẩu dùng để so khớp mật khẩu trong database sau
-  // này
+  // Bean mã hóa mật khẩu dùng khi đăng ký và xác thực tài khoản.
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
