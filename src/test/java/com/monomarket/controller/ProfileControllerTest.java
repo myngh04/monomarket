@@ -73,7 +73,7 @@ class ProfileControllerTest {
 
     mockMvc.perform(get("/profile"))
         .andExpect(status().isOk())
-        .andExpect(view().name("profile"))
+                .andExpect(view().name("ecommerce/profile"))
         .andExpect(model().attributeExists("profile"))
         .andExpect(model().attributeExists("recentOrders"))
         .andExpect(model().attributeExists("buybackRequests"));

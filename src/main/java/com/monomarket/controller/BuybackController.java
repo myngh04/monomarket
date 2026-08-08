@@ -52,7 +52,7 @@ public class BuybackController {
       }
       model.addAttribute("buybackForm", form);
     }
-    return "buyback-form";
+        return "ecommerce/buyback-form";
   }
 
   // Lookup ISBN/JAN bằng AJAX và trả title cùng giá estimate cho UI.
@@ -91,7 +91,7 @@ public class BuybackController {
 
     if (bindingResult.hasErrors()) {
       addLookupProduct(form, model);
-      return "buyback-form";
+            return "ecommerce/buyback-form";
     }
 
     try {
@@ -101,7 +101,7 @@ public class BuybackController {
     } catch (IllegalArgumentException | IllegalStateException exception) {
       bindingResult.reject("buyback.error", exception.getMessage());
       addLookupProduct(form, model);
-      return "buyback-form";
+            return "ecommerce/buyback-form";
     }
   }
 
@@ -131,7 +131,7 @@ public class BuybackController {
     try {
       BuybackRequest request = buybackService.getRequestForUser(requestId, user);
       model.addAttribute("buybackRequest", request);
-      return "buyback-detail";
+        return "ecommerce/buyback-detail";
     } catch (IllegalArgumentException exception) {
       return "redirect:/profile#buyback-requests";
     }

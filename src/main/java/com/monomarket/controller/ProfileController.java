@@ -59,7 +59,7 @@ public class ProfileController {
     model.addAttribute("profile", profileDto);
     model.addAttribute("recentOrders", recentOrders);
     model.addAttribute("buybackRequests", buybackService.getRequestsByUser(user));
-    return "profile";
+        return "ecommerce/profile";
   }
 
   // 2. POST /profile/update — Cập nhật Tên và Số điện thoại

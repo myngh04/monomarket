@@ -83,7 +83,7 @@ public class CartController {
     model.addAttribute("cartItems", cartItems);
 
     // Trả về view cart.html ra giao diện
-    return "cart";
+        return "ecommerce/cart";
   }
 
   // 4. POST /cart/add: Thêm sản phẩm vào giỏ hàng

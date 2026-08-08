@@ -61,7 +61,7 @@ public class CheckoutController {
 
     model.addAttribute("cartItems", cartItems);
     model.addAttribute("total", total);
-    return "checkout";
+        return "ecommerce/checkout";
   }
 
   // 2. POST /checkout/confirm — Tạo Order, lock stock, xóa cart
@@ -114,7 +114,7 @@ public class CheckoutController {
 
     OrderDto order = orderService.getOrderDetail(id, user);
     model.addAttribute("order", order);
-    return "order-confirmation";
+        return "ecommerce/order-confirmation";
   }
 
   // 4. GET /orders/{id} — Chi tiết 1 đơn hàng
@@ -131,6 +131,6 @@ public class CheckoutController {
     // Lấy chi tiết đơn hàng qua orderService
     OrderDto order = orderService.getOrderDetail(id, user);
     model.addAttribute("order", order);
-    return "order-detail";
+        return "ecommerce/order-detail";
   }
 }

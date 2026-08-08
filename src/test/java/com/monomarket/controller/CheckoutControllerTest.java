@@ -72,7 +72,7 @@ class CheckoutControllerTest {
     // WHEN & THEN: Gọi GET /checkout phải trả về HTTP 200 và view "checkout"
     mockMvc.perform(get("/checkout"))
         .andExpect(status().isOk())
-        .andExpect(view().name("checkout"))
+                .andExpect(view().name("ecommerce/checkout"))
         .andExpect(model().attributeExists("cartItems"))
         .andExpect(model().attributeExists("total"));
   }
@@ -122,7 +122,7 @@ class CheckoutControllerTest {
     // WHEN & THEN: Gọi GET /orders/50/confirmation
     mockMvc.perform(get("/orders/50/confirmation"))
         .andExpect(status().isOk())
-        .andExpect(view().name("order-confirmation"))
+                .andExpect(view().name("ecommerce/order-confirmation"))
         .andExpect(model().attributeExists("order"));
   }
 

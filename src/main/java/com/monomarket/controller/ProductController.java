@@ -67,7 +67,7 @@ public class ProductController {
     // Tổng số sản phẩm trong DB
     model.addAttribute("totalProducts", productPage.getTotalElements());
 
-    return "index";
+        return "ecommerce/index";
   }
 
   @GetMapping("/product/{id}")
@@ -77,7 +77,7 @@ public class ProductController {
     // Nếu tìm thấy sản phẩm, đưa dữ liệu sang trang chi tiết sản phẩm
     if (productOptional.isPresent()) {
       model.addAttribute("product", productOptional.get());
-      return "product-detail"; // Trả về trang chi tiết sản phẩm
+        return "ecommerce/product-detail"; // Trả về trang chi tiết sản phẩm
     }
     // Nếu không tìm thấy sản phẩm, chuyển hướng về trang chủ
     else {
