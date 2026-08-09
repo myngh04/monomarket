@@ -56,13 +56,27 @@ class BuybackRequestRepositoryTest {
         saveRequest(BuybackRequestStatus.PENDING, "newer@example.com");
         saveRequest(BuybackRequestStatus.TESTING, "testing@example.com");
 
-        Page<BuybackRequest> result = buybackRequestRepository
-                .findByStatusOrderByCreatedAtAsc(BuybackRequestStatus.PENDING, PageRequest.of(0, 1));
+         Page<BuybackRequest> result = buybackRequestRepository
+                 .findByStatusForAdminQueue(BuybackRequestStatus.PENDING, PageRequest.of(0, 1));
 
         assertThat(result.getTotalElements()).isEqualTo(2);
         assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent().get(0).getId()).isEqualTo(oldest.getId());
+         assertThat(result.getContent().get(0).getId()).isNotEqualTo(oldest.getId());
         assertThat(result.getContent().get(0).getStatus()).isEqualTo(BuybackRequestStatus.PENDING);
+    }
+
+    @Test
+    @DisplayName("Queue admin ưu tiên status trước rồi request mới hơn")
+    void shouldPrioritizeEarlierWorkflowStatuses() {
+        BuybackRequest stocked = saveRequest(BuybackRequestStatus.STOCKED, "stocked@example.com");
+        BuybackRequest pending = saveRequest(BuybackRequestStatus.PENDING, "pending@example.com");
+
+        Page<BuybackRequest> result = buybackRequestRepository
+                .findAllForAdminQueue(PageRequest.of(0, 10));
+
+        assertThat(result.getContent().get(0).getId()).isEqualTo(pending.getId());
+        assertThat(result.getContent()).extracting(BuybackRequest::getId)
+                .contains(stocked.getId());
     }
 
     @Test
@@ -75,6 +89,19 @@ class BuybackRequestRepositoryTest {
         assertThat(buybackRequestRepository.countByStatus(BuybackRequestStatus.PENDING)).isEqualTo(2);
         assertThat(buybackRequestRepository.countByStatus(BuybackRequestStatus.PRICED)).isEqualTo(1);
         assertThat(buybackRequestRepository.countByStatus(BuybackRequestStatus.STOCKED)).isZero();
+    }
+
+    @Test
+    @DisplayName("Bulk-load item và product cho danh sách dashboard đã phân trang")
+    void shouldFetchDashboardListDetailsByIds() {
+        BuybackRequest request = saveRequest(BuybackRequestStatus.PENDING, "dashboard-list@example.com");
+
+        List<BuybackRequest> result = buybackRequestRepository
+                .findAllByIdWithAdminListDetails(List.of(request.getId()));
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getItems()).hasSize(1);
+        assertThat(result.get(0).getItems().get(0).getProduct().getTitleEn()).isEqualTo("Test Product");
     }
 
     @Test

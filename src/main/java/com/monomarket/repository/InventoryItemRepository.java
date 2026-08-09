@@ -5,6 +5,8 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -16,8 +18,16 @@ import java.util.Optional;
 @Repository
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long> {
 
+    // Lấy inventory phân trang kèm product để trang admin render mà không phụ thuộc OSIV.
+    @Query(value = "SELECT i FROM InventoryItem i LEFT JOIN FETCH i.product",
+            countQuery = "SELECT COUNT(i) FROM InventoryItem i")
+    Page<InventoryItem> findAllWithProduct(Pageable pageable);
+
     // Tìm chính xác món đồ cũ cụ thể bằng mã vạch dán tại cửa hàng
     Optional<InventoryItem> findByInstoreCode(String instoreCode);
+
+    // Lấy nhiều mã inventory một lần để dashboard không query riêng từng Buyback request.
+    List<InventoryItem> findByInstoreCodeIn(List<String> instoreCodes);
 
     // Lọc đống đồ cũ đang bày trên kệ theo trạng thái (AVAILABLE, PENDING, SOLD)
     List<InventoryItem> findByStatus(String status);

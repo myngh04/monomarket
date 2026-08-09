@@ -138,6 +138,30 @@ class UserBuybackServiceTest {
         .hasMessage("Buyback request not found");
   }
 
+  @Test
+  @DisplayName("User cháº¥p nháº­n final price thÃ¬ request chuyá»ƒn USER_ACCEPTED")
+  void shouldAcceptFinalPrice() {
+    BuybackRequest request = new BuybackRequest();
+    request.setId(50L);
+    request.setUser(user);
+    request.setStatus(BuybackRequestStatus.PRICED);
+    var item = new com.monomarket.entity.BuybackRequestItem();
+    item.setFinalBuyPrice(new java.math.BigDecimal("850"));
+    request.addItem(item);
+    when(buybackRequestRepository.findByIdAndUserIdWithItems(50L, 1L))
+        .thenReturn(Optional.of(request));
+    when(buybackRequestRepository.save(any(BuybackRequest.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    BuybackRequest result = buybackService.acceptFinalPrice(50L, user);
+
+    assertThat(result.getStatus()).isEqualTo(BuybackRequestStatus.USER_ACCEPTED);
+    assertThat(result.getStatusHistory()).hasSize(1);
+    assertThat(result.getStatusHistory().get(0).getToStatus())
+        .isEqualTo(BuybackRequestStatus.USER_ACCEPTED);
+    verify(buybackRequestRepository).save(request);
+  }
+
   private BuybackRequestForm validForm() {
     BuybackRequestForm form = new BuybackRequestForm();
     form.setSubmittedIsbnOrJan("9780000000001");

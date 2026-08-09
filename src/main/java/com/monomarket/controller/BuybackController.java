@@ -137,6 +137,26 @@ public class BuybackController {
     }
   }
 
+  // Nhận quyết định chấp nhận final price của đúng user sở hữu request và chuyển sang USER_ACCEPTED.
+  @PostMapping("/buyback/{requestId}/accept")
+  public String acceptFinalPrice(
+      @PathVariable Long requestId,
+      Authentication authentication,
+      RedirectAttributes redirectAttributes) {
+    User user = getCurrentUser(authentication);
+    if (user == null) {
+      return "redirect:/login";
+    }
+
+    try {
+      buybackService.acceptFinalPrice(requestId, user);
+      redirectAttributes.addFlashAttribute("successMessage", "Final Buyback price accepted.");
+    } catch (IllegalArgumentException | IllegalStateException exception) {
+      redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+    }
+    return "redirect:/buyback/" + requestId;
+  }
+
   // Lấy User entity từ Authentication để truyền ownership vào service.
   private User getCurrentUser(Authentication authentication) {
     if (authentication != null && authentication.isAuthenticated()

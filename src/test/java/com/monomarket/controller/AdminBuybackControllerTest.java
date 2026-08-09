@@ -30,6 +30,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import com.monomarket.entity.BuybackRequest;
+import com.monomarket.entity.BuybackRequestItem;
 import com.monomarket.entity.BuybackRequestStatus;
 import com.monomarket.entity.User;
 import com.monomarket.service.AdminBuybackService;
@@ -94,12 +95,19 @@ class AdminBuybackControllerTest {
     @DisplayName("GET detail - Render request admin")
     void shouldShowRequestDetail() throws Exception {
         BuybackRequest request = new BuybackRequest();
+        request.setId(5L);
+        BuybackRequestItem item = new BuybackRequestItem();
+        item.setFinalBuyPrice(new BigDecimal("850"));
+        request.addItem(item);
         when(adminBuybackService.getRequestDetails(5L)).thenReturn(request);
+        when(adminBuybackService.getStorePrices(any())).thenReturn(Map.of(5L, new BigDecimal("1200")));
 
         mockMvc.perform(get("/admin/buyback/5"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/buyback-detail"))
-                .andExpect(model().attribute("buybackRequest", request));
+                .andExpect(model().attribute("buybackRequest", request))
+                .andExpect(model().attribute("storePrice", new BigDecimal("1200")))
+                .andExpect(model().attribute("storeProfit", new BigDecimal("350")));
     }
 
     @Test
@@ -133,6 +141,21 @@ class AdminBuybackControllerTest {
 
         verify(adminBuybackService).reviewAndPrice(
                 eq(5L), eq(admin), eq("A"), eq(new BigDecimal("850")), eq("Good condition"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin@example.com", roles = "ADMIN")
+    @DisplayName("POST stock - Luu selling price va tao inventory")
+    void shouldStockRequestWithSellingPrice() throws Exception {
+        mockMvc.perform(post("/admin/buyback/5/stock")
+                .param("sellingPrice", "1200")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/buyback/5"))
+                .andExpect(flash().attributeExists("successMessage"));
+
+        verify(adminBuybackService).stockRequest(
+                eq(5L), eq(admin), eq(new BigDecimal("1200")));
     }
 
     @Test
