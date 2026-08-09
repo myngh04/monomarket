@@ -36,30 +36,30 @@ public interface BuybackRequestRepository extends JpaRepository<BuybackRequest, 
                         @Param("requestId") Long requestId,
                         @Param("userId") Long userId);
 
-        // Lấy queue admin theo thứ tự workflow trước, rồi request mới nhất trong cùng nhóm.
+        // Lấy queue admin theo thứ tự workflow trước, rồi request mới nhất trong cùng
+        // nhóm.
         @Query(value = "SELECT r FROM BuybackRequest r "
                         + "ORDER BY CASE "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.PENDING THEN 0 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.RECEIVED THEN 1 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.TESTING THEN 2 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.PRICED THEN 3 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.USER_ACCEPTED THEN 4 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.PAID THEN 5 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.STOCKED THEN 6 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.USER_DECLINED THEN 7 "
-                        + "WHEN r.status = com.monomarket.entity.BuybackRequestStatus.REJECTED THEN 8 "
-                        + "ELSE 99 END ASC, r.createdAt DESC",
-                        countQuery = "SELECT COUNT(r) FROM BuybackRequest r")
+                        + "WHEN r.status = BuybackRequestStatus.PENDING THEN 0 "
+                        + "WHEN r.status = BuybackRequestStatus.RECEIVED THEN 1 "
+                        + "WHEN r.status = BuybackRequestStatus.TESTING THEN 2 "
+                        + "WHEN r.status = BuybackRequestStatus.PRICED THEN 3 "
+                        + "WHEN r.status = BuybackRequestStatus.USER_ACCEPTED THEN 4 "
+                        + "WHEN r.status = BuybackRequestStatus.PAID THEN 5 "
+                        + "WHEN r.status = BuybackRequestStatus.STOCKED THEN 6 "
+                        + "WHEN r.status = BuybackRequestStatus.USER_DECLINED THEN 7 "
+                        + "WHEN r.status = BuybackRequestStatus.REJECTED THEN 8 "
+                        + "ELSE 99 END ASC, r.createdAt DESC", countQuery = "SELECT COUNT(r) FROM BuybackRequest r")
         Page<BuybackRequest> findAllForAdminQueue(Pageable pageable);
 
         // Lọc request theo status để admin xử lý đúng hàng đợi nghiệp vụ.
-        @Query(value = "SELECT r FROM BuybackRequest r WHERE r.status = :status ORDER BY r.createdAt DESC",
-                        countQuery = "SELECT COUNT(r) FROM BuybackRequest r WHERE r.status = :status")
+        @Query(value = "SELECT r FROM BuybackRequest r WHERE r.status = :status ORDER BY r.createdAt DESC", countQuery = "SELECT COUNT(r) FROM BuybackRequest r WHERE r.status = :status")
         Page<BuybackRequest> findByStatusForAdminQueue(
                         @Param("status") BuybackRequestStatus status,
                         Pageable pageable);
 
-        // Bulk-load item và product cho đúng các request của trang dashboard sau khi đã phân trang.
+        // Bulk-load item và product cho đúng các request của trang dashboard sau khi đã
+        // phân trang.
         @Query("SELECT DISTINCT r FROM BuybackRequest r "
                         + "LEFT JOIN FETCH r.items i "
                         + "LEFT JOIN FETCH i.product p "

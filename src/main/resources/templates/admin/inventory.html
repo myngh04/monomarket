@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory - MonoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/css/admin.css}" />
+</head>
+
+<body>
+  <div class="admin-shell">
+    <aside th:replace="~{admin/fragments :: sidebar('inventory')}"></aside>
+    <div class="admin-content">
+      <header th:replace="~{admin/fragments :: topbar('Inventory')}"></header>
+      <main class="admin-main">
+        <section class="page-header">
+          <div>
+            <div class="page-eyebrow">Catalog operations</div>
+            <h1 class="page-title">Inventory</h1>
+            <p class="page-description">
+              Read-only overview of serialized inventory items.
+            </p>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Inventory items</h2>
+              <p class="panel-subtitle" th:text="${inventoryPage.totalElements + ' total items'}">
+                0 total items
+              </p>
+            </div>
+          </div>
+          <div th:if="${inventoryPage.totalElements == 0}" class="empty-state">
+            No inventory items were found.
+          </div>
+          <div th:if="${inventoryPage.totalElements > 0}" class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>In-store code</th>
+                  <th>Product</th>
+                  <th>Condition</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="item : ${inventoryPage.content}">
+                  <td>
+                    <span class="primary-text mono" th:text="${item.instoreCode}">CODE</span>
+                  </td>
+                  <td>
+                    <span class="product-title"
+                      th:text="${item.product != null ? item.product.displayTitle : 'Product unavailable'}">Product</span><span
+                      class="secondary-text mono" th:if="${item.product != null}"
+                      th:text="${item.product.isbnOrJan}">ISBN</span>
+                  </td>
+                  <td th:text="${item.conditionRank}">A</td>
+                  <td th:text="${item.itemType}">USED</td>
+                  <td>
+                    <span class="money"
+                      th:text="${'¥' + #numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥0</span>
+                  </td>
+                  <td>
+                    <span class="status-badge" th:classappend="${' status-' + item.status}"
+                      th:text="${item.status}">AVAILABLE</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div th:if="${inventoryPage.totalPages > 1}" class="pagination"
+            th:with="currentPage=${inventoryPage.number}, totalPages=${inventoryPage.totalPages}, windowStart=${currentPage <= 2 ? 0 : (currentPage >= totalPages - 3 ? totalPages - 5 : currentPage - 2)}, windowEnd=${currentPage <= 2 ? (totalPages > 5 ? 4 : totalPages - 1) : (currentPage >= totalPages - 3 ? totalPages - 1 : currentPage + 2)}">
+            <span class="pagination-info" th:text="${'Page ' + (currentPage + 1) + ' of ' + totalPages}">Page 1 of
+              2</span>
+            <nav class="pagination-actions" aria-label="Inventory pagination">
+              <a class="page-button" th:classappend="${currentPage == 0 ? ' current' : ''}"
+                th:href="@{/admin/inventory(page=0)}">1</a>
+              <button th:if="${windowStart > 1}" class="page-button page-ellipsis" type="button"
+                th:attr="data-total-pages=${totalPages}" onclick="goToInventoryPage(this)"
+                aria-label="Go to a specific page">
+                ...
+              </button>
+              <a th:each="pageNumber : ${#numbers.sequence(1, totalPages - 2)}"
+                th:if="${totalPages > 2 and pageNumber >= windowStart and pageNumber <= windowEnd}" class="page-button"
+                th:classappend="${pageNumber == currentPage ? ' current' : ''}"
+                th:href="@{/admin/inventory(page=${pageNumber})}" th:text="${pageNumber + 1}">2</a>
+              <button th:if="${windowEnd < totalPages - 2}" class="page-button page-ellipsis" type="button"
+                th:attr="data-total-pages=${totalPages}" onclick="goToInventoryPage(this)"
+                aria-label="Go to a specific page">
+                ...
+              </button>
+              <a class="page-button" th:classappend="${currentPage == totalPages - 1 ? ' current' : ''}"
+                th:href="@{/admin/inventory(page=${totalPages - 1})}" th:text="${totalPages}">2</a>
+            </nav>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    function goToInventoryPage(button) {
+      const totalPages = Number(button.dataset.totalPages);
+      const input = window.prompt(`Enter page number (1-${totalPages}):`);
+
+      if (input === null) {
+        return;
+      }
+
+      const requestedPage = Number(input.trim());
+      if (
+        !Number.isInteger(requestedPage) ||
+        requestedPage < 1 ||
+        requestedPage > totalPages
+      ) {
+        window.alert(`Please enter a page number from 1 to ${totalPages}.`);
+        return;
+      }
+
+      window.location.href = `/admin/inventory?page=${requestedPage - 1}`;
+    }
+  </script>
+</body>
+
+</html>
