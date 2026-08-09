@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+  <aside class="admin-sidebar" th:fragment="sidebar(activePage)">
+    <a class="admin-brand" th:href="@{/admin/buyback}">
+      <span class="admin-brand-mark">M</span>
+      <span><strong>MonoMarket</strong><small>ADMIN OPERATIONS</small></span>
+    </a>
+    <div class="admin-nav-label">Workspace</div>
+    <nav class="admin-nav" aria-label="Admin navigation">
+      <a class="admin-nav-link" th:classappend="${activePage == 'buyback' ? ' active' : ''}"
+        th:href="@{/admin/buyback}"><span class="admin-nav-icon">◆</span><span>Buyback</span></a>
+      <a class="admin-nav-link" th:classappend="${activePage == 'inventory' ? ' active' : ''}"
+        th:href="@{/admin/inventory}"><span class="admin-nav-icon">▣</span><span>Inventory</span></a>
+      <a class="admin-nav-link" th:classappend="${activePage == 'orders' ? ' active' : ''}"
+        th:href="@{/admin/orders}"><span class="admin-nav-icon">▤</span><span>Orders</span></a>
+      <a class="admin-nav-link" th:href="@{/}"><span class="admin-nav-icon">⌂</span><span>Storefront</span></a>
+    </nav>
+    <div class="admin-sidebar-footer"><span>MONOMARKET</span><strong>MonoMarket®</strong></div>
+  </aside>
+
+  <header class="admin-topbar" th:fragment="topbar(section)">
+    <div class="admin-breadcrumb"><strong>Operations</strong><span th:text="${' / ' + section}"> / Buyback</span></div>
+    <div class="admin-account-menu">
+      <button class="admin-account-trigger" type="button" aria-expanded="false" aria-controls="admin-account-dropdown">
+        <div class="admin-avatar">A</div>
+        <span sec:authentication="name">admin@monomarket.com</span>
+      </button>
+      <div id="admin-account-dropdown" class="admin-account-dropdown" hidden>
+        <a th:href="@{/profile}">Profile</a>
+        <a th:href="@{/}">Ecommerce</a>
+        <form class="admin-account-logout" th:action="@{/logout}" method="post"><button type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      document.querySelectorAll('.admin-account-menu').forEach(function (menu) {
+        const trigger = menu.querySelector('.admin-account-trigger');
+        const dropdown = menu.querySelector('.admin-account-dropdown');
+        trigger.addEventListener('click', function () {
+          const isOpen = !dropdown.hidden;
+          dropdown.hidden = isOpen;
+          trigger.setAttribute('aria-expanded', String(!isOpen));
+        });
+        document.addEventListener('click', function (event) {
+          if (!menu.contains(event.target)) {
+            dropdown.hidden = true;
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    </script>
+  </header>
+</body>
+
+</html>

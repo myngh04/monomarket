@@ -36,7 +36,7 @@ import org.springframework.web.servlet.ViewResolver;
 import com.monomarket.dto.BuybackProductLookupDto;
 import com.monomarket.entity.BuybackRequest;
 import com.monomarket.entity.User;
-import com.monomarket.service.BuybackService;
+import com.monomarket.service.UserBuybackService;
 import com.monomarket.service.UserService;
 
 @WebMvcTest(value = BuybackController.class, properties = "spring.thymeleaf.enabled=false")
@@ -47,7 +47,7 @@ class BuybackControllerTest {
   private MockMvc mockMvc;
 
   @MockitoBean
-  private BuybackService buybackService;
+  private UserBuybackService buybackService;
 
   @MockitoBean
   private UserService userService;
@@ -76,7 +76,7 @@ class BuybackControllerTest {
   void shouldShowBuybackFormWhenAuthenticated() throws Exception {
     mockMvc.perform(get("/buyback"))
         .andExpect(status().isOk())
-        .andExpect(view().name("buyback-form"))
+                .andExpect(view().name("ecommerce/buyback-form"))
         .andExpect(model().attributeExists("buybackForm"));
   }
 
@@ -141,7 +141,7 @@ class BuybackControllerTest {
         .param("preferredHandoverDate", "2026-08-10")
         .with(csrf()))
         .andExpect(status().isOk())
-        .andExpect(view().name("buyback-form"))
+                .andExpect(view().name("ecommerce/buyback-form"))
         .andExpect(model().attributeHasFieldErrors(
             "buybackForm", "userConditionRank", "handoverAddress"));
   }
@@ -165,7 +165,7 @@ class BuybackControllerTest {
 
     mockMvc.perform(get("/buyback/20"))
         .andExpect(status().isOk())
-        .andExpect(view().name("buyback-detail"))
+                .andExpect(view().name("ecommerce/buyback-detail"))
         .andExpect(model().attribute("buybackRequest", request));
   }
 
@@ -179,6 +179,22 @@ class BuybackControllerTest {
     mockMvc.perform(get("/buyback/20"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/profile#buyback-requests"));
+  }
+
+  @Test
+  @WithMockUser(username = "user@example.com")
+  @DisplayName("POST /buyback/{id}/accept - User cháº¥p nháº­n final price")
+  void shouldAcceptFinalPrice() throws Exception {
+    BuybackRequest request = new BuybackRequest();
+    request.setId(20L);
+    when(buybackService.acceptFinalPrice(20L, mockUser)).thenReturn(request);
+
+    mockMvc.perform(post("/buyback/20/accept").with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/buyback/20"))
+        .andExpect(flash().attributeExists("successMessage"));
+
+    verify(buybackService).acceptFinalPrice(20L, mockUser);
   }
 
   // ViewResolver test không render Thymeleaf thật, giúp controller test độc lập

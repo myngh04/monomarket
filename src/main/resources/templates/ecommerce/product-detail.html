@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="${product.titleJa} + ' - MonoMarket'">Product Detail</title>
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
 
   <!-- Font hiện đại dùng cho giao diện -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -460,7 +461,7 @@
           style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background-color: #f1f5f9; border-radius: var(--radius-sm); text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 14px; transition: all 0.2s ease;">
           🛒 Cart
         </a>
-        <a href="/" class="back-home-btn">← Back to Store</a>
+        <a href="/" class="back-home-btn nav-card-link">← Back to Store</a>
       </div>
     </div>
   </header>

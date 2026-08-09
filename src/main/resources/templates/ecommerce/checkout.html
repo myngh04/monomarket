@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - Shipping & Confirmation - MonoMarket</title>
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -276,6 +278,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <header>
@@ -284,7 +287,7 @@
         <img th:src="@{/images/logo.png}" alt="MonoMarket Logo">
       </a>
       <div>
-        <a href="/cart" class="back-to-shop-link" style="margin: 0;">← Back to Cart</a>
+        <a href="/cart" class="back-to-shop-link nav-card-link" style="margin: 0;">← Back to Cart</a>
       </div>
     </div>
   </header>
@@ -327,13 +330,15 @@
             <div class="card-title">📍 1. Shipping Address</div>
             <div class="form-group">
               <label for="shippingAddress">Delivery Address <span style="color: red;">*</span></label>
-              <textarea id="shippingAddress" name="shippingAddress" required placeholder="Enter full recipient name, street address, city, and phone number..."></textarea>
+              <textarea id="shippingAddress" name="shippingAddress" required
+                placeholder="Enter full recipient name, street address, city, and phone number..."></textarea>
             </div>
           </div>
 
           <div class="card">
             <div class="card-title">💳 2. Payment Method</div>
-            <div style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: #f8fafc; display: flex; align-items: center; gap: 10px;">
+            <div
+              style="padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; background: #f8fafc; display: flex; align-items: center; gap: 10px;">
               <input type="radio" checked id="cod" name="paymentMethod" value="COD">
               <label for="cod" style="margin: 0; font-weight: 600; cursor: pointer;">
                 Cash on Delivery (COD) — Pay upon receiving items
@@ -349,7 +354,8 @@
                 <span th:text="${item.titleJa}">Product Name</span>
                 <span class="rank-badge" th:text="${'Rank ' + item.conditionRank}">Rank A</span>
               </div>
-              <div class="checkout-item-price" th:text="${'¥' + #numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥1,200</div>
+              <div class="checkout-item-price"
+                th:text="${'¥' + #numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥1,200</div>
             </div>
           </div>
         </div>
@@ -370,7 +376,8 @@
 
             <div class="summary-row summary-total">
               <span>Total:</span>
-              <span style="color: var(--red-price);" th:text="${'¥' + #numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}">¥0</span>
+              <span style="color: var(--red-price);"
+                th:text="${'¥' + #numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}">¥0</span>
             </div>
 
             <button type="submit" class="btn-place-order">Place Order</button>
@@ -386,4 +393,5 @@
   </main>
 
 </body>
+
 </html>

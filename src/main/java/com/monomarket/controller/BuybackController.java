@@ -21,7 +21,7 @@ import com.monomarket.dto.BuybackProductLookupDto;
 import com.monomarket.dto.BuybackRequestForm;
 import com.monomarket.entity.BuybackRequest;
 import com.monomarket.entity.User;
-import com.monomarket.service.BuybackService;
+import com.monomarket.service.UserBuybackService;
 import com.monomarket.service.UserService;
 
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BuybackController {
 
-  private final BuybackService buybackService;
+  private final UserBuybackService buybackService;
   private final UserService userService;
 
   // Hiển thị form Buyback cho user đã đăng nhập.
@@ -52,7 +52,7 @@ public class BuybackController {
       }
       model.addAttribute("buybackForm", form);
     }
-    return "buyback-form";
+        return "ecommerce/buyback-form";
   }
 
   // Lookup ISBN/JAN bằng AJAX và trả title cùng giá estimate cho UI.
@@ -91,7 +91,7 @@ public class BuybackController {
 
     if (bindingResult.hasErrors()) {
       addLookupProduct(form, model);
-      return "buyback-form";
+            return "ecommerce/buyback-form";
     }
 
     try {
@@ -101,7 +101,7 @@ public class BuybackController {
     } catch (IllegalArgumentException | IllegalStateException exception) {
       bindingResult.reject("buyback.error", exception.getMessage());
       addLookupProduct(form, model);
-      return "buyback-form";
+            return "ecommerce/buyback-form";
     }
   }
 
@@ -131,10 +131,30 @@ public class BuybackController {
     try {
       BuybackRequest request = buybackService.getRequestForUser(requestId, user);
       model.addAttribute("buybackRequest", request);
-      return "buyback-detail";
+        return "ecommerce/buyback-detail";
     } catch (IllegalArgumentException exception) {
       return "redirect:/profile#buyback-requests";
     }
+  }
+
+  // Nhận quyết định chấp nhận final price của đúng user sở hữu request và chuyển sang USER_ACCEPTED.
+  @PostMapping("/buyback/{requestId}/accept")
+  public String acceptFinalPrice(
+      @PathVariable Long requestId,
+      Authentication authentication,
+      RedirectAttributes redirectAttributes) {
+    User user = getCurrentUser(authentication);
+    if (user == null) {
+      return "redirect:/login";
+    }
+
+    try {
+      buybackService.acceptFinalPrice(requestId, user);
+      redirectAttributes.addFlashAttribute("successMessage", "Final Buyback price accepted.");
+    } catch (IllegalArgumentException | IllegalStateException exception) {
+      redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+    }
+    return "redirect:/buyback/" + requestId;
   }
 
   // Lấy User entity từ Authentication để truyền ownership vào service.

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order Detail - MonoMarket</title>
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,7 +18,9 @@
       --text-muted: #64748b;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       background-color: var(--bg-light);
@@ -65,9 +69,13 @@
       white-space: nowrap;
     }
 
-    .back-link:hover { text-decoration: underline; }
+    .back-link:hover {
+      text-decoration: underline;
+    }
 
-    .order-detail-page { max-width: 820px; }
+    .order-detail-page {
+      max-width: 820px;
+    }
 
     .page-title {
       font-size: 24px;
@@ -92,9 +100,13 @@
       font-size: 14px;
     }
 
-    .order-meta-row:last-child { margin-bottom: 0; }
+    .order-meta-row:last-child {
+      margin-bottom: 0;
+    }
 
-    .order-meta-label { color: var(--text-muted); }
+    .order-meta-label {
+      color: var(--text-muted);
+    }
 
     .order-meta-value {
       font-weight: 600;
@@ -111,9 +123,13 @@
       border-bottom: 1px solid #f1f5f9;
     }
 
-    .item-row:last-child { border-bottom: none; }
+    .item-row:last-child {
+      border-bottom: none;
+    }
 
-    .item-info { min-width: 0; }
+    .item-info {
+      min-width: 0;
+    }
 
     .item-title {
       font-weight: 600;
@@ -175,27 +191,44 @@
     }
 
     @media (max-width: 600px) {
-      .container { width: min(100% - 24px, 920px); }
+      .container {
+        width: min(100% - 24px, 920px);
+      }
 
-      .header-wrap { min-height: 80px; gap: 12px; }
+      .header-wrap {
+        min-height: 80px;
+        gap: 12px;
+      }
 
-      .back-link { font-size: 13px; }
+      .back-link {
+        font-size: 13px;
+      }
 
-      .card { padding: 18px; }
+      .card {
+        padding: 18px;
+      }
 
       .order-meta-row {
         flex-direction: column;
         gap: 4px;
       }
 
-      .order-meta-value { text-align: left; }
+      .order-meta-value {
+        text-align: left;
+      }
 
-      .item-row { align-items: flex-start; gap: 12px; }
+      .item-row {
+        align-items: flex-start;
+        gap: 12px;
+      }
 
-      .cancel-action { text-align: left; }
+      .cancel-action {
+        text-align: left;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <header>
@@ -203,15 +236,17 @@
       <a href="/" class="logo">
         <img th:src="@{/images/logo.png}" alt="MonoMarket Logo">
       </a>
-      <a href="/profile" class="back-link">&#8592; Back to Profile</a>
+      <a href="/profile" class="back-link nav-card-link">&#8592; Back to Profile</a>
     </div>
   </header>
 
   <main class="container order-detail-page">
-    <div th:if="${successMessage}" style="background-color: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500;">
+    <div th:if="${successMessage}"
+      style="background-color: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500;">
       <span aria-hidden="true">&#9989;</span> <span th:text="${successMessage}">Success</span>
     </div>
-    <div th:if="${errorMessage}" style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500;">
+    <div th:if="${errorMessage}"
+      style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500;">
       <span aria-hidden="true">&#9888;</span> <span th:text="${errorMessage}">Error</span>
     </div>
 
@@ -220,11 +255,14 @@
     <div class="card">
       <div class="order-meta-row">
         <span class="order-meta-label">Order Date:</span>
-        <span class="order-meta-value" th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-07-29</span>
+        <span class="order-meta-value"
+          th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-07-29</span>
       </div>
       <div class="order-meta-row">
         <span class="order-meta-label">Status:</span>
-        <span class="order-meta-value" style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 10px; font-size: 12px;" th:text="${order.status}">PENDING</span>
+        <span class="order-meta-value"
+          style="background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 10px; font-size: 12px;"
+          th:text="${order.status}">PENDING</span>
       </div>
       <div class="order-meta-row">
         <span class="order-meta-label">Shipping Address:</span>
@@ -233,7 +271,9 @@
     </div>
 
     <div class="card">
-      <h2 style="font-size: 16px; font-weight: 700; margin: 0 0 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Ordered Items</h2>
+      <h2
+        style="font-size: 16px; font-weight: 700; margin: 0 0 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+        Ordered Items</h2>
 
       <div th:each="item : ${order.orderItems}" class="item-row">
         <div class="item-info">
@@ -243,21 +283,25 @@
           </div>
           <div class="item-code" th:text="${'Code: ' + item.instoreCode}">Code</div>
         </div>
-        <div class="item-price" th:text="${'¥' + #numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥1,200</div>
+        <div class="item-price" th:text="${'¥' + #numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT')}">¥1,200
+        </div>
       </div>
 
       <div class="total-row">
         <span>Total Amount:</span>
-        <span style="color: #dc2626;" th:text="${'¥' + #numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')}">¥1,200</span>
+        <span style="color: #dc2626;"
+          th:text="${'¥' + #numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT')}">¥1,200</span>
       </div>
     </div>
 
     <div th:if="${order.status == 'PENDING'}" class="cancel-action">
-      <form th:action="@{'/orders/' + ${order.orderId} + '/cancel'}" method="post" onsubmit="return confirm('Are you sure you want to cancel this order? Stock will be released back to the store.');">
+      <form th:action="@{'/orders/' + ${order.orderId} + '/cancel'}" method="post"
+        onsubmit="return confirm('Are you sure you want to cancel this order? Stock will be released back to the store.');">
         <button type="submit" class="cancel-button">Cancel Order</button>
       </form>
     </div>
   </main>
 
 </body>
+
 </html>

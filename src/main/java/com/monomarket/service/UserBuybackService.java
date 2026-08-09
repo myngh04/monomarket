@@ -10,6 +10,8 @@ import com.monomarket.dto.BuybackProductLookupDto;
 import com.monomarket.dto.BuybackRequestForm;
 import com.monomarket.entity.BuybackRequest;
 import com.monomarket.entity.BuybackRequestItem;
+import com.monomarket.entity.BuybackRequestStatus;
+import com.monomarket.entity.BuybackRequestStatusHistory;
 import com.monomarket.entity.Product;
 import com.monomarket.entity.User;
 import com.monomarket.repository.BuybackRequestRepository;
@@ -20,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class BuybackService {
+public class UserBuybackService {
 
   private final BuybackRequestRepository buybackRequestRepository;
   private final ProductRepository productRepository;
@@ -46,7 +48,6 @@ public class BuybackService {
 
     BuybackRequest request = new BuybackRequest();
     request.setUser(user);
-    request.setStatus("PENDING");
     request.setDescription(normalizeOptional(form.getDescription()));
     request.setHandoverAddress(form.getHandoverAddress().trim());
     request.setPreferredHandoverDate(form.getPreferredHandoverDate());
@@ -76,6 +77,28 @@ public class BuybackService {
     requireUser(user);
     return buybackRequestRepository.findByIdAndUserIdWithItems(requestId, user.getId())
         .orElseThrow(() -> new IllegalArgumentException("Buyback request not found"));
+  }
+
+  // Kiểm tra ownership và ghi nhận user chấp nhận final price để request chuyển sang USER_ACCEPTED.
+  public BuybackRequest acceptFinalPrice(Long requestId, User user) {
+    requireUser(user);
+    BuybackRequest request = getRequestForUser(requestId, user);
+    if (request.getStatus() != BuybackRequestStatus.PRICED) {
+      throw new IllegalStateException("Only PRICED requests can be accepted");
+    }
+    if (request.getItems() == null || request.getItems().size() != 1
+        || request.getItems().get(0).getFinalBuyPrice() == null) {
+      throw new IllegalStateException("A final Buyback price is required before acceptance");
+    }
+
+    BuybackRequestStatusHistory history = new BuybackRequestStatusHistory();
+    history.setFromStatus(BuybackRequestStatus.PRICED);
+    history.setToStatus(BuybackRequestStatus.USER_ACCEPTED);
+    history.setChangedBy(user);
+    history.setNote("User accepted the final Buyback price.");
+    request.setStatus(BuybackRequestStatus.USER_ACCEPTED);
+    request.addStatusHistory(history);
+    return buybackRequestRepository.save(request);
   }
 
   // Chuẩn hóa ISBN/JAN và lookup product; ném lỗi nếu mã trống hoặc không tồn tại

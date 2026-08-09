@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shopping Cart - MonoMarket</title>
-  
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
+
   <!-- Font hiện đại dùng cho giao diện -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <style>
     :root {
@@ -17,16 +20,19 @@
       --border: #e2e8f0;
       --text-main: #1e293b;
       --text-muted: #64748b;
-      --primary: #1e40af;       /* Màu xanh đậm theo phong cách Bookoff */
+      --primary: #1e40af;
+      /* Màu xanh đậm theo phong cách Bookoff */
       --primary-accent: #2563eb;
-      --orange-accent: #f97316;  /* Màu cam cho nút checkout theo phong cách Bookoff */
+      --orange-accent: #f97316;
+      /* Màu cam cho nút checkout theo phong cách Bookoff */
       --orange-dark: #ea580c;
-      --price-red: #dc2626;      /* Màu đỏ cho nhãn giá theo phong cách Bookoff */
+      --price-red: #dc2626;
+      /* Màu đỏ cho nhãn giá theo phong cách Bookoff */
       --radius-lg: 12px;
       --radius-md: 8px;
       --radius-sm: 4px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
       --font: 'Outfit', sans-serif;
     }
 
@@ -242,8 +248,17 @@
       border: 1px solid #bae6fd;
     }
 
-    .badge-rank-A { background-color: #dcfce7; color: #15803d; border-color: #bbf7d0; }
-    .badge-rank-B { background-color: #fef3c7; color: #b45309; border-color: #fde68a; }
+    .badge-rank-A {
+      background-color: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+
+    .badge-rank-B {
+      background-color: #fef3c7;
+      color: #b45309;
+      border-color: #fde68a;
+    }
 
     .item-title {
       font-size: 15px;
@@ -495,6 +510,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Phần Header -->
@@ -504,7 +520,7 @@
         <img th:src="@{/images/logo.png}" alt="MonoMarket Logo">
       </a>
       <div>
-        <a href="/" class="back-to-shop-link" style="margin: 0;">← Back to Shop</a>
+        <a href="/" class="back-to-shop-link nav-card-link" style="margin: 0;">← Back to Shop</a>
       </div>
     </div>
   </header>
@@ -534,7 +550,8 @@
     </div>
 
     <!-- Banner hiển thị lỗi tạm thời -->
-    <div th:if="${errorMessage}" style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 10px;">
+    <div th:if="${errorMessage}"
+      style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 10px;">
       <span>⚠️</span>
       <span th:text="${errorMessage}">Error message</span>
     </div>
@@ -546,18 +563,20 @@
     <div th:if="${cartItems == null or #lists.isEmpty(cartItems)}" class="item-list-container empty-box">
       <div class="empty-icon">🛒</div>
       <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Your Shopping Cart is empty</h2>
-      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Explore available books, manga, and media items to add to your cart.</p>
-      <a href="/" class="btn-orange-checkout" style="display: inline-block; width: auto; padding: 12px 32px;">Browse Catalog</a>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Explore available books, manga, and
+        media items to add to your cart.</p>
+      <a href="/" class="btn-orange-checkout" style="display: inline-block; width: auto; padding: 12px 32px;">Browse
+        Catalog</a>
     </div>
 
     <!-- Nội dung chính khi giỏ hàng có sản phẩm -->
     <div th:if="${cartItems != null and not #lists.isEmpty(cartItems)}" class="cart-grid">
-      
+
       <!-- Bên trái: Danh sách sản phẩm -->
       <div class="item-list-container">
-        
+
         <div th:each="item : ${cartItems}" class="cart-item-row">
-          
+
           <!-- Ảnh bìa mô phỏng của sản phẩm -->
           <div class="item-thumb">
             📖
@@ -567,11 +586,13 @@
           <div class="item-info">
             <div class="tag-group">
               <span class="badge-used">USED</span>
-              <span class="badge-rank" th:classappend="'badge-rank-' + ${item.conditionRank}" th:text="'Rank ' + ${item.conditionRank}">Rank A</span>
+              <span class="badge-rank" th:classappend="'badge-rank-' + ${item.conditionRank}"
+                th:text="'Rank ' + ${item.conditionRank}">Rank A</span>
             </div>
 
-            <a th:href="@{'/product/' + ${item.productId}}" class="item-title" th:text="${item.titleJa}">Product Title</a>
-            
+            <a th:href="@{'/product/' + ${item.productId}}" class="item-title" th:text="${item.titleJa}">Product
+              Title</a>
+
             <div class="item-subtext" th:text="'Code: ' + ${item.isbnOrJan}">Code: 9784774198801</div>
             <div class="stock-status">In Stock</div>
 
@@ -579,13 +600,15 @@
 
           <!-- Giá và nút xóa -->
           <div class="item-price-column">
-            <div class="price-tag-red" th:text="'¥' + ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 0, 'POINT')}">¥880</div>
-            
+            <div class="price-tag-red" th:text="'¥' + ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 0, 'POINT')}">
+              ¥880</div>
+
             <form th:action="@{/cart/remove}" method="post" style="margin: 0;">
               <input type="hidden" name="inventoryItemId" th:value="${item.inventoryItemId}">
               <button type="submit" class="btn-trash" title="Remove item">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
             </form>
@@ -606,15 +629,17 @@
 
       <!-- Bên phải: Khung tổng kết đơn hàng -->
       <div class="summary-box">
-        
+
         <div class="summary-total-header">
           <span class="summary-total-label">Total</span>
-          <span class="summary-total-price" th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]), 1, 'COMMA', 0, 'POINT')}">¥880</span>
+          <span class="summary-total-price"
+            th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]), 1, 'COMMA', 0, 'POINT')}">¥880</span>
         </div>
 
         <div class="summary-subrow">
           <span>Items Subtotal: <strong th:text="${#lists.size(cartItems)} + ' item(s)'">1 item</strong></span>
-          <span th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]), 1, 'COMMA', 0, 'POINT')}">¥880</span>
+          <span
+            th:text="'¥' + ${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]), 1, 'COMMA', 0, 'POINT')}">¥880</span>
         </div>
 
         <!-- Dòng thông tin điểm thưởng -->
@@ -623,11 +648,13 @@
             <span>Estimated Points</span>
             <span style="cursor: help; color: #94a3b8;" title="Points earned upon order completion">ⓘ</span>
           </div>
-          <div class="points-value" th:text="${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]) / 100, 1, 0)} + ' pts'">8 pts</div>
+          <div class="points-value"
+            th:text="${#numbers.formatDecimal(#aggregates.sum(cartItems.![subtotal]) / 100, 1, 0)} + ' pts'">8 pts</div>
         </div>
 
         <!-- Nút checkout chính màu cam -->
-        <a th:href="@{/checkout}" class="btn-orange-checkout" style="display: block; text-align: center; text-decoration: none; line-height: 48px;">
+        <a th:href="@{/checkout}" class="btn-orange-checkout"
+          style="display: block; text-align: center; text-decoration: none; line-height: 48px;">
           Proceed to Checkout
         </a>
 
@@ -648,4 +675,5 @@
   </main>
 
 </body>
+
 </html>

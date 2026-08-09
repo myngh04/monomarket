@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyback Dashboard - MonoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+
+<body>
+  <div class="admin-shell">
+    <aside th:replace="~{admin/fragments :: sidebar('buyback')}"></aside>
+    <div class="admin-content">
+      <header th:replace="~{admin/fragments :: topbar('Buyback')}"></header>
+      <main class="admin-main">
+        <div th:if="${successMessage}" class="flash flash-success" th:text="${successMessage}">Success</div>
+        <div th:if="${errorMessage}" class="flash flash-error" th:text="${errorMessage}">Error</div>
+
+        <section class="page-header">
+          <div>
+            <div class="page-eyebrow">Buyback management</div>
+            <h1 class="page-title">Buyback Dashboard</h1>
+            <p class="page-description">Review incoming requests, inspect submitted items, and track every status
+              change.</p>
+          </div>
+        </section>
+
+        <section class="kpi-grid" aria-label="Buyback workflow filters">
+          <a class="kpi-card pending" th:href="@{/admin/buyback(status='PENDING')}">
+            <div class="kpi-label">Pending</div>
+            <div class="kpi-value" th:text="${statusCounts.get(T(com.monomarket.entity.BuybackRequestStatus).PENDING)}">
+              0</div>
+          </a>
+          <a class="kpi-card received" th:href="@{/admin/buyback(status='RECEIVED')}">
+            <div class="kpi-label">Received</div>
+            <div class="kpi-value"
+              th:text="${statusCounts.get(T(com.monomarket.entity.BuybackRequestStatus).RECEIVED)}">0</div>
+          </a>
+          <a class="kpi-card testing" th:href="@{/admin/buyback(status='TESTING')}">
+            <div class="kpi-label">Under inspection</div>
+            <div class="kpi-value" th:text="${statusCounts.get(T(com.monomarket.entity.BuybackRequestStatus).TESTING)}">
+              0</div>
+          </a>
+          <a class="kpi-card priced" th:href="@{/admin/buyback(status='PRICED')}">
+            <div class="kpi-label">Priced</div>
+            <div class="kpi-value" th:text="${statusCounts.get(T(com.monomarket.entity.BuybackRequestStatus).PRICED)}">0
+            </div>
+          </a>
+          <a class="kpi-card accepted" th:href="@{/admin/buyback(status='USER_ACCEPTED')}">
+            <div class="kpi-label">User accepted</div>
+            <div class="kpi-value"
+              th:text="${statusCounts.get(T(com.monomarket.entity.BuybackRequestStatus).USER_ACCEPTED)}">0</div>
+          </a>
+          <a class="kpi-card paid" th:href="@{/admin/buyback(status='PAID')}">
+            <div class="kpi-label">Paid</div>
+            <div class="kpi-value" th:text="${statusCounts.get(T(com.monomarket.entity.BuybackRequestStatus).PAID)}">0
+            </div>
+          </a>
+          <a class="kpi-card stocked" th:href="@{/admin/buyback(status='STOCKED')}">
+            <div class="kpi-label">Stocked</div>
+            <div class="kpi-value" th:text="${statusCounts.get(T(com.monomarket.entity.BuybackRequestStatus).STOCKED)}">
+              0</div>
+          </a>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title"
+                th:text="${selectedStatus == null ? 'Request queue' : selectedStatus + ' requests'}">Pending requests
+              </h2>
+              <p class="panel-subtitle">Newest requests appear first in this workflow stage.</p>
+            </div>
+            <form class="filter-form" th:action="@{/admin/buyback}" method="get"><label
+                for="status">Status</label><select id="status" name="status">
+                <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption}"
+                  th:selected="${statusOption == selectedStatus}">PENDING</option>
+              </select><button class="button" type="submit">Apply</button></form>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Submitted item</th>
+                  <th>Submitted</th>
+                  <th
+                    th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PENDING or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).RECEIVED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).TESTING}">
+                    Estimate</th>
+                  <th
+                    th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PRICED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).USER_ACCEPTED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).STOCKED}">
+                    Final buy price</th>
+                  <th th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PRICED}">User acceptance
+                  </th>
+                  <th
+                    th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).USER_ACCEPTED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PAID}">
+                    Payment</th>
+                  <th th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).STOCKED}">Store price
+                  </th>
+                  <th th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).STOCKED}">Profit</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:if="${requests.totalElements == 0}">
+                  <td colspan="8" class="empty-state">No Buyback requests were found.</td>
+                </tr>
+                <tr th:each="request : ${requests.content}">
+                  <td><span class="primary-text" th:text="${'#' + request.id}">#1</span></td>
+                  <td><span th:if="${not #lists.isEmpty(request.items)}"><span class="product-title"
+                        th:text="${request.items[0].product != null ? request.items[0].product.displayTitle : 'Product unavailable'}">Product</span><span
+                        class="secondary-text mono"
+                        th:text="${request.items[0].submittedIsbnOrJan}">0000000000</span></span><span
+                      th:if="${#lists.isEmpty(request.items)}" class="secondary-text">No item data</span></td>
+                  <td th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd')}">2026-08-07</td>
+                  <td
+                    th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PENDING or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).RECEIVED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).TESTING}">
+                    <span class="money"
+                      th:text="${'¥' + #numbers.formatDecimal(request.totalEstimatedPrice, 0, 'COMMA', 0, 'POINT')}">¥0</span>
+                  </td>
+                  <td
+                    th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PRICED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).USER_ACCEPTED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).STOCKED}">
+                    <span class="money"
+                      th:text="${request.items[0].finalBuyPrice != null ? '¥' + #numbers.formatDecimal(request.items[0].finalBuyPrice, 0, 'COMMA', 0, 'POINT') : '—'}">—</span>
+                  </td>
+                  <td th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PRICED}"><span
+                      class="status-badge status-PENDING">PENDING</span></td>
+                  <td
+                    th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).USER_ACCEPTED or selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).PAID}">
+                    <span class="money"
+                      th:text="${request.items[0].finalBuyPrice != null ? '¥' + #numbers.formatDecimal(request.items[0].finalBuyPrice, 0, 'COMMA', 0, 'POINT') : '—'}">—</span>
+                  </td>
+                  <td th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).STOCKED}"><span
+                      class="money"
+                      th:text="${storePrices[request.id] != null ? '¥' + #numbers.formatDecimal(storePrices[request.id], 0, 'COMMA', 0, 'POINT') : '—'}">—</span>
+                  </td>
+                  <td th:if="${selectedStatus == T(com.monomarket.entity.BuybackRequestStatus).STOCKED}"><span
+                      class="money profit-money"
+                      th:text="${storeProfits[request.id] != null ? '¥' + #numbers.formatDecimal(storeProfits[request.id], 0, 'COMMA', 0, 'POINT') : '—'}">—</span>
+                  </td>
+                  <td><span class="status-badge" th:classappend="${' status-' + request.status}"
+                      th:text="${request.status}">PENDING</span></td>
+                  <td><a class="detail-card-link" th:href="@{'/admin/buyback/' + ${request.id}}">View details →</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div th:if="${requests.totalPages > 1}" class="pagination"><span class="pagination-info"
+              th:text="${'Page ' + (requests.number + 1) + ' of ' + requests.totalPages}">Page 1 of 2</span>
+            <div class="pagination-actions"><a class="page-button"
+                th:classappend="${not requests.hasPrevious() ? ' disabled' : ''}"
+                th:href="@{/admin/buyback(page=${requests.number - 1},status=${selectedStatus})}">←</a><a
+                th:each="pageNumber : ${#numbers.sequence(0, requests.totalPages - 1)}" class="page-button"
+                th:classappend="${pageNumber == requests.number ? ' current' : ''}"
+                th:href="@{/admin/buyback(page=${pageNumber},status=${selectedStatus})}"
+                th:text="${pageNumber + 1}">1</a><a class="page-button"
+                th:classappend="${not requests.hasNext() ? ' disabled' : ''}"
+                th:href="@{/admin/buyback(page=${requests.number + 1},status=${selectedStatus})}">→</a></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+
+</html>

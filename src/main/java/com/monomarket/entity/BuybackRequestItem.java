@@ -31,9 +31,9 @@ public class BuybackRequestItem {
   @Column(name = "user_condition_rank", length = 5)
   private String userConditionRank; // Rank user tự đánh giá: S, A, B hoặc C
 
-  @Column(length = 5)
+  @Column(name = "final_condition_rank", length = 5)
   private String finalConditionRank; // S, A, B, C (Rank chuẩn sau khi thẩm định viên của sàn kiểm tra)
 
-  @Column(precision = 12, scale = 2)
+  @Column(name = "final_buy_price", precision = 12, scale = 2)
   private BigDecimal finalBuyPrice; // Số tiền thực tế sàn chốt mua lại từ khách
 }

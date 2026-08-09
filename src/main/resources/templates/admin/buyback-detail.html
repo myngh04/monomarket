@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${'Request #' + buybackRequest.id + ' - MonoMarket'}">Buyback Request - MonoMarket</title>
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+
+<body>
+  <div class="admin-shell">
+    <aside th:replace="~{admin/fragments :: sidebar('buyback')}"></aside>
+    <div class="admin-content">
+      <header th:replace="~{admin/fragments :: topbar('Buyback request')}"></header>
+      <main class="admin-main">
+        <div th:if="${successMessage}" class="flash flash-success" th:text="${successMessage}">Success</div>
+        <div th:if="${errorMessage}" class="flash flash-error" th:text="${errorMessage}">Error</div>
+        <a class="back-link nav-card-link" th:href="@{/admin/buyback}">← Back to request queue</a>
+
+        <section class="page-header">
+          <div>
+            <div class="page-eyebrow">Buyback request</div>
+            <h1 class="page-title" th:text="${'Request #' + buybackRequest.id}">Request #1</h1>
+            <p class="page-description">Review the item and keep a clear record for the next operator.</p>
+          </div>
+          <span class="status-badge" th:classappend="${' status-' + buybackRequest.status}"
+            th:text="${buybackRequest.status}">PENDING</span>
+        </section>
+
+        <div class="detail-grid">
+          <div class="stack">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Request summary</h2>
+                  <p class="panel-subtitle">Customer and valuation information</p>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <div class="summary-label">Submitted</div>
+                    <div class="summary-value"
+                      th:text="${#temporals.format(buybackRequest.createdAt, 'yyyy-MM-dd HH:mm')}">2026-08-07 09:30
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-label">Customer</div>
+                    <div class="summary-value"
+                      th:text="${buybackRequest.user != null ? buybackRequest.user.email : 'Unknown'}">user@example.com
+                    </div>
+                  </div>
+                  <div class="summary-item">
+                    <div class="summary-label">Estimate</div>
+                    <div class="summary-value large"
+                      th:text="${'¥' + #numbers.formatDecimal(buybackRequest.totalEstimatedPrice, 0, 'COMMA', 0, 'POINT')}">
+                      ¥0</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Submitted item</h2>
+                  <p class="panel-subtitle">Catalog match and condition</p>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div th:if="${#lists.isEmpty(buybackRequest.items)}" class="empty-state">No item data is attached to
+                  this request.</div>
+                <div th:each="item : ${buybackRequest.items}" class="item-card">
+                  <div>
+                    <h3 class="item-title"
+                      th:text="${item.product != null ? item.product.displayTitle : 'Product unavailable'}">Product</h3>
+                    <span class="secondary-text mono" th:text="${item.submittedIsbnOrJan}">0000000000</span>
+                    <div class="rank-row"><span class="rank-badge"
+                        th:text="${'Self-assessed: ' + item.userConditionRank}">Self-assessed: A</span><span
+                        th:if="${item.finalConditionRank != null}" class="rank-badge final"
+                        th:text="${'Final: ' + item.finalConditionRank}">Final: A</span></div>
+                  </div>
+                  <div class="item-price pricing-breakdown">
+                    <div><span class="secondary-text">Final buy price</span><strong
+                        th:if="${item.finalBuyPrice != null}"
+                        th:text="${'¥' + #numbers.formatDecimal(item.finalBuyPrice, 0, 'COMMA', 0, 'POINT')}">¥0</strong><span
+                        th:unless="${item.finalBuyPrice != null}" class="price-unavailable">—</span></div>
+                    <div><span class="secondary-text">Store price</span><strong th:if="${storePrice != null}"
+                        th:text="${'¥' + #numbers.formatDecimal(storePrice, 0, 'COMMA', 0, 'POINT')}">¥0</strong><span
+                        th:unless="${storePrice != null}" class="price-unavailable">—</span></div>
+                    <div><span class="secondary-text">Profit</span><strong th:if="${storeProfit != null}"
+                        class="profit-money"
+                        th:text="${'¥' + #numbers.formatDecimal(storeProfit, 0, 'COMMA', 0, 'POINT')}">¥0</strong><span
+                        th:unless="${storeProfit != null}" class="price-unavailable">—</span></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Handover details</h2>
+                  <p class="panel-subtitle">Customer-provided information</p>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div class="info-list">
+                  <div class="info-row">
+                    <div class="info-label">Preferred date</div>
+                    <div class="info-value" th:text="${buybackRequest.preferredHandoverDate}">2026-08-10</div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-label">Address</div>
+                    <div class="info-value" th:text="${buybackRequest.handoverAddress}">Address</div>
+                  </div>
+                  <div class="info-row"
+                    th:if="${buybackRequest.description != null and !buybackRequest.description.isBlank()}">
+                    <div class="info-label">Customer note</div>
+                    <div class="info-value" th:text="${buybackRequest.description}">Note</div>
+                  </div>
+                  <div class="info-row"
+                    th:if="${buybackRequest.inspectionNotes != null and !buybackRequest.inspectionNotes.isBlank()}">
+                    <div class="info-label">Inspection notes</div>
+                    <div class="info-value" th:text="${buybackRequest.inspectionNotes}">Notes</div>
+                  </div>
+                  <div class="info-row"
+                    th:if="${buybackRequest.rejectionReason != null and !buybackRequest.rejectionReason.isBlank()}">
+                    <div class="info-label">Rejection reason</div>
+                    <div class="info-value" th:text="${buybackRequest.rejectionReason}">Reason</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Activity history</h2>
+                  <p class="panel-subtitle">Recorded status changes</p>
+                </div>
+              </div>
+              <div class="panel-body">
+                <div th:if="${#lists.isEmpty(statusHistory)}" class="empty-state">No status changes have been recorded
+                  yet.</div>
+                <div th:unless="${#lists.isEmpty(statusHistory)}" class="timeline">
+                  <div th:each="entry : ${statusHistory}" class="timeline-entry"><span class="timeline-dot"></span>
+                    <div>
+                      <div class="timeline-head"><span class="timeline-status"
+                          th:text="${entry.toStatus}">RECEIVED</span><span class="timeline-meta"
+                          th:text="${#temporals.format(entry.createdAt, 'yyyy-MM-dd HH:mm') + ' · ' + (entry.changedBy != null ? entry.changedBy.email : 'System')}">Date</span>
+                      </div>
+                      <p th:if="${entry.note != null and !entry.note.isBlank()}" class="timeline-note"
+                        th:text="${entry.note}">Note</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="stack">
+            <section class="panel review-card">
+              <h2>Review actions</h2>
+              <p>Only valid next states are available. Every update is recorded.</p>
+              <div th:if="${#lists.isEmpty(nextStatuses)}" class="help-box">This request has reached a terminal state.
+              </div>
+              <form th:unless="${#lists.isEmpty(nextStatuses)}"
+                th:action="@{'/admin/buyback/' + ${buybackRequest.id} + '/status'}" method="post">
+                <div class="field"><label for="targetStatus">Next status</label>
+                  <div class="inline-action"><select id="targetStatus" name="targetStatus" required>
+                      <option th:each="nextStatus : ${nextStatuses}" th:value="${nextStatus}" th:text="${nextStatus}">
+                        RECEIVED</option>
+                    </select><button class="button button-dark" type="submit">Update</button></div>
+                </div>
+                <div class="field" style="margin-bottom:0"><label for="note">Operator note</label><textarea id="note"
+                    name="note" placeholder="Optional note"></textarea></div>
+              </form>
+
+              <form th:if="${buybackRequest.status.name() == 'PAID'}" class="form-divider"
+                th:action="@{'/admin/buyback/' + ${buybackRequest.id} + '/stock'}" method="post">
+                <h3>List on storefront</h3>
+                <p>Set the customer-facing selling price. It must be higher than the final Buyback price.</p>
+                <div class="field"><label for="sellingPrice">Selling price (¥)</label><input id="sellingPrice"
+                    name="sellingPrice" type="number" min="1" step="0.01" required></div><button
+                  class="button button-full" type="submit">Save selling price and mark as STOCKED</button>
+              </form>
+
+              <form th:if="${buybackRequest.status.name() == 'TESTING'}" class="form-divider"
+                th:action="@{'/admin/buyback/' + ${buybackRequest.id} + '/price'}" method="post">
+                <h3>Finalize inspection</h3>
+                <div class="field"><label for="finalConditionRank">Final condition</label><select
+                    id="finalConditionRank" name="finalConditionRank" required>
+                    <option value="">Select rank</option>
+                    <option value="S">S — Like new</option>
+                    <option value="A">A — Excellent</option>
+                    <option value="B">B — Good</option>
+                    <option value="C">C — Acceptable</option>
+                  </select></div>
+                <div class="field"><label for="finalBuyPrice">Final buy price (¥)</label><input id="finalBuyPrice"
+                    name="finalBuyPrice" type="number" min="0" step="0.01"
+                    th:value="${buybackRequest.items[0].finalBuyPrice}" required></div>
+                <div class="field"><label for="inspectionNotes">Inspection notes</label><textarea id="inspectionNotes"
+                    name="inspectionNotes" th:text="${buybackRequest.inspectionNotes}"
+                    placeholder="Condition, accessories, and test results" required></textarea></div><button
+                  class="button button-full" type="submit">Save price and mark as PRICED</button>
+              </form>
+            </section>
+            <section class="panel review-card">
+              <h2>Pricing reminder</h2>
+              <p>The catalog estimate is only a reference.</p>
+              <div class="help-box">Set the final price only after the physical item has been inspected.</div>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+
+</html>

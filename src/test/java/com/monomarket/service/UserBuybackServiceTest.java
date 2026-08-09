@@ -21,13 +21,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.monomarket.dto.BuybackProductLookupDto;
 import com.monomarket.dto.BuybackRequestForm;
 import com.monomarket.entity.BuybackRequest;
+import com.monomarket.entity.BuybackRequestStatus;
 import com.monomarket.entity.Product;
 import com.monomarket.entity.User;
 import com.monomarket.repository.BuybackRequestRepository;
 import com.monomarket.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
-class BuybackServiceTest {
+class UserBuybackServiceTest {
 
   @Mock
   private BuybackRequestRepository buybackRequestRepository;
@@ -36,7 +37,7 @@ class BuybackServiceTest {
   private ProductRepository productRepository;
 
   @InjectMocks
-  private BuybackService buybackService;
+  private UserBuybackService buybackService;
 
   private User user;
   private Product product;
@@ -89,7 +90,7 @@ class BuybackServiceTest {
     BuybackRequest result = buybackService.createRequest(user, form);
 
     assertThat(result.getUser()).isSameAs(user);
-    assertThat(result.getStatus()).isEqualTo("PENDING");
+    assertThat(result.getStatus()).isEqualTo(BuybackRequestStatus.PENDING);
     assertThat(result.getDescription()).isEqualTo("Some additional notes");
     assertThat(result.getHandoverAddress()).isEqualTo("123 Test Street");
     assertThat(result.getPreferredHandoverDate()).isEqualTo(LocalDate.of(2026, 8, 10));
@@ -135,6 +136,30 @@ class BuybackServiceTest {
     assertThatThrownBy(() -> buybackService.getRequestForUser(50L, user))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Buyback request not found");
+  }
+
+  @Test
+  @DisplayName("User cháº¥p nháº­n final price thÃ¬ request chuyá»ƒn USER_ACCEPTED")
+  void shouldAcceptFinalPrice() {
+    BuybackRequest request = new BuybackRequest();
+    request.setId(50L);
+    request.setUser(user);
+    request.setStatus(BuybackRequestStatus.PRICED);
+    var item = new com.monomarket.entity.BuybackRequestItem();
+    item.setFinalBuyPrice(new java.math.BigDecimal("850"));
+    request.addItem(item);
+    when(buybackRequestRepository.findByIdAndUserIdWithItems(50L, 1L))
+        .thenReturn(Optional.of(request));
+    when(buybackRequestRepository.save(any(BuybackRequest.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    BuybackRequest result = buybackService.acceptFinalPrice(50L, user);
+
+    assertThat(result.getStatus()).isEqualTo(BuybackRequestStatus.USER_ACCEPTED);
+    assertThat(result.getStatusHistory()).hasSize(1);
+    assertThat(result.getStatusHistory().get(0).getToStatus())
+        .isEqualTo(BuybackRequestStatus.USER_ACCEPTED);
+    verify(buybackRequestRepository).save(request);
   }
 
   private BuybackRequestForm validForm() {

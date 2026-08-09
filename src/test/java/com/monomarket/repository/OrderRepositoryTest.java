@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 
 import com.monomarket.entity.Category;
 import com.monomarket.entity.InventoryItem;
@@ -114,5 +115,15 @@ class OrderRepositoryTest {
     // THEN: Đơn hàng phải tồn tại
     assertThat(orderOpt).isPresent();
     assertThat(orderOpt.get().getTotalPrice()).isEqualByComparingTo(new BigDecimal("500.00"));
+  }
+
+  @Test
+  @DisplayName("Lấy order phân trang kèm user cho trang admin")
+  void shouldFindAdminOrderPageWithUser() {
+    org.springframework.data.domain.Page<Order> result = orderRepository
+        .findAllWithUser(PageRequest.of(0, 10));
+
+    assertThat(result.getTotalElements()).isEqualTo(1);
+    assertThat(result.getContent().get(0).getUser().getEmail()).isEqualTo("buyer@example.com");
   }
 }
