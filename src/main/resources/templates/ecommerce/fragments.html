@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+  <div class="ecom-account-menu" th:fragment="accountMenu">
+    <button class="ecom-account-trigger" type="button" aria-expanded="false" aria-controls="ecom-account-dropdown">
+      <span class="ecom-avatar">U</span>
+      <span sec:authentication="name">user@monomarket.com</span>
+    </button>
+    <div id="ecom-account-dropdown" class="ecom-account-dropdown" hidden>
+      <a th:href="@{/profile}">Profile</a>
+      <a th:href="@{/admin/buyback}" sec:authorize="hasAnyRole('STAFF', 'ADMIN')">Dashboard</a>
+      <form class="ecom-account-logout" th:action="@{/logout}" method="post"><button type="submit">Logout</button>
+      </form>
+    </div>
+    <script>
+      document.querySelectorAll('.ecom-account-menu').forEach(function (menu) {
+        const trigger = menu.querySelector('.ecom-account-trigger');
+        const dropdown = menu.querySelector('.ecom-account-dropdown');
+        trigger.addEventListener('click', function () {
+          const isOpen = !dropdown.hidden;
+          dropdown.hidden = isOpen;
+          trigger.setAttribute('aria-expanded', String(!isOpen));
+        });
+        document.addEventListener('click', function (event) {
+          if (!menu.contains(event.target)) {
+            dropdown.hidden = true;
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    </script>
+  </div>
+</body>
+
+</html>

@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile - MonoMarket</title>
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/ecommerce-account.css}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -337,6 +339,13 @@
       color: #6d28d9;
     }
 
+    .status-USER_ACCEPTED,
+    .status-PAID,
+    .status-STOCKED {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
     .status-APPROVED {
       background: #dcfce7;
       color: #15803d;
@@ -417,6 +426,14 @@
     }
 
     .btn-action-detail {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid #dfe3ff;
+      border-radius: 7px;
+      background: #f5f6ff;
       color: var(--primary);
       text-decoration: none;
       font-weight: 600;
@@ -424,19 +441,29 @@
     }
 
     .btn-action-detail:hover {
-      text-decoration: underline;
+      border-color: #a5b4fc;
+      background: #eef2ff;
     }
 
     .btn-action-cancel {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
       background: #fee2e2;
       color: #dc2626;
       border: 1px solid #fca5a5;
-      padding: 4px 10px;
+      padding: 0 10px;
       border-radius: 6px;
       font-weight: 600;
       font-size: 12px;
       cursor: pointer;
       transition: all 0.2s;
+    }
+
+    .orders-table td form {
+      display: inline-flex !important;
+      vertical-align: middle;
     }
 
     .btn-action-cancel:hover {
@@ -477,13 +504,8 @@
         <img th:src="@{/images/logo.png}" alt="MonoMarket Logo" class="logo-img">
       </a>
       <div class="profile-header-actions">
-        <a href="/" class="header-link">← Back to Shop</a>
-        <a sec:authorize="hasAnyRole('STAFF', 'ADMIN')" th:href="@{/admin/buyback}"
-          class="header-link admin-dashboard-link">Dashboard</a>
-        <span class="header-user" sec:authentication="name">user@monomarket.com</span>
-        <form th:action="@{/logout}" method="post" class="header-logout">
-          <button type="submit">Logout</button>
-        </form>
+        <a href="/" class="header-link nav-card-link">← Back to Shop</a>
+        <div th:replace="~{ecommerce/fragments :: accountMenu}"></div>
       </div>
     </div>
   </header>
@@ -619,6 +641,7 @@
                 <th>Submitted</th>
                 <th>Product</th>
                 <th>Estimate</th>
+                <th>Final offer</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -641,8 +664,15 @@
                 <td style="font-weight: 700; color: #059669;"
                   th:text="${'¥' + #numbers.formatDecimal(request.totalEstimatedPrice, 0, 'COMMA', 0, 'POINT')}">¥1,200
                 </td>
-                <td><span th:class="${'status-badge status-' + request.status}"
-                    th:text="${request.status}">PENDING</span></td>
+                <td style="font-weight: 700; color: #059669;">
+                  <span th:if="${not #lists.isEmpty(request.items) and request.items[0].finalBuyPrice != null}"
+                    th:text="${'¥' + #numbers.formatDecimal(request.items[0].finalBuyPrice, 0, 'COMMA', 0, 'POINT')}">¥1,000</span>
+                  <span
+                    th:unless="${not #lists.isEmpty(request.items) and request.items[0].finalBuyPrice != null}">—</span>
+                </td>
+                <td><span
+                    th:class="${'status-badge status-' + (request.status.name() == 'STOCKED' ? 'PAID' : request.status)}"
+                    th:text="${request.status.name() == 'STOCKED' ? 'PAID' : request.status}">PENDING</span></td>
                 <td><a th:href="@{'/buyback/' + ${request.id}}" class="btn-action-detail">Details →</a></td>
               </tr>
             </tbody>

@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title th:text="#{brand.name}">MonoMarket</title>
+  <link rel="stylesheet" th:href="@{/css/ecommerce-account.css}">
   <!-- Font hiện đại dùng cho giao diện -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -643,7 +644,7 @@
         </div>
 
         <!-- Hiển thị khi ĐÃ ĐĂNG NHẬP -->
-        <div sec:authorize="isAuthenticated()" class="user-info" style="display: flex; align-items: center; gap: 12px;">
+        <div sec:authorize="isAuthenticated()" th:replace="~{ecommerce/fragments :: accountMenu}">
           <a th:href="@{/profile}" class="user-name"
             style="text-decoration: none; color: var(--primary); font-weight: 600;" title="View Profile">
             👤 <span sec:authentication="name">User</span>

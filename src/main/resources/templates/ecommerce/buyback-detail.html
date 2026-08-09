@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buyback Request - MonoMarket</title>
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/ecommerce-account.css}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -283,6 +285,26 @@
       line-height: 1.6;
     }
 
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .button:hover {
+      background: var(--primary-hover);
+    }
+
     @media (max-width: 650px) {
       .header-wrap {
         align-items: flex-start;
@@ -336,21 +358,24 @@
       <a href="/" class="logo"><img th:src="@{/images/logo.png}" alt="MonoMarket Logo" class="logo-img"></a>
       <div class="header-actions">
         <a th:href="@{/profile} + '#buyback-requests'" class="header-link">My Buyback Requests</a>
-        <span class="header-user" sec:authentication="name">user@monomarket.com</span>
-        <form th:action="@{/logout}" method="post" class="logout"><button type="submit">Logout</button></form>
+        <div th:replace="~{ecommerce/fragments :: accountMenu}"></div>
       </div>
     </div>
   </header>
 
   <main class="container">
-    <div class="back-row"><a th:href="@{/profile} + '#buyback-requests'" class="back-link">← Back to profile</a></div>
+    <div th:if="${successMessage}" class="muted-box" th:text="${successMessage}">Success</div>
+    <div th:if="${errorMessage}" class="muted-box" th:text="${errorMessage}">Error</div>
+    <div class="back-row"><a th:href="@{/profile} + '#buyback-requests'" class="back-link nav-card-link">← Back to
+        profile</a></div>
 
     <div class="header-line">
       <div>
         <div class="eyebrow">Buyback request</div>
         <h1 th:text="'Request #' + ${buybackRequest.id}">Request #1</h1>
       </div>
-      <span class="status" th:text="${buybackRequest.status}">PENDING</span>
+      <span class="status"
+        th:text="${buybackRequest.status.name() == 'STOCKED' ? 'PAID' : buybackRequest.status}">PENDING</span>
     </div>
 
     <section class="card">
@@ -411,6 +436,22 @@
           <p class="note" th:text="${buybackRequest.description}">Additional notes</p>
         </div>
       </div>
+    </section>
+
+    <section class="card"
+      th:if="${buybackRequest.inspectionNotes != null and !buybackRequest.inspectionNotes.isBlank()}">
+      <h2 class="section-title">Inspection notes</h2>
+      <p class="note" th:text="${buybackRequest.inspectionNotes}">Inspection result</p>
+    </section>
+
+    <section class="card" th:if="${buybackRequest.status.name() == 'PRICED'}">
+      <h2 class="section-title">Review final offer</h2>
+      <p class="note">Please review the final price and inspection notes above. Accepting will send this request to the
+        payment step.</p>
+      <br>
+      <form th:action="@{'/buyback/' + ${buybackRequest.id} + '/accept'}" method="post">
+        <button class="button" type="submit">Accept final price</button>
+      </form>
     </section>
 
     <div class="muted-box">The estimated value is for reference only. The final Buyback value is determined after our
