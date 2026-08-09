@@ -55,7 +55,7 @@ class CartControllerTest {
     // WHEN & THEN: Gửi request GET /cart và kiểm tra phản hồi
     mockMvc.perform(get("/cart"))
         .andExpect(status().isOk()) // HTTP status phải là 200
-        .andExpect(view().name("cart")) // View rendered ra phải là cart.html
+        .andExpect(view().name("ecommerce/cart")) // View rendered ra phải là ecommerce/cart.html
         .andExpect(model().attributeExists("cartItems")) // Biến cartItems tồn tại trong model
         .andExpect(cookie().exists(CartController.GUEST_COOKIE_NAME)); // Cookie guest được tự động tạo
   }
@@ -82,7 +82,7 @@ class CartControllerTest {
     // WHEN: Gửi request kèm Cookie này
     mockMvc.perform(get("/cart").cookie(existingCookie))
         .andExpect(status().isOk())
-        .andExpect(view().name("cart"));
+        .andExpect(view().name("ecommerce/cart"));
 
     // THEN: Xác nhận cartService nhận đúng token từ cookie cũ đó
     verify(cartService).getCartDtoList(any(), eq("existing-uuid-token"));

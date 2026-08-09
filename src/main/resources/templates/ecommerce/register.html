@@ -1,227 +1,79 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register - MonoMarket</title>
-  <!-- Font được tải từ Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <style>
-    :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --border: rgba(255, 255, 255, 0.1);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --radius: 16px;
-      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Outfit", sans-serif;
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow-x: hidden;
-    }
-
-    .register-container {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 40px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: var(--shadow);
-      animation: fadeIn 0.6s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .brand {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .logo-img {
-      height: 80px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .brand-name {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(to right, #a5b4fc, #6366f1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .brand-tagline {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: var(--text-main);
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 12px 16px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 15px;
-      transition: all 0.2s ease;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .error-alert {
-      background-color: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 12px;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: inherit;
-      margin-top: 10px;
-    }
-
-    .btn-submit:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-
-    .links-container {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 24px;
-      font-size: 14px;
-    }
-
-    .links-container a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .links-container a:hover {
-      color: var(--primary);
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - MonoMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/navigation.css}">
+  <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 
 <body>
-  <div class="register-container">
-    <div class="brand">
-      <a href="/" class="brand-name" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-        <img th:src="@{/images/logo.png}" alt="MonoMarket" class="logo-img" />
-      </a>
-      <div class="brand-tagline">Create your account</div>
-    </div>
+  <main class="auth-page">
+    <a href="/" class="auth-home nav-card-link">← Back to Home</a>
 
-    <!-- Hiển thị thông báo lỗi nếu có (ví dụ: Trùng email, mật khẩu không khớp) -->
-    <div class="error-alert" th:if="${error}" th:text="${error}">
-      Đã xảy ra lỗi.
-    </div>
+    <section class="auth-shell" aria-labelledby="register-title">
+      <aside class="auth-showcase register-showcase">
+        <a href="/" class="auth-logo-link" aria-label="MonoMarket home">
+          <img th:src="@{/images/logo.png}" alt="MonoMarket" class="auth-logo">
+        </a>
+        <div class="showcase-copy">
+          <span class="showcase-eyebrow">Join MonoMarket</span>
+          <h2>Give great items<br>a second life.</h2>
+          <p>Create one account to shop serialized inventory and submit products through Buyback.</p>
+        </div>
+        <div class="showcase-points" aria-label="Account benefits">
+          <span>Track every order</span>
+          <span>Submit Buyback requests</span>
+          <span>Review offers online</span>
+        </div>
+      </aside>
 
-    <form th:action="@{/register}" method="post">
-      <div class="form-group">
-        <label class="form-label" for="fullName">Full Name</label>
-        <input type="text" id="fullName" name="fullName" class="form-input" placeholder="John Doe" required autofocus />
+      <div class="auth-form-panel register-panel">
+        <div class="auth-heading">
+          <span class="auth-kicker">Create your account</span>
+          <h1 id="register-title">Get started today</h1>
+          <p>Use your details below to join MonoMarket.</p>
+        </div>
+
+        <div class="auth-alert auth-alert-error" th:if="${error}" th:text="${error}">
+          Unable to create your account.
+        </div>
+
+        <form th:action="@{/register}" method="post" class="auth-form">
+          <div class="auth-field">
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" name="fullName" placeholder="John Doe" autocomplete="name" required
+              autofocus>
+          </div>
+          <div class="auth-field">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="name@example.com" autocomplete="email" required>
+          </div>
+          <div class="auth-field-grid">
+            <div class="auth-field">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" placeholder="Create password"
+                autocomplete="new-password" required>
+            </div>
+            <div class="auth-field">
+              <label for="confirmPassword">Confirm password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"
+                autocomplete="new-password" required>
+            </div>
+          </div>
+          <button type="submit" class="auth-submit">Create Account</button>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="/login">Sign in</a></p>
       </div>
-
-      <div class="form-group">
-        <label class="form-label" for="email">Email Address</label>
-        <input type="email" id="email" name="email" class="form-input" placeholder="name@example.com" required />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="password">Password</label>
-        <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required />
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="••••••••"
-          required />
-      </div>
-
-      <button type="submit" class="btn-submit">Sign Up</button>
-    </form>
-
-    <div class="links-container">
-      <a href="/">Back to Home</a>
-      <a href="/login">Already have an account? Sign In</a>
-    </div>
-  </div>
+    </section>
+  </main>
 </body>
 
 </html>

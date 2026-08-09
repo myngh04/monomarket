@@ -1,0 +1,21 @@
+.nav-card-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #dfe3ff;
+  border-radius: 7px;
+  background: #f5f6ff;
+  color: #4338ca !important;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+.nav-card-link:hover,
+.nav-card-link:focus-visible {
+  border-color: #a5b4fc;
+  background: #eef2ff;
+  color: #3730a3 !important;
+}
