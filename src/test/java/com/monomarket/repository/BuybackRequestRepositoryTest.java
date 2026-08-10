@@ -56,12 +56,12 @@ class BuybackRequestRepositoryTest {
         saveRequest(BuybackRequestStatus.PENDING, "newer@example.com");
         saveRequest(BuybackRequestStatus.TESTING, "testing@example.com");
 
-         Page<BuybackRequest> result = buybackRequestRepository
-                 .findByStatusForAdminQueue(BuybackRequestStatus.PENDING, PageRequest.of(0, 1));
+        Page<BuybackRequest> result = buybackRequestRepository
+                .findByStatusForAdminQueue(BuybackRequestStatus.PENDING, PageRequest.of(0, 1));
 
         assertThat(result.getTotalElements()).isEqualTo(2);
         assertThat(result.getContent()).hasSize(1);
-         assertThat(result.getContent().get(0).getId()).isNotEqualTo(oldest.getId());
+        assertThat(result.getContent().get(0).getId()).isNotEqualTo(oldest.getId());
         assertThat(result.getContent().get(0).getStatus()).isEqualTo(BuybackRequestStatus.PENDING);
     }
 
