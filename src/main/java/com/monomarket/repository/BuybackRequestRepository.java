@@ -53,7 +53,9 @@ public interface BuybackRequestRepository extends JpaRepository<BuybackRequest, 
         Page<BuybackRequest> findAllForAdminQueue(Pageable pageable);
 
         // Lọc request theo status để admin xử lý đúng hàng đợi nghiệp vụ.
-        @Query(value = "SELECT r FROM BuybackRequest r WHERE r.status = :status ORDER BY r.createdAt DESC", countQuery = "SELECT COUNT(r) FROM BuybackRequest r WHERE r.status = :status")
+        @Query(value = "SELECT r FROM BuybackRequest r "
+                        + "WHERE r.status = :status "
+                        + "ORDER BY r.createdAt DESC, r.id DESC", countQuery = "SELECT COUNT(r) FROM BuybackRequest r WHERE r.status = :status")
         Page<BuybackRequest> findByStatusForAdminQueue(
                         @Param("status") BuybackRequestStatus status,
                         Pageable pageable);
