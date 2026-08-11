@@ -18,7 +18,7 @@ public class SecurityConfig {
     http
         // Cấu hình quyền truy cập cho storefront, authentication và khu vực admin.
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/", "/product/**", "/api/v1/products/**", "/css/**", "/js/**", "/images/**", "/login", "/register",
+            .requestMatchers("/", "/product/**", "/api/v1/products/**", "/api/v1/cart/**", "/css/**", "/js/**", "/images/**", "/login", "/register",
                 "/cart", "/cart/add", "/cart/remove", "/cart/clear")
             .permitAll()
             // Chỉ staff/admin được truy cập khu vực vận hành Buyback.

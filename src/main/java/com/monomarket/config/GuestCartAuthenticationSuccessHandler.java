@@ -9,7 +9,7 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Component;
 
-import com.monomarket.controller.CartController;
+import com.monomarket.controller.support.CartRequestContextResolver;
 import com.monomarket.entity.User;
 import com.monomarket.service.CartService;
 import com.monomarket.service.UserService;
@@ -49,14 +49,14 @@ public class GuestCartAuthenticationSuccessHandler implements AuthenticationSucc
     }
 
     return Arrays.stream(request.getCookies())
-        .filter(cookie -> CartController.GUEST_COOKIE_NAME.equals(cookie.getName()))
+        .filter(cookie -> CartRequestContextResolver.GUEST_COOKIE_NAME.equals(cookie.getName()))
         .map(Cookie::getValue)
         .findFirst()
         .orElse(null);
   }
 
   private void expireGuestCookie(HttpServletResponse response) {
-    Cookie cookie = new Cookie(CartController.GUEST_COOKIE_NAME, "");
+    Cookie cookie = new Cookie(CartRequestContextResolver.GUEST_COOKIE_NAME, "");
     cookie.setPath("/");
     cookie.setMaxAge(0);
     cookie.setHttpOnly(true);

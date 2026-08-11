@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,6 +31,18 @@ public class ApiExceptionHandler {
             ConstraintViolationException exception,
             HttpServletRequest request) {
         return buildResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(), request);
+    }
+
+    // Trả lỗi body JSON không hợp lệ theo cùng contract thay vì để validation rơi vào lỗi 500 mặc định.
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiErrorResponse> handleValidationError(
+            MethodArgumentNotValidException exception,
+            HttpServletRequest request) {
+        String message = exception.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(error -> error.getField() + " " + error.getDefaultMessage())
+                .orElse("Request validation failed");
+        return buildResponse(HttpStatus.BAD_REQUEST.value(), message, request);
     }
 
     // Giữ lỗi không dự kiến trong boundary API, không trả stack trace hoặc chi tiết nội bộ ra client.
