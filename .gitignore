@@ -1,12 +1,10 @@
-### --- Hệ điều hành (OS Rác) ---
-# Né file ẩn lưu thumbnail và cấu hình folder của Windows/Mac
+### --- Hệ điều hành (OS) ---
 Thumbs.db
 db.properties
 Desktop.ini
 .DS_Store
 
 ### --- Build Tool (Maven) ---
-# Chỉ cần ignore thư mục target chứa file build .class/.jar là đủ
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
@@ -15,19 +13,19 @@ target/
 .history/
 *.code-workspace
 
-### --- IntelliJ IDEA (Rác cũ còn sót lại) ---
-# Chặn tuyệt đối không cho đống file cấu hình cũ của IntelliJ nhảy lên Git
+### --- IntelliJ IDEA ---
 .idea/
 *.iws
 *.iml
 *.ipr
 
 ### --- Các file Log & Môi trường ẩn ---
+*postman/
 *.log
 .env
 .env.local
 MD/
 
-### --- Bảo mật thông tin cấu hình (Cực kỳ quan trọng) ---
+### --- Bảo mật thông tin cấu hình ---
 src/main/resources/application.properties
 src/main/resources/application.yaml
