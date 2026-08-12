@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.monomarket.dto.api.ApiPageResponse;
 import com.monomarket.dto.api.ProductResponse;
 import com.monomarket.entity.Product;
@@ -23,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(path = "/api/v1/products", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
+@Tag(name = "Products", description = "Browse the public product catalog and available inventory.")
 public class ProductApiController {
 
     private static final int DEFAULT_PAGE_SIZE = 12;
@@ -30,8 +36,14 @@ public class ProductApiController {
 
     private final ProductService productService;
 
-    // Trả catalog JSON có pagination và hỗ trợ các filter catalog đang tồn tại của MVC.
+    // Trả catalog JSON có pagination và hỗ trợ các filter catalog đang tồn tại của
+    // MVC.
     @GetMapping
+    @Operation(summary = "List products", description = "Trả catalog có pagination và filter category hoặc platform.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product page returned"),
+            @ApiResponse(responseCode = "400", description = "Pagination parameters are invalid")
+    })
     public ApiPageResponse<ProductResponse> getProducts(
             @RequestParam(required = false) Integer category,
             @RequestParam(required = false) String platform,
@@ -45,8 +57,14 @@ public class ProductApiController {
         return ApiPageResponse.from(products.map(ProductResponse::from));
     }
 
-    // Trả chi tiết một product dưới dạng DTO JSON, chỉ expose inventory còn AVAILABLE cho storefront.
+    // Trả chi tiết một product dưới dạng DTO JSON, chỉ expose inventory còn
+    // AVAILABLE cho storefront.
     @GetMapping("/{productId}")
+    @Operation(summary = "Get product detail", description = "Chỉ trả inventory item đang AVAILABLE.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product returned"),
+            @ApiResponse(responseCode = "404", description = "Product does not exist")
+    })
     public ProductResponse getProduct(@PathVariable Long productId) {
         Product product = productService.getProductById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
@@ -54,7 +72,8 @@ public class ProductApiController {
         return ProductResponse.from(product);
     }
 
-    // Chọn một filter catalog theo đúng thứ tự ưu tiên đang dùng ở MVC để hai interface cho kết quả nhất quán.
+    // Chọn một filter catalog theo đúng thứ tự ưu tiên đang dùng ở MVC để hai
+    // interface cho kết quả nhất quán.
     private Page<Product> getFilteredProducts(Integer category, String platform, Pageable pageable) {
         if (category != null) {
             return productService.getProductsByCategory(category, pageable);

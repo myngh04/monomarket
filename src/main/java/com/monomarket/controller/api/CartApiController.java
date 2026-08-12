@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.monomarket.controller.support.CartRequestContext;
 import com.monomarket.controller.support.CartRequestContextResolver;
 import com.monomarket.dto.CartDto;
@@ -27,13 +33,19 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(path = "/api/v1/cart", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
+@Tag(name = "Cart", description = "Manage the current guest or signed-in user's cart.")
 public class CartApiController {
 
     private final CartService cartService;
     private final CartRequestContextResolver cartRequestContextResolver;
 
-    // Trả cart JSON của user hiện tại hoặc guest cookie, đồng thời tạo guest cookie nếu request chưa có.
+    // Trả cart JSON của user hiện tại hoặc guest cookie, đồng thời tạo guest cookie
+    // nếu request chưa có.
     @GetMapping
+    @Operation(summary = "Get current cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Current cart returned")
+    })
     public CartDto getCart(
             Authentication authentication,
             HttpServletRequest request,
@@ -42,8 +54,17 @@ public class CartApiController {
         return getCartDto(context);
     }
 
-    // Thêm một serialized inventory item vào cart và trả cart mới; thêm lại cùng item vẫn idempotent.
+    // Thêm một serialized inventory item vào cart và trả cart mới; thêm lại cùng
+    // item vẫn idempotent.
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "csrfToken")
+    @Operation(summary = "Add inventory item to cart", description = "Yêu cầu X-CSRF-TOKEN lấy từ endpoint CSRF.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cart updated"),
+            @ApiResponse(responseCode = "400", description = "Request body is invalid"),
+            @ApiResponse(responseCode = "403", description = "CSRF token is missing or invalid"),
+            @ApiResponse(responseCode = "409", description = "Inventory item is unavailable")
+    })
     public CartDto addCartItem(
             @Valid @RequestBody AddCartItemRequest requestBody,
             Authentication authentication,
@@ -58,8 +79,15 @@ public class CartApiController {
         return getCartDto(context);
     }
 
-    // Xóa một inventory item khỏi cart hiện tại; thao tác idempotent khi item đã không còn trong cart.
+    // Xóa một inventory item khỏi cart hiện tại; thao tác idempotent khi item đã
+    // không còn trong cart.
     @DeleteMapping("/items/{inventoryItemId}")
+    @SecurityRequirement(name = "csrfToken")
+    @Operation(summary = "Remove inventory item from cart", description = "Yêu cầu X-CSRF-TOKEN lấy từ endpoint CSRF.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Cart item removed"),
+            @ApiResponse(responseCode = "403", description = "CSRF token is missing or invalid")
+    })
     public ResponseEntity<Void> removeCartItem(
             @PathVariable Long inventoryItemId,
             Authentication authentication,
@@ -70,8 +98,15 @@ public class CartApiController {
         return ResponseEntity.noContent().build();
     }
 
-    // Xóa toàn bộ item khỏi cart hiện tại nhưng vẫn giữ guest token để các request sau dùng cùng cart identity.
+    // Xóa toàn bộ item khỏi cart hiện tại nhưng vẫn giữ guest token để các request
+    // sau dùng cùng cart identity.
     @DeleteMapping
+    @SecurityRequirement(name = "csrfToken")
+    @Operation(summary = "Clear current cart", description = "Yêu cầu X-CSRF-TOKEN lấy từ endpoint CSRF.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Cart cleared"),
+            @ApiResponse(responseCode = "403", description = "CSRF token is missing or invalid")
+    })
     public ResponseEntity<Void> clearCart(
             Authentication authentication,
             HttpServletRequest request,
@@ -81,7 +116,8 @@ public class CartApiController {
         return ResponseEntity.noContent().build();
     }
 
-    // Chuyển danh sách item từ service thành CartDto để response REST và Thymeleaf dùng chung cấu trúc giá/tổng tiền.
+    // Chuyển danh sách item từ service thành CartDto để response REST và Thymeleaf
+    // dùng chung cấu trúc giá/tổng tiền.
     private CartDto getCartDto(CartRequestContext context) {
         return new CartDto(cartService.getCartDtoList(context.user(), context.guestToken()));
     }
