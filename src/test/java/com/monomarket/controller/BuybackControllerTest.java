@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +77,7 @@ class BuybackControllerTest {
   void shouldShowBuybackFormWhenAuthenticated() throws Exception {
     mockMvc.perform(get("/buyback"))
         .andExpect(status().isOk())
-                .andExpect(view().name("ecommerce/buyback-form"))
+        .andExpect(view().name("ecommerce/buyback-form"))
         .andExpect(model().attributeExists("buybackForm"));
   }
 
@@ -123,7 +124,7 @@ class BuybackControllerTest {
         .param("userConditionRank", "A")
         .param("description", "Some notes")
         .param("handoverAddress", "123 Test Street")
-        .param("preferredHandoverDate", "2026-08-10")
+        .param("preferredHandoverDate", LocalDate.now().plusDays(1).toString())
         .with(csrf()))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl("/profile#buyback-requests"))
@@ -138,10 +139,10 @@ class BuybackControllerTest {
   void shouldRejectInvalidBuybackForm() throws Exception {
     mockMvc.perform(post("/buyback")
         .param("submittedIsbnOrJan", "9780000000001")
-        .param("preferredHandoverDate", "2026-08-10")
+        .param("preferredHandoverDate", LocalDate.now().plusDays(1).toString())
         .with(csrf()))
         .andExpect(status().isOk())
-                .andExpect(view().name("ecommerce/buyback-form"))
+        .andExpect(view().name("ecommerce/buyback-form"))
         .andExpect(model().attributeHasFieldErrors(
             "buybackForm", "userConditionRank", "handoverAddress"));
   }
@@ -165,7 +166,7 @@ class BuybackControllerTest {
 
     mockMvc.perform(get("/buyback/20"))
         .andExpect(status().isOk())
-                .andExpect(view().name("ecommerce/buyback-detail"))
+        .andExpect(view().name("ecommerce/buyback-detail"))
         .andExpect(model().attribute("buybackRequest", request));
   }
 
@@ -205,8 +206,16 @@ class BuybackControllerTest {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     ViewResolver testViewResolver() {
-      return (viewName, locale) -> (View) (model, request, response) -> {
-        // Chỉ cần trả view thành công để MockMvc kiểm tra view name và model.
+      return (viewName, locale) -> {
+        // Để Spring xử lý redirect thật, tránh test resolver biến HTTP 302 thành view
+        // render 200.
+        if (viewName.startsWith("redirect:")) {
+          return null;
+        }
+
+        return (View) (model, request, response) -> {
+          // Chỉ cần trả view thành công để MockMvc kiểm tra view name và model.
+        };
       };
     }
   }
