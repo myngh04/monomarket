@@ -161,8 +161,6 @@ jobs:
     concurrency:
       group: monomarket-production
       cancel-in-progress: true
-    env:
-      AZURE_CORE_OUTPUT: none
 
     steps:
       - name: Select Docker image
