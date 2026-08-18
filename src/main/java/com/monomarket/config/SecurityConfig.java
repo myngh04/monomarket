@@ -21,7 +21,8 @@ public class SecurityConfig {
             .requestMatchers("/", "/product/**", "/api/v1/products/**", "/api/v1/cart/**", "/api/v1/csrf",
                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/css/**", "/js/**", "/images/**", "/login",
                 "/register",
-                "/cart", "/cart/add", "/cart/remove", "/cart/clear")
+                "/cart", "/cart/add", "/cart/remove", "/cart/clear",
+                "/actuator/health")
             .permitAll()
             // Chỉ staff/admin được truy cập khu vực vận hành Buyback.
             .requestMatchers("/admin/**").hasAnyRole("STAFF", "ADMIN")
