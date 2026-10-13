@@ -2,6 +2,10 @@
   <img src="src/main/resources/static/images/logo.png" width="500" alt="MonoMarket logo">
 </p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+</p>
+
 <p>A Spring Boot recommerce platform for books, manga, DVD/Blu-ray, games, consoles, and accessories.</p>
 
 MonoMarket is a server-rendered monolith combining a storefront, serialized secondhand inventory, checkout, user accounts, and a C2B buyback workflow. It also exposes a versioned REST API for products, carts, CSRF tokens, and authenticated account data.
@@ -153,3 +157,7 @@ docker pull myngh4/monomarket:latest
 ```
 
 For a reproducible release, use a commit SHA or version tag instead of `latest`.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
